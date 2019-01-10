@@ -4,18 +4,7 @@ defmodule OkComputer do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> OkComputer.hello()
-      :world
-
   """
-  def hello do
-    :world
-  end
-
   defmacro __using__(_opts) do
     quote do
       use Towel
