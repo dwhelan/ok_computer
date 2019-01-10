@@ -1,0 +1,3 @@
+%{
+  "towel": {:hex, :towel, "0.2.1", "665485fc8acda2565fd7f79e47008cbc60708bcb573a975575190275fa6db393", [:mix], [], "hexpm"},
+}
