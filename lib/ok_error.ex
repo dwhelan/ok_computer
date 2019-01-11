@@ -13,11 +13,11 @@ end
 defimpl OkError, for: Tuple do
   import Result
 
-  def when_ok({:ok, v}, f) when is_function(f), do: f.(v) |> wrap
+  def when_ok({:ok, v}, f) when is_function(f), do: v |> f.() |> wrap
   def when_ok({:error, _} = o, _), do: o
 
   def when_error({:ok, _} = o, _), do: o
-  def when_error({:error, v}, f) when is_function(f), do: f.(v) |> wrap_as_error
+  def when_error({:error, v}, f) when is_function(f), do: v |> f.() |> wrap_as_error
 
   defp wrap_as_error({:ok, _} = o), do: o
   defp wrap_as_error(:error),       do: error()
@@ -35,6 +35,20 @@ defmodule OkError.Operators do
   defmacro o ~>> f do
     quote do
       unquote(o) |> when_error(unquote f)
+    end
+  end
+
+  defmacro o <<< f do
+    quote do
+      unquote(o) |> start_exception(unquote f)
+    end
+  end
+
+  def start_exception(o, f) do
+    try do
+      OkError.when_ok(o, f)
+    rescue
+      e -> Result.error(e)
     end
   end
 end
