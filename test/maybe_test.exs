@@ -7,9 +7,57 @@ defmodule Monad do
   @callback new(term) :: Tuple.t
 
   def new(tuple, ms) when is_tuple(tuple) do
-    hd(ms).new tuple
+    m = ms |> List.wrap |> Enum.find(& elem(tuple, 0) in &1.atoms) || hd(ms)
+    m.new tuple
+  end
+
+  def new(v, ms) do
+    hd(ms).new(v)
   end
 end
+
+defmodule MonadTest.AB do
+  @behaviour Monad
+
+  def atoms(), do: [:a, :b]
+
+  def new({:a, v}), do: {:a, v}
+  def new({:b, v}), do: {:b, v}
+  def new(v),       do: {:a, v}
+end
+
+defmodule MonadTest.CD do
+  @behaviour Monad
+
+  def atoms(), do: [:c, :d]
+
+  def new({:c, v}), do: {:c, v}
+  def new({:d, v}), do: {:d, v}
+  def new(v),       do: {:c, v}
+end
+
+defmodule MonadTest do
+  use ExUnit.Case
+  alias MonadTest.{AB, CD}
+
+  test "new with a single monad should call its new/1" do
+    assert Monad.new({:a, 'v'}, AB) == {:a, 'v'}
+  end
+
+  test "new with a single monad list" do
+    assert Monad.new({:a, 'v'}, [AB]) == {:a, 'v'}
+  end
+
+  test "new should call the corresponding monad" do
+    assert Monad.new({:a, 'v'}, [AB, CD]) == {:a, 'v'}
+    assert Monad.new({:c, 'v'}, [AB, CD]) == {:c, 'v'}
+  end
+
+  test "new should send values to the first moand" do
+    assert Monad.new('v', [AB, CD]) == {:a, 'v'}
+  end
+end
+
 
 defmodule Maybe do
   @behaviour Monad
@@ -20,14 +68,6 @@ defmodule Maybe do
   def new(:nothing),   do: :nothing
   def new({:just, v}), do: {:just, v}
   def new(v),          do: {:just, v}
-end
-
-defmodule ModuleTest do
-  use ExUnit.Case
-
-  test "new delegates" do
-    assert Monad.new({:just, 'v'}, [Maybe]) == {:just, 'v'}
-  end
 end
 
 defmodule MaybeTest do
