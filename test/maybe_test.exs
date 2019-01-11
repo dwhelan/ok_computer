@@ -5,6 +5,10 @@ end
 defmodule Monad do
   @behaviour OkComputer
   @callback new(term) :: Tuple.t
+
+  def new(tuple, ms) when is_tuple(tuple) do
+    hd(ms).new tuple
+  end
 end
 
 defmodule Maybe do
@@ -18,10 +22,16 @@ defmodule Maybe do
   def new(v),          do: {:just, v}
 end
 
-defmodule MaybeTest do
+defmodule ModuleTest do
   use ExUnit.Case
 
-  alias Maybe
+  test "new delegates" do
+    assert Monad.new({:just, 'v'}, [Maybe]) == {:just, 'v'}
+  end
+end
+
+defmodule MaybeTest do
+  use ExUnit.Case
 
   describe "new" do
     test "nil -> :nothing" do
