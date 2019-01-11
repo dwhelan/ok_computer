@@ -21,40 +21,44 @@ defmodule MonadTest.AB do
 
   def atoms(), do: [:a, :b]
 
-  def new({:a, v}), do: {:a, v}
-  def new({:b, v}), do: {:b, v}
-  def new(v),       do: {:a, v}
+  def new({:a, v}), do: {:a, "AB #{v}"}
+  def new({:b, v}), do: {:b, "AB #{v}"}
+  def new(v),       do: {:a, "AB #{v}"}
 end
 
-defmodule MonadTest.CD do
+defmodule MonadTest.ABC do
   @behaviour Monad
 
-  def atoms(), do: [:c, :d]
+  def atoms(), do: [:a, :b, :c]
 
-  def new({:c, v}), do: {:c, v}
-  def new({:d, v}), do: {:d, v}
-  def new(v),       do: {:c, v}
+  def new({:a, v}), do: {:a, "ABC #{v}"}
+  def new({:v, v}), do: {:b, "ABC #{v}"}
+  def new({:c, v}), do: {:c, "ABC #{v}"}
+  def new(v),       do: {:c, "ABC #{v}"}
 end
 
 defmodule MonadTest do
   use ExUnit.Case
-  alias MonadTest.{AB, CD}
+  alias MonadTest.{AB, ABC}
 
-  test "new should use single monad" do
-    assert Monad.new({:a, 'v'}, AB) == {:a, 'v'}
-  end
+  describe "new should" do
+    test "support a single monad" do
+      assert Monad.new({:a, 'v'}, AB) == {:a, "AB v"}
+    end
 
-  test "new should use single monad in a list" do
-    assert Monad.new({:a, 'v'}, [AB]) == {:a, 'v'}
-  end
+    test "support a list with a single monad" do
+      assert Monad.new({:a, 'v'}, [AB]) == {:a, "AB v"}
+    end
 
-  test "new should map tuples to monads" do
-    assert Monad.new({:a, 'v'}, [AB, CD]) == {:a, 'v'}
-    assert Monad.new({:c, 'v'}, [AB, CD]) == {:c, 'v'}
-  end
+    test "map tuples to monads via atom" do
+      assert Monad.new({:a, 'v'}, [AB, ABC]) == {:a, "AB v" }
+      assert Monad.new({:b, 'v'}, [AB, ABC]) == {:b, "AB v" }
+      assert Monad.new({:c, 'v'}, [AB, ABC]) == {:c, "ABC v"}
+    end
 
-  test "new should send bare values to the first monad" do
-    assert Monad.new('v', [AB, CD]) == {:a, 'v'}
+    test "map bare values to the first monad" do
+      assert Monad.new('v', [AB, ABC]) == {:a, "AB v"}
+    end
   end
 end
 
@@ -83,11 +87,11 @@ defmodule MaybeTest do
     end
 
     test "v -> {:just, v}" do
-      assert Maybe.new("v") == {:just, "v"}
+      assert Maybe.new('v') == {:just, 'v'}
     end
 
     test "{:just, v} -> {:just, v}" do
-      assert Maybe.new({:just, "v"}) == {:just, "v"}
+      assert Maybe.new({:just, 'v'}) == {:just, 'v'}
     end
   end
 end
