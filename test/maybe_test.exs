@@ -2,12 +2,13 @@ defmodule OkComputer do
   @callback atoms() :: [Atom.t]
 end
 
-defprotocol Monad do
-  def new(v)
+defmodule Monad do
+  @behaviour OkComputer
+  @callback new(term) :: Tuple.t
 end
 
 defmodule Maybe do
-  @behaviour OkComputer
+  @behaviour Monad
 
   def atoms(), do: [:just, :nothing]
 
@@ -15,10 +16,6 @@ defmodule Maybe do
   def new(:nothing),   do: :nothing
   def new({:just, v}), do: {:just, v}
   def new(v),          do: {:just, v}
-end
-
-defimpl Monad, for: Tuple do
-  defdelegate new(v), to: MayBe
 end
 
 defmodule MaybeTest do
