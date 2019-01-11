@@ -8,7 +8,11 @@ defmodule Monad do
 
   def new(tuple, ms) when is_tuple(tuple) do
     m = ms |> List.wrap |> Enum.find(& elem(tuple, 0) in &1.atoms)
-    m.new tuple
+    if m do
+      m.new tuple
+    else
+      hd(ms).new(tuple)
+    end
   end
 
   def new(v, ms) do
@@ -16,52 +20,48 @@ defmodule Monad do
   end
 end
 
+defmodule MonadTest.A do
+  @behaviour Monad
+
+  def atoms(), do: [:a]
+
+  def new({:a, v}), do: {:a, "A #{inspect v}"}
+  def new(v),       do: {:a, "A #{inspect v}"}
+end
+
 defmodule MonadTest.AB do
   @behaviour Monad
 
   def atoms(), do: [:a, :b]
 
-  def new({:a, v}), do: {:a, "AB #{v}"}
-  def new({:b, v}), do: {:b, "AB #{v}"}
-  def new(v),       do: {:a, "AB #{v}"}
-end
-
-defmodule MonadTest.ABC do
-  @behaviour Monad
-
-  def atoms(), do: [:a, :b, :c]
-
-  def new({:a, v}), do: {:a, "ABC #{v}"}
-  def new({:v, v}), do: {:b, "ABC #{v}"}
-  def new({:c, v}), do: {:c, "ABC #{v}"}
-  def new(v),       do: {:c, "ABC #{v}"}
+  def new({:a, v}), do: {:a, "AB #{inspect v}"}
+  def new({:b, v}), do: {:b, "AB #{inspect v}"}
+  def new(v),       do: {:b, "AB #{inspect v}"}
 end
 
 defmodule MonadTest do
   use ExUnit.Case
-  alias MonadTest.{AB, ABC}
+  alias MonadTest.{A, AB}
 
   describe "new should" do
     test "support a single monad" do
-      assert Monad.new({:a, 'v'}, AB) == {:a, "AB v"}
+      assert Monad.new({:a, :v}, A) == {:a, "A :v"}
     end
 
     test "support a list with a single monad" do
-      assert Monad.new({:a, 'v'}, [AB]) == {:a, "AB v"}
+      assert Monad.new({:a, :v}, [A]) == {:a, "A :v"}
     end
 
     test "map tuples to monads via atom" do
-      assert Monad.new({:a, 'v'}, [AB, ABC]) == {:a, "AB v" }
-      assert Monad.new({:b, 'v'}, [AB, ABC]) == {:b, "AB v" }
-      assert Monad.new({:c, 'v'}, [AB, ABC]) == {:c, "ABC v"}
+      assert Monad.new({:a, :v}, [A, AB]) == {:a, "A :v" }
+      assert Monad.new({:c, :v}, [A, AB]) == {:a, "A {:c, :v}"}
     end
 
     test "map bare values to the first monad" do
-      assert Monad.new('v', [AB, ABC]) == {:a, "AB v"}
+      assert Monad.new(:v, [A, AB]) == {:a, "A :v"}
     end
   end
 end
-
 
 defmodule Maybe do
   @behaviour Monad
@@ -87,11 +87,11 @@ defmodule MaybeTest do
     end
 
     test "v -> {:just, v}" do
-      assert Maybe.new('v') == {:just, 'v'}
+      assert Maybe.new("v") == {:just, "v"}
     end
 
     test "{:just, v} -> {:just, v}" do
-      assert Maybe.new({:just, 'v'}) == {:just, 'v'}
+      assert Maybe.new({:just, "v"}) == {:just, "v"}
     end
   end
 end
