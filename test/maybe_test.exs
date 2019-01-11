@@ -7,7 +7,7 @@ defmodule Monad do
   @callback new(term) :: Tuple.t
 
   def new(tuple, ms) when is_tuple(tuple) do
-    m = ms |> List.wrap |> Enum.find(& elem(tuple, 0) in &1.atoms) || hd(ms)
+    m = ms |> List.wrap |> Enum.find(& elem(tuple, 0) in &1.atoms)
     m.new tuple
   end
 
@@ -40,20 +40,20 @@ defmodule MonadTest do
   use ExUnit.Case
   alias MonadTest.{AB, CD}
 
-  test "new with a single monad should call its new/1" do
+  test "new should use single monad" do
     assert Monad.new({:a, 'v'}, AB) == {:a, 'v'}
   end
 
-  test "new with a single monad list" do
+  test "new should use single monad in a list" do
     assert Monad.new({:a, 'v'}, [AB]) == {:a, 'v'}
   end
 
-  test "new should call the corresponding monad" do
+  test "new should map tuples to monads" do
     assert Monad.new({:a, 'v'}, [AB, CD]) == {:a, 'v'}
     assert Monad.new({:c, 'v'}, [AB, CD]) == {:c, 'v'}
   end
 
-  test "new should send values to the first moand" do
+  test "new should send bare values to the first monad" do
     assert Monad.new('v', [AB, CD]) == {:a, 'v'}
   end
 end
