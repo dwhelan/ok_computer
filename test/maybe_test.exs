@@ -6,17 +6,20 @@ defmodule Monad do
   @behaviour OkComputer
   @callback new(term) :: Tuple.t
 
-  def new(tuple, ms) when is_tuple(tuple) do
-    m = ms |> List.wrap |> Enum.find(& elem(tuple, 0) in &1.atoms)
-    if m do
-      m.new tuple
+  def new(_, []) do
+    {:error, :no_monads_provided}
+  end
+
+  def new({a, v} = x, ms)  do
+    if m = ms |> List.wrap |> Enum.find(& a in &1.atoms) do
+      m.new x
     else
-      hd(ms).new(tuple)
+      hd(ms).new x
     end
   end
 
   def new(v, ms) do
-    hd(ms).new(v)
+    hd(ms).new v
   end
 end
 
@@ -43,22 +46,29 @@ defmodule MonadTest do
   use ExUnit.Case
   alias MonadTest.{A, AB}
 
+  import Monad
+
   describe "new should" do
     test "support a single monad" do
-      assert Monad.new({:a, :v}, A) == {:a, "A :v"}
+      assert new({:a, :v}, A) == {:a, "A :v"}
     end
 
     test "support a list with a single monad" do
-      assert Monad.new({:a, :v}, [A]) == {:a, "A :v"}
+      assert new({:a, :v}, [A]) == {:a, "A :v"}
     end
 
-    test "map tuples to monads via atom" do
-      assert Monad.new({:a, :v}, [A, AB]) == {:a, "A :v" }
-      assert Monad.new({:c, :v}, [A, AB]) == {:a, "A {:c, :v}"}
+    test "map tuples to monads via its atom" do
+      assert new({:a, :v}, [A, AB]) == {:a, "A :v" }
+      assert new({:b, :v}, [A, AB]) == {:b, "AB :v" }
+      assert new({:c, :v}, [A, AB]) == {:a, "A {:c, :v}"}
     end
 
     test "map bare values to the first monad" do
-      assert Monad.new(:v, [A, AB]) == {:a, "A :v"}
+      assert new(:v, [A, AB]) == {:a, "A :v"}
+    end
+
+    test "return an error tuple if no monads provided" do
+      assert new({:a, :v}, []) == {:error, :no_monads_provided}
     end
   end
 end
