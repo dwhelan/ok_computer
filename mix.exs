@@ -19,7 +19,8 @@ defmodule OkComputer.MixProject do
 
   defp deps do
     [
-      {:towel, "~> 0.0"}
+      {:towel, "~> 0.0"},
+      {:mix_test_watch, "~> 0.0"},
     ]
   end
 end

@@ -15,7 +15,7 @@ def deps do
 end
 ```
 
-# Comparison with other Monad libraries
+# Comparison with other OkComputer.Monad libraries
 
 ## Towel
 
