@@ -1,16 +1,48 @@
-defprotocol OkComputer.Monad do
-  def wrap(v)
+defmodule OkComputer do
+  @callback atoms() :: [Atom.t]
 end
 
-defmodule OkComputer.Maybe do
-  def wrap(:nil),       do: :nothing
-  def wrap(:nothing),   do: :nothing
-  def wrap({:just, v}), do: {:just, v}
-  def wrap(v),          do: {:just, v}
+defprotocol Monad do
+  def new(v)
 end
 
-defimpl OkComputer.Monad, for: Tuple do
-  defdelegate wrap(v), to: OkComputer.MayBe
+defmodule Maybe do
+  @behaviour OkComputer
+
+  def atoms(), do: [:just, :nothing]
+
+  def new(:nil),       do: :nothing
+  def new(:nothing),   do: :nothing
+  def new({:just, v}), do: {:just, v}
+  def new(v),          do: {:just, v}
+end
+
+defimpl Monad, for: Tuple do
+  defdelegate new(v), to: MayBe
+end
+
+defmodule MaybeTest do
+  use ExUnit.Case
+
+  alias Maybe
+
+  describe "new" do
+    test "nil -> :nothing" do
+      assert Maybe.new(nil) == :nothing
+    end
+
+    test ":nothing -> :nothing" do
+      assert Maybe.new(:nothing) == :nothing
+    end
+
+    test "v -> {:just, v}" do
+      assert Maybe.new("v") == {:just, "v"}
+    end
+
+    test "{:just, v} -> {:just, v}" do
+      assert Maybe.new({:just, "v"}) == {:just, "v"}
+    end
+  end
 end
 
 #defmodule Macros do
@@ -24,26 +56,3 @@ end
 #  end
 #end
 
-defmodule OkComputer.MaybeTest do
-  use ExUnit.Case
-
-  alias OkComputer.Maybe
-
-  describe "wrap" do
-    test "nil -> :nothing" do
-      assert Maybe.wrap(nil) == :nothing
-    end
-
-    test ":nothing -> :nothing" do
-      assert Maybe.wrap(:nothing) == :nothing
-    end
-
-    test "v -> {:just, v}" do
-      assert Maybe.wrap("v") == {:just, "v"}
-    end
-
-    test "{:just, v} -> {:just, v}" do
-      assert Maybe.wrap({:just, "v"}) == {:just, "v"}
-    end
-  end
-end
