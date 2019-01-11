@@ -6,20 +6,23 @@ defmodule Monad do
   @behaviour OkComputer
   @callback new(term) :: Tuple.t
 
-  def new(_, []) do
+  def new _, [] do
     {:error, :no_monads_provided}
   end
 
-  def new({a, v} = x, ms)  do
-    if m = ms |> List.wrap |> Enum.find(& a in &1.atoms) do
-      m.new x
-    else
-      hd(ms).new x
-    end
+  def new {a, v} = x, ms  do
+    monad_for(a, ms).new x
   end
 
-  def new(v, ms) do
+  def new v, ms do
     hd(ms).new v
+  end
+
+  defp monad_for a, ms do
+    case ms |> List.wrap |> Enum.find(& a in &1.atoms) do
+      nil -> hd(ms)
+      m   -> m
+    end
   end
 end
 
