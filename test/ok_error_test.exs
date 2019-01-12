@@ -1,8 +1,8 @@
-defmodule OkErrorTest do
-  use ExUnit.Case
-
-  use OkComputer
-
+#defmodule OkErrorTest do
+#  use ExUnit.Case
+#
+#  use OkComputer
+#
 #  test "[v] ~> (f) => ok [f(v)]" do
 #    assert ["a", "b"] ~> fn x -> [String.upcase x] end == ok ["A", "B"]
 #  end
@@ -48,4 +48,4 @@ defmodule OkErrorTest do
 #  test "x <<< f should catch errors'" do
 #    assert ok("v") <<< fn _ -> raise "error" end == error {:error, %RuntimeError{message: "error"}}
 #  end
-end
+#end
