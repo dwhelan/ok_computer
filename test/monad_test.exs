@@ -22,23 +22,29 @@ defmodule Monad do
   end
 
   defmacro __using__ modules do
-    IO.inspect code = modules |> build_news
-    code |> Macro.to_string |> IO.inspect
-    code
+    modules
+    |> Enum.map(&def_new/1)
+    |> def_default_new(modules)
   end
 
-  defp build_news(modules) when is_list(modules) do
-    modules |> Enum.map fn module -> def_new module end
-  end
-
-  defp def_new module do
-      quote do
-        unquote(module).atoms |> Enum.map fn atom ->
-          def new {atom, value} do
-            unquote(module).new value
-          end
+  defp def_new(module) do
+    quote do
+      unquote(module).atoms
+      |> Enum.map fn atom ->
+        @atom atom
+        def new {@atom, value} do
+          unquote(module).new value
         end
       end
+    end
+  end
+
+  defp def_default_new quoted, modules do
+    quoted ++ [quote do
+      def new value do
+        unquote(hd modules).new value
+      end
+    end]
   end
 end
 
@@ -65,26 +71,16 @@ defmodule MonadTest do
   alias MonadTest.{A, AB}
 
   import Monad
-  use Monad, [A]
+  use Monad, [A, AB]
 
-  describe "new should" do
-    test "support a single monad" do
-      assert new({:a, :v}, A) == {:a, "A :v"}
-      assert new({:a, :v}) == {:a, "A :v"}
-    end
-
-    test "support a list with a single monad" do
-      assert new({:a, :v}) == {:a, "A :v"}
-    end
-
-    test "map tuples to monads via its atom" do
-      assert new({:a, :v}, [A, AB]) == {:a, "A :v" }
-      assert new({:b, :v}, [A, AB]) == {:b, "AB :v" }
-      assert new({:c, :v}, [A, AB]) == {:a, "A {:c, :v}"}
+  describe "should create 'new' methods that" do
+    test "map tuples to monads via atoms" do
+      assert new({:a, :v}) == {:a, "A :v" }
+      assert new({:b, :v}) == {:b, "AB :v" }
     end
 
     test "map bare values to the first monad" do
-      assert new(:v, [A, AB]) == {:a, "A :v"}
+      assert new(:_) == {:a, "A :_"}
     end
 
     test "return an error tuple if no monads provided" do
