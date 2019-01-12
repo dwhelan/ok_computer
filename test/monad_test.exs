@@ -23,26 +23,29 @@ defmodule Monad do
 
   defmacro __using__ modules do
     modules
-    |> Enum.map(&def_new/1)
-    |> def_default_new(modules)
+    |> def_new_for_modules
+    |> def_new_for_plain_value(hd modules)
   end
 
-  defp def_new(module) do
+  defp def_new_for_modules modules do
+    Enum.map modules, &def_new_for_module/1
+  end
+
+  defp def_new_for_module module do
     quote do
-      unquote(module).atoms
-      |> Enum.map fn atom ->
+      unquote(module).atoms |> Enum.map fn atom ->
         @atom atom
         def new {@atom, value} do
-          unquote(module).new value
+          unquote(module).new {@atom, value}
         end
       end
     end
   end
 
-  defp def_default_new quoted, modules do
+  defp def_new_for_plain_value quoted, module do
     quoted ++ [quote do
       def new value do
-        unquote(hd modules).new value
+        unquote(module).new value
       end
     end]
   end
@@ -56,34 +59,33 @@ defmodule MonadTest.A do
   def new(v),       do: {:a, "A #{inspect v}"}
 end
 
-defmodule MonadTest.AB do
+defmodule MonadTest.B do
   @behaviour Monad
 
-  def atoms(), do: [:a, :b]
+  def atoms(), do: [:b]
 
-  def new({:a, v}), do: {:a, "AB #{inspect v}"}
-  def new({:b, v}), do: {:b, "AB #{inspect v}"}
-  def new(v),       do: {:b, "AB #{inspect v}"}
+  def new({:b, v}), do: {:b, "B #{inspect v}"}
+  def new(v),       do: {:b, "B #{inspect v}"}
 end
 
 defmodule MonadTest do
   use ExUnit.Case
-  alias MonadTest.{A, AB}
+  alias MonadTest.{A, B}
 
   import Monad
-  use Monad, [A, AB]
+  use Monad, [A, B]
 
   describe "should create 'new' methods that" do
-    test "map tuples to monads via atoms" do
+    test "map tuples to modules via atoms" do
       assert new({:a, :v}) == {:a, "A :v" }
-      assert new({:b, :v}) == {:b, "AB :v" }
+      assert new({:b, :v}) == {:b, "B :v" }
     end
 
-    test "map bare values to the first monad" do
+    test "map bare values to the first module" do
       assert new(:_) == {:a, "A :_"}
     end
 
-    test "return an error tuple if no monads provided" do
+    test "return an error tuple if no modules provided" do
       assert new({:a, :v}, []) == {:error, :no_monads_provided}
     end
   end
