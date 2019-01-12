@@ -2,29 +2,26 @@ defmodule Monad do
   @behaviour OkComputer
   @callback new(term) :: Tuple.t
 
-  def new _, [] do
-    {:error, :no_monads_provided}
-  end
-
-  def new m = {atom, _}, modules do
-    module_for(atom, modules).new m
-  end
-
-  def new(m, modules) when is_list(modules) do
-    hd(modules).new m
-  end
-
-  defp module_for atom, modules do
-    case modules |> List.wrap |> Enum.find(fn module -> atom in module.atoms end) do
-      nil    -> modules |> List.first
-      module -> module
-    end
-  end
-
   defmacro __using__ modules do
     modules
+    |> ensure_modules_are_monads
     |> def_new_for_modules
     |> def_new_for_plain_value(hd modules)
+  end
+
+  defp ensure_modules_are_monads [] do
+    raise ArgumentError, """
+    "use Monad" expects to be passed a module, or list of modules, with monad behaviour. For example:
+
+
+      defmodule MyModule do
+        use Monad, Maybe
+      end
+    """
+  end
+
+  defp ensure_modules_are_monads modules do
+    modules
   end
 
   defp def_new_for_modules modules do
