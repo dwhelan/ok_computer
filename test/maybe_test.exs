@@ -1,7 +1,3 @@
-defmodule OkComputer do
-  @callback atoms() :: [Atom.t]
-end
-
 defmodule Maybe do
   @behaviour Monad
 
@@ -16,33 +12,23 @@ end
 defmodule MaybeTest do
   use ExUnit.Case
 
+  import Maybe
+
   describe "new" do
     test "nil -> :nothing" do
-      assert Maybe.new(nil) == :nothing
+      assert new(nil) == :nothing
     end
 
     test ":nothing -> :nothing" do
-      assert Maybe.new(:nothing) == :nothing
+      assert new(:nothing) == :nothing
     end
 
     test "v -> {:just, v}" do
-      assert Maybe.new("v") == {:just, "v"}
+      assert new("v") == {:just, "v"}
     end
 
     test "{:just, v} -> {:just, v}" do
-      assert Maybe.new({:just, "v"}) == {:just, "v"}
+      assert new({:just, "v"}) == {:just, "v"}
     end
   end
 end
-
-#defmodule Macros do
-#  defmacro __using__ opts \\ [] do
-#    quote do
-#      opts = unquote(opts)
-#      IO.inspect opts[]
-#      test "foo" do
-#      end
-#    end
-#  end
-#end
-

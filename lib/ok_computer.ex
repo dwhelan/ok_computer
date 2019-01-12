@@ -5,11 +5,6 @@ defmodule OkComputer do
 
   @doc """
   """
-  defmacro __using__(_opts) do
-    quote do
-      use Towel
-      import OkError
-      import OkError.Operators
-    end
-  end
+  @callback atoms() :: [Atom.t]
 end
+
