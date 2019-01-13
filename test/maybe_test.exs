@@ -9,6 +9,7 @@ defmodule Maybe do
   def return(v),          do: {:just, v}
 
   def bind({:just, v}, f) when is_function(f), do: f.(v)
+  def bind(:nothing, f)   when is_function(f), do: :nothing
 end
 
 defmodule MaybeTest do
@@ -37,6 +38,10 @@ defmodule MaybeTest do
   describe "bind should" do
     test "apply function if a just is provided" do
       assert bind({:just, 1}, fn x -> x + 2 end) == 3
+    end
+
+    test "bypass function if a nothing is provided" do
+      assert bind(:nothing, fn x -> x + 2 end) == :nothing
     end
   end
 end
