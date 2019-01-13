@@ -3,8 +3,6 @@ defmodule Maybe do
 
   @type t :: {:just, any} | :nothing
 
-  def atoms(), do: [:just, :nothing]
-
   @spec return(any) :: t
   def return(:nil),       do: :nothing
   def return(:nothing),   do: :nothing

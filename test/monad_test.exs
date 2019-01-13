@@ -3,8 +3,6 @@ defmodule MonadTest do
   defmodule A do
     @behaviour Monad
 
-    def atoms(), do: [{:a}]
-
     def return({:a, v}), do: {:a, "A #{inspect v}"}
     def return(v),       do: {:a, "A #{inspect v}"}
 
@@ -15,8 +13,6 @@ defmodule MonadTest do
 
   defmodule B do
     @behaviour Monad
-
-    def atoms(), do: [{:b}]
 
     def return({:b, v}), do: {:b, "B #{inspect v}"}
     def return(v),       do: {:b, "B #{inspect v}"}

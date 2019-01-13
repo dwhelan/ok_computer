@@ -1,5 +1,4 @@
 defmodule Monad do
-  @behaviour OkComputer
   @callback return(term) :: Tuple.t
 
   defmacro __using__(modules) when is_list(modules) do

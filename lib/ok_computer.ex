@@ -3,8 +3,5 @@ defmodule OkComputer do
   Documentation for OkComputer.
   """
 
-  @doc """
-  """
-  @callback atoms() :: [Atom.t]
 end
 
