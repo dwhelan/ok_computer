@@ -3,7 +3,7 @@ defmodule MonadTest do
   defmodule A do
     @behaviour Monad
 
-    def atoms(), do: [:a]
+    def atoms(), do: [{:a}]
 
     def return({:a, v}), do: {:a, "A #{inspect v}"}
     def return(v),       do: {:a, "A #{inspect v}"}
@@ -16,7 +16,7 @@ defmodule MonadTest do
   defmodule B do
     @behaviour Monad
 
-    def atoms(), do: [:b]
+    def atoms(), do: [{:b}]
 
     def return({:b, v}), do: {:b, "B #{inspect v}"}
     def return(v),       do: {:b, "B #{inspect v}"}
@@ -32,6 +32,7 @@ defmodule MonadTest do
 
   defmodule UseSingle do
     use ExUnit.Case
+    require A
 
     use Monad, A
 
@@ -49,6 +50,8 @@ defmodule MonadTest do
   defmodule UseMultiple do
     use ExUnit.Case
 
+    require A
+    require B
     use Monad, [A, B]
 
     describe "return/1 should" do

@@ -37,13 +37,24 @@ defmodule Monad do
   end
 
   defp def_new_for_module module do
+    IO.inspect {_, _, [m]} = module
+    IO.inspect module: m
+#    IO.inspect apply: apply(m, :atoms, [])
+
     quote do
-      unquote(module).atoms |> Enum.map fn atom ->
-        @atom atom
-        def return {@atom, value} do
-          unquote(module).return {@atom, value}
+      unquote(module).atoms |> Enum.map(fn type ->
+        @m_type type
+        @m_type elem(@m_type, 0)
+        if is_atom(type) do
+            def return @m_type do
+              unquote(module).return @m_type
+            end
+          else
+            def return {@m_type, value} do
+              unquote(module).return {@m_type, value}
+          end
         end
-      end
+      end)
     end
   end
 
