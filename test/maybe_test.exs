@@ -3,10 +3,10 @@ defmodule Maybe do
 
   def atoms(), do: [:just, :nothing]
 
-  def new(:nil),       do: :nothing
-  def new(:nothing),   do: :nothing
-  def new({:just, v}), do: {:just, v}
-  def new(v),          do: {:just, v}
+  def return(:nil),       do: :nothing
+  def return(:nothing),   do: :nothing
+  def return({:just, v}), do: {:just, v}
+  def return(v),          do: {:just, v}
 end
 
 defmodule MaybeTest do
@@ -14,21 +14,21 @@ defmodule MaybeTest do
 
   import Maybe
 
-  describe "new" do
+  describe "return" do
     test "nil -> :nothing" do
-      assert new(nil) == :nothing
+      assert return(nil) == :nothing
     end
 
     test ":nothing -> :nothing" do
-      assert new(:nothing) == :nothing
+      assert return(:nothing) == :nothing
     end
 
     test "v -> {:just, v}" do
-      assert new("v") == {:just, "v"}
+      assert return("v") == {:just, "v"}
     end
 
     test "{:just, v} -> {:just, v}" do
-      assert new({:just, "v"}) == {:just, "v"}
+      assert return({:just, "v"}) == {:just, "v"}
     end
   end
 end

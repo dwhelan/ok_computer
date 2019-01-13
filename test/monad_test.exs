@@ -5,8 +5,8 @@ defmodule MonadTest do
 
     def atoms(), do: [:a]
 
-    def new({:a, v}), do: {:a, "A #{inspect v}"}
-    def new(v),       do: {:a, "A #{inspect v}"}
+    def return({:a, v}), do: {:a, "A #{inspect v}"}
+    def return(v),       do: {:a, "A #{inspect v}"}
 
     defmacro foo x do
       IO.inspect x
@@ -18,8 +18,8 @@ defmodule MonadTest do
 
     def atoms(), do: [:b]
 
-    def new({:b, v}), do: {:b, "B #{inspect v}"}
-    def new(v),       do: {:b, "B #{inspect v}"}
+    def return({:b, v}), do: {:b, "B #{inspect v}"}
+    def return(v),       do: {:b, "B #{inspect v}"}
   end
 
   defmodule UseErrors do
@@ -35,13 +35,13 @@ defmodule MonadTest do
 
     use Monad, A
 
-    describe "new/1 should" do
+    describe "return/1 should" do
       test "map tuples to module via atoms" do
-        assert new({:a, :v}) == {:a, "A :v" }
+        assert return({:a, :v}) == {:a, "A :v" }
       end
 
       test "map bare values to the module" do
-        assert new(:_) == {:a, "A :_"}
+        assert return(:_) == {:a, "A :_"}
       end
     end
   end
@@ -51,14 +51,14 @@ defmodule MonadTest do
 
     use Monad, [A, B]
 
-    describe "new/1 should" do
+    describe "return/1 should" do
       test "map tuples to modules via atoms" do
-        assert new({:a, :v}) == {:a, "A :v" }
-        assert new({:b, :v}) == {:b, "B :v" }
+        assert return({:a, :v}) == {:a, "A :v" }
+        assert return({:b, :v}) == {:b, "B :v" }
       end
 
       test "map bare values to the first module" do
-        assert new(:_) == {:a, "A :_"}
+        assert return(:_) == {:a, "A :_"}
       end
     end
   end

@@ -1,6 +1,6 @@
 defmodule Monad do
   @behaviour OkComputer
-  @callback new(term) :: Tuple.t
+  @callback return(term) :: Tuple.t
 
   defmacro __using__(modules) when is_list(modules) do
     build_monad modules
@@ -40,8 +40,8 @@ defmodule Monad do
     quote do
       unquote(module).atoms |> Enum.map fn atom ->
         @atom atom
-        def new {@atom, value} do
-          unquote(module).new {@atom, value}
+        def return {@atom, value} do
+          unquote(module).return {@atom, value}
         end
       end
     end
@@ -49,8 +49,8 @@ defmodule Monad do
 
   defp def_new_for_plain_value quoted, module do
     quoted ++ [quote do
-      def new value do
-        unquote(module).new value
+      def return value do
+        unquote(module).return value
       end
     end]
   end
