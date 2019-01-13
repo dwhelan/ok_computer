@@ -2,7 +2,15 @@ defmodule Monad do
   @behaviour OkComputer
   @callback new(term) :: Tuple.t
 
-  defmacro __using__ modules do
+  defmacro __using__(modules) when is_list(modules) do
+    build_monad modules
+  end
+
+  defmacro __using__ module do
+    build_monad [module]
+  end
+
+  defp build_monad(modules) do
     modules
     |> ensure_modules_are_monads
     |> def_new_for_modules

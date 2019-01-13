@@ -1,5 +1,4 @@
 defmodule MonadTest do
-  use ExUnit.Case
 
   defmodule A do
     @behaviour Monad
@@ -8,6 +7,10 @@ defmodule MonadTest do
 
     def new({:a, v}), do: {:a, "A #{inspect v}"}
     def new(v),       do: {:a, "A #{inspect v}"}
+
+    defmacro foo x do
+      IO.inspect x
+    end
   end
 
   defmodule B do
@@ -19,29 +22,45 @@ defmodule MonadTest do
     def new(v),       do: {:b, "B #{inspect v}"}
   end
 
-  use Monad, [A, B]
+  defmodule UseErrors do
+    use ExUnit.Case
 
-  describe "use should" do
     test "raise if no options provided" do
-      assert_code_raise "use Monad"
+      TestHelper.assert_code_error "use Monad"
     end
   end
 
-  describe "should create 'new' methods that" do
-    test "map tuples to modules via atoms" do
-      assert new({:a, :v}) == {:a, "A :v" }
-      assert new({:b, :v}) == {:b, "B :v" }
-    end
+  defmodule UseSingle do
+    use ExUnit.Case
 
-    test "map bare values to the first module" do
-      assert new(:_) == {:a, "A :_"}
+    use Monad, A
+
+    describe "new/1 should" do
+      test "map tuples to module via atoms" do
+        assert new({:a, :v}) == {:a, "A :v" }
+      end
+
+      test "map bare values to the module" do
+        assert new(:_) == {:a, "A :_"}
+      end
     end
   end
 
-  def assert_code_raise code do
-    ExUnit.Assertions.assert_raise ArgumentError, fn -> Code.eval_string(code) end
+  defmodule UseMultiple do
+    use ExUnit.Case
+
+    use Monad, [A, B]
+
+    describe "new/1 should" do
+      test "map tuples to modules via atoms" do
+        assert new({:a, :v}) == {:a, "A :v" }
+        assert new({:b, :v}) == {:b, "B :v" }
+      end
+
+      test "map bare values to the first module" do
+        assert new(:_) == {:a, "A :_"}
+      end
+    end
   end
-
-
 end
 
