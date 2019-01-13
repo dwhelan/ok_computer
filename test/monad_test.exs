@@ -3,19 +3,17 @@ defmodule MonadTest do
   defmodule A do
     @behaviour Monad
 
-    def return({:a, v}), do: {:a, "A #{inspect v}"}
-    def return(v),       do: {:a, "A #{inspect v}"}
+    def return({:a, v}), do: {:a, v}
+    def return(v),       do: {:a, v}
 
-    defmacro foo x do
-      IO.inspect x
-    end
+    def bind({:a, v}, f), do: return f.(v)
   end
 
   defmodule B do
     @behaviour Monad
 
-    def return({:b, v}), do: {:b, "B #{inspect v}"}
-    def return(v),       do: {:b, "B #{inspect v}"}
+    def return({:b, v}), do: {:b, v}
+    def return(v),       do: {:b, v}
   end
 
   defmodule UseErrors do
@@ -31,14 +29,12 @@ defmodule MonadTest do
 
     use Monad, A
 
-    describe "return/1 should" do
-      test "map tuples to module via atoms" do
-        assert return({:a, :v}) == {:a, "A :v" }
-      end
+    test "should delegate return/1 to module" do
+      assert return(:v) == {:a, :v}
+    end
 
-      test "map bare values to the module" do
-        assert return(:_) == {:a, "A :_"}
-      end
+    test "should delegate bind/2 to module" do
+      assert bind({:a, 'v'}, fn x -> "f(#{x})" end) == {:a, "f(v)"}
     end
   end
 
@@ -47,15 +43,12 @@ defmodule MonadTest do
 
     use Monad, [A, B]
 
-    describe "return/1 should" do
-      test "delegate to first module" do
-        assert return({:a, :v}) == {:a, "A :v" }
-        assert return({:b, :v}) == {:a, "A {:b, :v}" }
-      end
+    test "should delegate return/1 to first module" do
+      assert return(:v) == {:a, :v}
+    end
 
-      test "map bare values to the first module" do
-        assert return(:_) == {:a, "A :_"}
-      end
+    test "should delegate bind/2 to first module" do
+      assert bind({:a, 'v'}, fn x -> "f(#{x})" end) == {:a, "f(v)"}
     end
   end
 end
