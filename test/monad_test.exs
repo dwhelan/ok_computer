@@ -32,7 +32,6 @@ defmodule MonadTest do
 
   defmodule UseSingle do
     use ExUnit.Case
-    require A
 
     use Monad, A
 
@@ -50,14 +49,12 @@ defmodule MonadTest do
   defmodule UseMultiple do
     use ExUnit.Case
 
-    require A
-    require B
     use Monad, [A, B]
 
     describe "return/1 should" do
-      test "map tuples to modules via atoms" do
+      test "delegate to first module" do
         assert return({:a, :v}) == {:a, "A :v" }
-        assert return({:b, :v}) == {:b, "B :v" }
+        assert return({:b, :v}) == {:a, "A {:b, :v}" }
       end
 
       test "map bare values to the first module" do
