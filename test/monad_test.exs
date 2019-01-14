@@ -6,7 +6,8 @@ defmodule MonadTest do
     def return({:a, v}), do: {:a, v}
     def return(v),       do: {:a, v}
 
-    def bind({:a, v}, f), do: return f.(v)
+    def bind({:a, v}, f), do: f.(v)
+    def bind(m, _f),      do: m
   end
 
   defmodule B do
@@ -14,6 +15,9 @@ defmodule MonadTest do
 
     def return({:b, v}), do: {:b, v}
     def return(v),       do: {:b, v}
+
+    def bind({:b, v}, f), do: f.(v)
+    def bind(m, _f),      do: m
   end
 
   defmodule UseErrors do
@@ -34,7 +38,7 @@ defmodule MonadTest do
     end
 
     test "should delegate bind/2 to module" do
-      assert bind({:a, 'v'}, fn x -> "f(#{x})" end) == {:a, "f(v)"}
+      assert bind({:a, 'v'}, fn x -> return "f(#{x})" end) == {:a, "f(v)"}
     end
   end
 
@@ -48,7 +52,7 @@ defmodule MonadTest do
     end
 
     test "should delegate bind/2 to first module" do
-      assert bind({:a, 'v'}, fn x -> "f(#{x})" end) == {:a, "f(v)"}
+      assert bind({:a, 'v'}, fn x -> return "f(#{x})" end) == {:a, "f(v)"}
     end
   end
 end

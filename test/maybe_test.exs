@@ -23,11 +23,11 @@ defmodule MaybeTest do
 
   describe "bind should" do
     test "apply function if a just is provided" do
-      assert bind({:just, 1}, fn x -> x + 2 end) == 3
+      assert bind({:just, 1}, fn x -> {:just, x + 1} end) == {:just, 2}
     end
 
     test "bypass function if a nothing is provided" do
-      assert bind(:nothing, fn x -> x + 2 end) == :nothing
+      assert bind(:nothing, fn x -> {:just, x + 1} end) == :nothing
     end
   end
 end

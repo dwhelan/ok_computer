@@ -1,5 +1,9 @@
 defmodule Monad do
-  @callback return(term) :: Tuple.t
+  @type monad :: any
+  @type t :: monad
+
+  @callback return(any) :: monad
+  @callback bind(t, (any -> monad)) :: monad
 
   defmacro __using__(modules) when is_list(modules) do
     build_monad modules
