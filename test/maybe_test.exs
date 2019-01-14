@@ -3,7 +3,6 @@ defmodule MaybeTest do
 
   import Maybe
 
-  require Monad.Laws
   use Monad.Laws
 
   test "return" do
