@@ -1,8 +1,8 @@
 defmodule Error do
   @behaviour Monad
 
-  @type error :: {:just, any} | :nothing
   @type t :: error
+  @type error :: {:ok, any} | {:error, any}
 
   @spec return(any) :: error
   def return(:nil),        do: {:error, nil}

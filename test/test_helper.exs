@@ -7,6 +7,7 @@ defmodule Monad.Laws do
       test "left identity" do
         f = fn x -> x * x end
         a = 2
+        IO.inspect return_a: return(a), bind: bind(return(a), f), f_a: f.(a)
         assert bind(return(a), f) == f.(a)
       end
 
