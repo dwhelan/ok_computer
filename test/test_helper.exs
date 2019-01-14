@@ -2,25 +2,24 @@ ExUnit.start()
 
 defmodule Monad.Laws do
   defmacro __using__ _ do
-    # Copied from Hex monad library: need to validate
     quote do
       test "left identity" do
-        f = fn x -> x * x end
-        a = 2
-        IO.inspect return_a: return(a), bind: bind(return(a), f), f_a: f.(a)
-        assert bind(return(a), f) == f.(a)
+        f = fn a -> return "f(#{a})" end
+        a = 'a'
+        assert return(a) |> bind(f) == f.(a)
       end
 
       test "right identity" do
-        m = return 42
-        assert bind(m, &return/1) == m
+        m = return 'a'
+        assert m |> return == m
       end
 
       test "associativity" do
-        f = fn (x) -> x * x end
-        g = fn (x) -> x - 1 end
-        m = return 2
-        assert bind(return(bind(m, f)), g) == bind(m, &bind(return(f.(&1)), g))
+        f = fn a -> return "f(#{a})" end
+        g = fn a -> return "g(#{a})" end
+        m = return 'a'
+
+        assert m |> bind(f) |> bind(g) == m |> bind(fn a -> f.(a) |> bind(g) end)
       end
     end
   end
