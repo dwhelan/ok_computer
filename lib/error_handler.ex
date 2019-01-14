@@ -6,11 +6,11 @@ defmodule ErrorHandler do
 
   @spec return(any) :: error
   def return(:nil),        do: {:error, nil}
-  def return({:ok, v}),    do: {:ok, v}
-  def return({:error, v}), do: {:error, v}
-  def return(v),           do: {:error, v}
+  def return({:ok, a}),    do: {:ok, a}
+  def return({:error, a}), do: {:error, a}
+  def return(a),           do: {:error, a}
 
   @spec bind(error, (any -> error)) :: error
-  def bind({:ok, v}, f)    when is_function(f), do: {:ok, v}
-  def bind({:error, v}, f) when is_function(f), do: f.(v)
+  def bind({:ok, a}, f)    when is_function(f), do: {:ok, a}
+  def bind({:error, a}, f) when is_function(f), do: f.(a)
 end

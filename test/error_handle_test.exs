@@ -7,13 +7,13 @@ defmodule ErrorHandlerTest do
 
   test "return" do
     assert return(nil)           == {:error, nil}
-    assert return({:ok, 'v'})    == {:ok, 'v'}
-    assert return({:error, 'v'}) == {:error, 'v'}
-    assert return('v')           == {:error, 'v'}
+    assert return({:ok, "a"})    == {:ok, "a"}
+    assert return({:error, "a"}) == {:error, "a"}
+    assert return("a")           == {:error, "a"}
   end
 
   test "bind" do
-    assert bind({:ok, 'v'},    fn _ -> {:ok, 'f(v)'}    end) == {:ok, 'v'}
-    assert bind({:error, 'v'}, fn _ -> {:error, 'f(v)'} end) == {:error, 'f(v)'}
+    assert bind({:ok, "a"},    fn a -> return "f(#{a})" end) == {:ok, "a"}
+    assert bind({:error, "a"}, fn a -> return "f(#{a})" end) == {:error, "f(a)"}
   end
 end
