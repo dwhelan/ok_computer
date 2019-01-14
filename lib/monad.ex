@@ -35,10 +35,7 @@ defmodule Monad do
 
   defp delegate_return module do
     quote do
-      @behaviour Monad
-
-      defdelegate return(value),  to: unquote(module)
-      defdelegate bind(value, f), to: unquote(module)
+      import unquote(module)
     end
   end
 end

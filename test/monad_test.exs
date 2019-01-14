@@ -33,11 +33,11 @@ defmodule MonadTest do
 
     use Monad, A
 
-    test "should delegate return/1 to module" do
+    test "should import return/1 from module" do
       assert return(:v) == {:a, :v}
     end
 
-    test "should delegate bind/2 to module" do
+    test "should import bind/2 from module" do
       assert bind({:a, 'v'}, fn x -> return "f(#{x})" end) == {:a, "f(v)"}
     end
   end
@@ -47,11 +47,11 @@ defmodule MonadTest do
 
     use Monad, [A, B]
 
-    test "should delegate return/1 to first module" do
+    test "should import return/1 from the first module" do
       assert return(:v) == {:a, :v}
     end
 
-    test "should delegate bind/2 to first module" do
+    test "should import bind/2 from the first module" do
       assert bind({:a, 'v'}, fn x -> return "f(#{x})" end) == {:a, "f(v)"}
     end
   end
