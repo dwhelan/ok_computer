@@ -1,7 +1,6 @@
 defmodule ErrorHandler do
   @behaviour Monad
 
-  @type t :: Error.t
   @type error :: Error.type
 
   @spec return(any) :: error

@@ -1,7 +1,6 @@
 defmodule Maybe do
   @behaviour Monad
 
-  @type t :: maybe
   @type maybe :: {:just, any} | :nothing
 
   @spec return(any) :: maybe

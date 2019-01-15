@@ -6,9 +6,8 @@ defmodule Monad.Laws do
       import Monad.Laws
 
       test "left identity" do
-        f = fn a -> return "f(#{a})" end
-        a = "a"
-        assert return(a) |> bind(f) == f.(a)
+        f = fn _a -> return "f(a)" end
+        assert return("a") |> bind(f) == f.("a")
       end
 
       test "right identity" do
@@ -17,8 +16,8 @@ defmodule Monad.Laws do
       end
 
       test "associativity" do
-        f = fn a -> return "f(#{a})" end
-        g = fn a -> return "g(#{a})" end
+        f = fn _a -> return "f(a)" end
+        g = fn _a -> return "g(a)" end
         m = return "a"
 
         assert m |> bind(f) |> bind(g) == m |> bind(fn a -> f.(a) |> bind(g) end)

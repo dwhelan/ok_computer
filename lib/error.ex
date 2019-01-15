@@ -1,7 +1,6 @@
 defmodule Error do
   @behaviour Monad
 
-  @type t :: error
   @type error :: {:ok, any} | {:error, any}
 
   @spec return(any) :: error
