@@ -16,4 +16,8 @@ defmodule MaybeTest do
     assert bind({:just, "a"}, fn a -> return "f(#{a})" end) == {:just, "f(a)"}
     assert bind(:nothing,     fn a -> return "f(#{a})" end) == :nothing
   end
+
+  test "just" do
+    assert just "a" == {:just, "a"}
+  end
 end
