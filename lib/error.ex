@@ -12,4 +12,10 @@ defmodule Error do
   @spec bind(ok_error, (any -> ok_error)) :: ok_error
   def bind({:ok, a}, f)    when is_function(f), do: {:ok, a}
   def bind({:error, a}, f) when is_function(f), do: f.(a)
+
+  @spec ok(any) :: OkError.ok
+  def ok(a), do: {:ok, a}
+
+  @spec error(any) :: OkError.error
+  def error(a), do: {:error, a}
 end

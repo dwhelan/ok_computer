@@ -16,4 +16,12 @@ defmodule ErrorTest do
     assert bind({:ok, "a"},    fn a -> return "f(#{a})" end) == {:ok, "a"}
     assert bind({:error, "a"}, fn a -> return "f(#{a})" end) == {:error, "f(a)"}
   end
+
+  test "ok" do
+    assert ok "a" == {:ok, "a"}
+  end
+
+  test "error" do
+    assert error "a" == {:error, "a"}
+  end
 end
