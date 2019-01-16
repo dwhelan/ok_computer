@@ -9,15 +9,11 @@ defmodule ErrorTest do
     assert return(nil)           == {:error, nil}
     assert return({:ok, "a"})    == {:ok, "a"}
     assert return({:error, "a"}) == {:error, "a"}
-    assert return("a")           == {:ok, "a"}
+    assert return("a")           == {:error, "a"}
   end
 
   test "bind" do
-    assert bind({:ok, "a"},    fn a -> return "f(#{a})" end) == {:ok, "f(a)"}
-    assert bind({:error, "a"}, fn a -> return "f(#{a})" end) == {:error, "a"}
-  end
-
-  test "ok" do
-    assert ok "a" == return "a"
+    assert bind({:ok, "a"},    fn a -> return "f(#{a})" end) == {:ok, "a"}
+    assert bind({:error, "a"}, fn a -> return "f(#{a})" end) == {:error, "f(a)"}
   end
 end
