@@ -1,9 +1,9 @@
 defmodule Maybe do
   @behaviour Monad
 
+  @type maybe :: just | nothing
   @type just :: {:just, any}
   @type nothing :: :nothing
-  @type maybe :: just | nothing
 
   @spec return(any) :: maybe
   def return(:nil),       do: :nothing
@@ -17,4 +17,7 @@ defmodule Maybe do
 
   @spec just(any) :: just
   def just(a), do: {:just, a}
+
+  @spec nothing() :: nothing
+  def nothing(), do: :nothing
 end

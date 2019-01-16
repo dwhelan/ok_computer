@@ -1,9 +1,9 @@
 defmodule OkError do
   @behaviour Monad
 
+  @type ok_error :: ok | error
   @type ok :: {:ok, any}
   @type error :: {:error, any}
-  @type ok_error :: ok | error
 
   @spec return(any) :: ok_error
   def return(:nil),        do: {:error, nil}

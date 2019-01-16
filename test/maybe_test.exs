@@ -20,4 +20,8 @@ defmodule MaybeTest do
   test "just" do
     assert just "a" == {:just, "a"}
   end
+
+  test "nothing" do
+    assert nothing() == :nothing
+  end
 end
