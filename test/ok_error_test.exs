@@ -18,6 +18,10 @@ defmodule OkErrorTest do
   end
 
   test "ok" do
-    assert ok "a" == return "a"
+    assert ok "a" == {:ok, "a"}
+  end
+
+  test "error" do
+    assert error "a" == {:error, "a"}
   end
 end

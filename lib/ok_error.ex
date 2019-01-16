@@ -16,5 +16,8 @@ defmodule OkError do
   def bind({:error, a}, f) when is_function(f), do: {:error, a}
 
   @spec ok(any) :: ok
-  def ok(a), do: return a
+  def ok(a), do: {:ok, a}
+
+  @spec error(any) :: error
+  def error(a), do: {:error, a}
 end
