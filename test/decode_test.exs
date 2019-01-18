@@ -9,18 +9,20 @@ defmodule EncodeTest do
     import OkError
 
     def encode value do
-      ok value
+      ok {"encode(#{value})", "bytes", TestCodec}
     end
   end
 
   test "return" do
     assert return({:error, "reason"})                == {:error, "reason"}
-    assert return({:ok, {"value", TestCodec, <<>>}}) == {:ok, {"value", TestCodec, <<>>}}
+    assert return({:ok, {"value", <<>>, TestCodec}}) == {:ok, {"value", <<>>, TestCodec}}
   end
 
   test "bind" do
     assert bind({:error, "reason"}, fn a -> return "f(#{a})" end) == {:error, "reason"}
-#    assert bind({:ok, {"value", TestCodec}},    fn a -> return "f(#{a})" end) == {:ok, {"f(value)"}}
+    assert bind({:ok, {"value", <<>>, TestCodec}},    fn {value, bytes, codec} ->
+             {:ok, {"f(#{value})", bytes, codec}}
+           end) == {:ok, {"f(encode(value))", "bytes", TestCodec}}
   end
 
 #  test "ok" do
