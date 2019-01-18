@@ -17,12 +17,19 @@ defmodule EncodeTest do
     assert Encode.return({:ok, {"value", <<>>, TestCodec}}) == ok {"value", <<>>, TestCodec}
   end
 
-  test "bind ok {value, bytes, codec}, f" do
-    map = fn {value, bytes, codec} -> ok {"f(#{value})", bytes, codec} end
-    assert Encode.bind({:ok, {"value", <<>>, TestCodec}}, map) == ok {"f(encode(value))", "bytes", TestCodec}
-  end
+  describe "bind/2 with" do
+    test "an 'ok' map result should encode the mapped value" do
+      map = fn {value, bytes, codec} -> ok {"f(#{value})", bytes, codec} end
+      assert Encode.bind({:ok, {"value", <<>>, TestCodec}}, map) == ok {"encode(f(value))", "bytes", TestCodec}
+    end
 
-  test "bind error {value, bytes, codec}, f" do
-    assert Encode.bind({:error, "reason"}, fn a -> Encode.return "f(#{a})" end) == error "reason"
+    test "an 'ok' from an identity map should encode the original value" do
+      map = fn result -> ok result end
+      assert Encode.bind({:ok, {"value", <<>>, TestCodec}}, map) == ok {"encode(value)", "bytes", TestCodec}
+    end
+
+    test "bind error {value, bytes, codec}, f" do
+      assert Encode.bind({:error, "reason"}, fn a -> Encode.return "f(#{a})" end) == error "reason"
+    end
   end
 end

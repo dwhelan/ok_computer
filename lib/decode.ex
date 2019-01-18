@@ -8,11 +8,13 @@ defmodule Encode do
   def return({:error, reason}),             do: {:error, reason}
 
   @spec bind(ok_error, (any -> ok_error)) :: ok_error
-  def bind({:error, reason}, map) when is_function(map), do: {:error, reason}
-
-  def bind({:ok, {value, _bytes, codec}}, map) when is_function(map) do
-    case apply(codec, :encode, [value]) do
-      {:ok, {value, bytes, codec}} -> map.({value, bytes, codec})
+  def bind({:ok, result}, map) when is_function(map) do
+    with {:ok, {value, _, codec}} = map.(result) do
+      apply codec, :encode, [value]
     end
+  end
+
+  def bind({:error, reason}, map) when is_function(map) do
+    {:error, reason}
   end
 end
