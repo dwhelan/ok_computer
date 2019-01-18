@@ -8,7 +8,7 @@ defmodule EncodeTest do
     import OkError
 
     def encode value do
-      ok {"encode(#{value})", "bytes", OkEncoder}
+      ok {"encode(#{value})", <<"bytes">>, __MODULE__}
     end
   end
 
@@ -20,20 +20,25 @@ defmodule EncodeTest do
     end
   end
 
-  test "return" do
-    assert Encode.return({:error, "reason"})                == error "reason"
-    assert Encode.return({:ok, {"value", <<>>, OkEncoder}}) == ok {"value", <<>>, OkCode}
+  describe "return/1 with" do
+    test "an error" do
+      assert Encode.return({:error, "reason"})                == error "reason"
+    end
+
+    test "an ok" do
+      assert Encode.return({:ok, {"value", <<>>, OkEncoder}}) == ok {"value", <<>>, OkEncoder}
+    end
   end
 
   describe "bind/2 with" do
     test "an 'ok' from 'map' should encode the mapped value" do
       map = fn {value, bytes, codec} -> ok {"map(#{value})", bytes, codec} end
-      assert Encode.bind({:ok, {"value", <<>>, OkEncoder}}, map) == ok {"encode(map(value))", "bytes", OkCode}
+      assert Encode.bind({:ok, {"value", <<>>, OkEncoder}}, map) == ok {"encode(map(value))", <<"bytes">>, OkEncoder}
     end
 
-    test "an 'ok' from an identity 'map' should encode the original value" do
+    test "an input 'error' should return the input error" do
       map = fn result -> ok result end
-      assert Encode.bind({:ok, {"value", <<>>, OkEncoder}}, map) == ok {"encode(value)", "bytes", OkCode}
+      assert Encode.bind({:error, "reason"}, map) == error "reason"
     end
 
     test "an 'error' from 'map' should return the map error" do
@@ -45,9 +50,11 @@ defmodule EncodeTest do
       map = fn result -> ok result end
       assert Encode.bind({:ok, {"value", <<>>, ErrorEncoder}}, map) == error "encode error"
     end
+  end
 
-    test "bind error {value, bytes, codec}, f" do
-      assert Encode.bind({:error, "reason"}, fn a -> Encode.return "f(#{a})" end) == error "reason"
+  describe "ok with" do
+    test "a valid result should return the result in an ok tuple" do
+      assert Encode.ok({"value", <<>>, OkEncoder}) == {:ok, {"value", <<>>, OkEncoder}}
     end
   end
 end
