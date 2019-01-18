@@ -9,8 +9,10 @@ defmodule Encode do
 
   @spec bind(ok_error, (any -> ok_error)) :: ok_error
   def bind({:ok, result}, map) when is_function(map) do
-    with {:ok, {value, _, codec}} = map.(result) do
+    with {:ok, {value, _, codec}} <- map.(result) do
       apply codec, :encode, [value]
+    else
+      error -> error
     end
   end
 
