@@ -18,10 +18,8 @@ defmodule EncodeTest do
   end
 
   test "bind ok {value, bytes, codec}, f" do
-    assert Encode.bind(
-             {:ok, {"value", <<>>, TestCodec}},
-             fn {value, bytes, codec} -> ok {"f(#{value})", bytes, codec} end
-           ) == ok {"f(encode(value))", "bytes", TestCodec}
+    map = fn {value, bytes, codec} -> ok {"f(#{value})", bytes, codec} end
+    assert Encode.bind({:ok, {"value", <<>>, TestCodec}}, map) == ok {"f(encode(value))", "bytes", TestCodec}
   end
 
   test "bind error {value, bytes, codec}, f" do
