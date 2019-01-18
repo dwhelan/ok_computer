@@ -28,7 +28,7 @@ defmodule Encode do
     {:error, reason}
   end
 
-  def ok({value, bytes, codec}) do
+  def ok({value, bytes, codec}) when is_binary(bytes) and is_atom(codec) do
     {:ok, {value, bytes, codec}}
   end
 end

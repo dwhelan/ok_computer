@@ -53,8 +53,20 @@ defmodule EncodeTest do
   end
 
   describe "ok with" do
+    def assert_code_raise error, code do
+      ExUnit.Assertions.assert_raise error, fn -> Code.eval_string(code) end
+    end
+
     test "a valid result should return the result in an ok tuple" do
       assert Encode.ok({"value", <<>>, OkEncoder}) == {:ok, {"value", <<>>, OkEncoder}}
+    end
+
+    test "a non-binary bytes should raise a FunctionClauseError" do
+      assert_code_raise FunctionClauseError, ~s(Encode.ok {"value", :not_binary, OkEncoder})
+    end
+
+    test "a non-atom codec should raise a FunctionClauseError" do
+      assert_code_raise FunctionClauseError, ~s(Encode.ok {"value", <<>>, "not_a_module"})
     end
   end
 end
