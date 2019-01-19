@@ -2,7 +2,7 @@ defmodule Encode do
   @behaviour Monad
 
   @type codec  :: module
-  @type result :: {:ok, {any, binary, codec}} | {:error, any}
+  @type result :: {:ok, {binary, codec, any}} | {:error, any}
 
   @spec return(result) :: result
   def return({:ok, encoding}),    do: ok encoding
@@ -11,7 +11,7 @@ defmodule Encode do
   @spec bind(result, (any -> result)) :: result
   def bind({:ok, encoding}, map) when is_function(map) do
     case map.(encoding) do
-      {:ok, {value, _, codec}} -> apply codec, :encode, [value]
+      {:ok, {_, codec, value}} -> apply codec, :encode, [value]
       error -> error
     end
   end
@@ -21,7 +21,7 @@ defmodule Encode do
   end
 
   @spec ok(any) :: result
-  def ok({value, bytes, codec}) when is_binary(bytes) and is_atom(codec) do
-    {:ok, {value, bytes, codec}}
+  def ok({bytes, codec, value}) when is_binary(bytes) and is_atom(codec) do
+    {:ok, {bytes, codec, value}}
   end
 end
