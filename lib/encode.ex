@@ -1,14 +1,10 @@
 defmodule Encode do
   @behaviour Monad
 
-  @type codec        :: module
-  @type encoding     :: {any, binary, codec}
-  @type ok_encode    :: {:ok, encoding}
-  @type error_encode :: {:error, any}
+  @type codec  :: module
+  @type result :: {:ok, {any, binary, codec}} | {:error, any}
 
-  @type result :: ok_encode | error_encode
-
-  @spec return(any) :: result
+  @spec return(result) :: result
   def return({:ok, encoding}),    do: ok encoding
   def return({:error, reason}), do: {:error, reason}
 

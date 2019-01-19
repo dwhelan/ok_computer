@@ -22,7 +22,7 @@ defmodule EncodeTest do
 
   describe "return/1 with" do
     test "an error" do
-      assert Encode.return({:error, "reason"})                == error "reason"
+      assert Encode.return({:error, "reason"}) == error "reason"
     end
 
     test "an ok" do
@@ -52,7 +52,7 @@ defmodule EncodeTest do
     end
   end
 
-  describe "ok with" do
+  describe "ok/1 with" do
     def assert_code_raise error, code do
       ExUnit.Assertions.assert_raise error, fn -> Code.eval_string(code) end
     end
@@ -61,7 +61,7 @@ defmodule EncodeTest do
       assert Encode.ok({"value", <<>>, OkEncoder}) == {:ok, {"value", <<>>, OkEncoder}}
     end
 
-    test "a non-binary bytes should raise a FunctionClauseError" do
+    test "non-binary bytes should raise a FunctionClauseError" do
       assert_code_raise FunctionClauseError, ~s(Encode.ok {"value", :not_binary, OkEncoder})
     end
 
