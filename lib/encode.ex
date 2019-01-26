@@ -6,10 +6,7 @@ defmodule Encode do
   @type result   :: {:ok, encoding} | {:error, any}
 
   @spec return(result) :: result
-  def return({:error, reason}), do: {:error, reason}
-  def return(nil),              do: {:error, nil}
-  def return({:ok, value}),     do: {:ok, value}
-  def return(value),            do: {:ok, value}
+  defdelegate return(value), to: OkError
 
   @spec bind(result, (any -> result)) :: result
   def bind({:ok, value}, map) when is_function(map) do
