@@ -12,7 +12,7 @@ defmodule EncodeTest do
     import OkError
 
     def encode value do
-      ok {<<"bytes">>, __MODULE__, "encode(#{value})"}
+      ok <<"bytes">>
     end
   end
 
@@ -37,7 +37,7 @@ defmodule EncodeTest do
   describe "bind/2 with" do
     test "an 'ok' from 'map' should encode the mapped value" do
       map = fn {bytes, codec, value} -> ok {bytes, codec, "map(#{value})"} end
-      assert Encode.bind({:ok, {<<>>, OkEncoder, "value"}}, map) == ok {<<"bytes">>, OkEncoder, "encode(map(value))"}
+      assert Encode.bind({:ok, {<<>>, OkEncoder, "value"}}, map) == ok {<<"bytes">>, OkEncoder, "map(value)"}
     end
 
     test "an input 'error' should return the input error" do
