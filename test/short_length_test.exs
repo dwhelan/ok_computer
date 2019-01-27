@@ -8,7 +8,7 @@ defmodule ShortLength do
     end
 
     def decode <<value, _rest::binary>> do
-      error {:invalid_short_length, <<value>>}
+      error :invalid_short_length, <<value>>
     end
   end
 
@@ -20,7 +20,7 @@ defmodule ShortLength do
     end
 
     def encode value do
-      {:error, {:invalid_short_length, value}}
+      error :invalid_short_length, value
     end
   end
 end
@@ -29,19 +29,20 @@ defmodule ShortLength.DecodeTest do
   use ExUnit.Case
 
   import ShortLength.Decode
+  import Codec.Decode
 
   test "decode with no bytes" do
-    assert decode(<<>>) == {:error, {:insufficient_bytes, <<>>}}
+    assert decode(<<>>) == error :insufficient_bytes, <<>>
   end
 
   test "decode a short length" do
-    assert decode(<< 1, "rest">>) == {:ok, { 1, "rest"}}
-    assert decode(<<30, "rest">>) == {:ok, {30, "rest"}}
+    assert decode(<< 1, "rest">>) == ok  1, "rest"
+    assert decode(<<30, "rest">>) == ok 30, "rest"
   end
 
   test "decode a non short length" do
-    assert decode(<< 0, "rest">>) == {:error, {:invalid_short_length, << 0>>}}
-    assert decode(<<31, "rest">>) == {:error, {:invalid_short_length, <<31>>}}
+    assert decode(<< 0, "rest">>) == error :invalid_short_length, << 0>>
+    assert decode(<<31, "rest">>) == error :invalid_short_length, <<31>>
   end
 end
 

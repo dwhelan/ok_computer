@@ -39,12 +39,12 @@ defmodule Byte.EncodeTest do
 
   import Byte.Encode
 
-  test "encode with a byte value" do
+  test "encode with a byte" do
     assert encode(0)   == {:ok, <<0>>}
     assert encode(255) == {:ok, <<255>>}
   end
 
-  test "encode with a non-byte value" do
+  test "encode with a non-byte" do
     assert encode(256) == {:error, {:invalid_byte, 256}}
   end
 end

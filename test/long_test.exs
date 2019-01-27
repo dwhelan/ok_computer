@@ -16,7 +16,7 @@ defmodule Long do
 
     def decode(<<length, bytes::binary>>) when is_short_length(length) and length <= byte_size(bytes) do
       {value_bytes, rest} = String.split_at bytes, length
-      ok {:binary.decode_unsigned(value_bytes), rest}
+      ok :binary.decode_unsigned(value_bytes), rest
     end
   end
 
@@ -29,7 +29,7 @@ defmodule Long do
     end
 
     def encode value do
-      {:error, {:invalid_byte, value}}
+      error :invalid_byte, value
     end
   end
 end

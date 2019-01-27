@@ -21,6 +21,14 @@ end
 
 defmodule Codec do
   defmodule Encode do
+    def ok value do
+      OkError.ok value
+    end
+
+    def error reason, value do
+      OkError.error {reason, value}
+    end
+
     #  def map({:error, reason}, _) do
     #    {:error, reason}
     #  end
@@ -31,22 +39,23 @@ defmodule Codec do
     defmacro __using__ _ do
       quote do
         import DataTypes
-        import OkError
+        import Encode
       end
     end
   end
 
   defmodule Decode do
-    import OkError
-
     def ok value, rest do
-      ok {value, rest}
+      OkError.ok {value, rest}
+    end
+
+    def error reason, value do
+      OkError.error {reason, value}
     end
 
     defmacro __using__ _ do
       quote do
         import DataTypes
-        import OkError
         import Decode
 
         def decode <<>> do
