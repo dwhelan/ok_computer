@@ -1,22 +1,23 @@
-defmodule Encode do
-  import OkError
+defmodule Codec do
+  defmodule Encode do
+    #  def map({:error, reason}, _) do
+    #    {:error, reason}
+    #  end
+    #
+    #  def map({:ok, value}, f) when is_function(f) do
+    #    value |> f.() |> return
+    #  end
+  end
 
-#  def map({:error, reason}, _) do
-#    {:error, reason}
-#  end
-#
-#  def map({:ok, value}, f) when is_function(f) do
-#    value |> f.() |> return
-#  end
-end
+  defmodule Decode do
 
-defmodule Decode do
-
-  defmacro __using__ _ do
-    quote do
-      def decode <<>> do
-        {:error, {:insufficient_bytes, <<>>}}
+    defmacro __using__ _ do
+      quote do
+        def decode <<>> do
+          {:error, {:insufficient_bytes, <<>>}}
+        end
       end
     end
   end
 end
+

@@ -1,8 +1,6 @@
 defmodule Byte do
   defmodule Decode do
-    def decode <<>> do
-      {:error, {:insufficient_bytes, <<>>}}
-    end
+    use Codec.Decode
 
     def decode <<byte, rest::binary>> do
       {:ok, {byte, rest}}
