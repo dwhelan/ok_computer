@@ -22,12 +22,6 @@ defmodule EncodeTest do
     end
   end
 
-  describe "encode/2 with" do
-    test "an 'ok' should return encode result" do
-      assert Encode.encode("value", &OkEncoder.encode/1) == {:ok, <<"bytes">>}
-    end
-  end
-
   describe "map/2 with" do
     test "an 'ok' should map the value" do
       map = fn value -> String.upcase(value) end

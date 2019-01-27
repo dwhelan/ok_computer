@@ -7,8 +7,8 @@ defmodule OkError do
 
   @spec return(any) :: ok_error
   def return(:nil),        do: {:error, nil}
-  def return({:ok, a}),    do: {:ok, a}
   def return({:error, a}), do: {:error, a}
+  def return({:ok, a}),    do: {:ok, a}
   def return(a),           do: {:ok, a}
 
   @spec bind(ok_error, (any -> ok_error)) :: ok_error
