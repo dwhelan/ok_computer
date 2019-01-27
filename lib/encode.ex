@@ -1,13 +1,13 @@
 defmodule Encode do
-  require OkError
+  import OkError
 
-  def map({:ok, value}, f) when is_function(f) do
-    value |> f.() |> OkError.return
-  end
-
-  def map({:error, reason}, f) when is_function(f) do
-    {:error, reason}
-  end
+#  def map({:error, reason}, _) do
+#    {:error, reason}
+#  end
+#
+#  def map({:ok, value}, f) when is_function(f) do
+#    value |> f.() |> return
+#  end
 end
 
 defmodule Decode do
@@ -15,7 +15,7 @@ defmodule Decode do
   defmacro __using__ _ do
     quote do
       def decode <<>> do
-        {:error, :insufficient_bytes}
+        {:error, {:insufficient_bytes, <<>>}}
       end
     end
   end
