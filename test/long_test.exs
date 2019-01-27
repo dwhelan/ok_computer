@@ -14,9 +14,17 @@ defmodule Long do
   defmodule Decode do
     use Codec.Decode
 
-    def decode(<<length, bytes::binary>>) when is_short_length(length) and length <= byte_size(bytes) do
-      {value_bytes, rest} = String.split_at bytes, length
+    def decode(<<length, rest::binary>>) when is_short_length(length) and length <= byte_size(rest) do
+      {value_bytes, rest} = String.split_at rest, length
       ok :binary.decode_unsigned(value_bytes), rest
+    end
+
+    def decode(bytes = <<length, _rest::binary>>) when is_short_length(length) do
+      error :insufficient_bytes, bytes
+    end
+
+    def decode(<<length, _bytes::binary>>) do
+      error :invalid_short_length, <<length>>
     end
   end
 
@@ -60,19 +68,34 @@ defmodule Long.DecodeTest do
   use ExUnit.Case
 
   import Long.Decode
+  import Codec.Decode
+  import DataTypes
 
   test "decode with no bytes" do
-    assert decode(<<>>) == {:error, {:insufficient_bytes, <<>>}}
+    assert decode(<<>>) == error :insufficient_bytes, <<>>
   end
 
   test "decode a long with one data byte" do
-    assert decode(<< 1, 0, "rest">>) == {:ok, {0, <<"rest">>}}
-    assert decode(<< 1, 255, "rest">>) == {:ok, {255, <<"rest">>}}
+    assert decode(<< 1, 0,   "rest">>) == ok 0,   <<"rest">>
+    assert decode(<< 1, 255, "rest">>) == ok 255, <<"rest">>
   end
 
   test "decode a long with two data bytes" do
-    assert decode(<< 2,   1,   0, "rest">>) == {:ok, {   256, <<"rest">>}}
-    assert decode(<< 2, 255, 255, "rest">>) == {:ok, {65_535, <<"rest">>}}
+    assert decode(<< 2, 1,   0,   "rest">>) == ok 256,    <<"rest">>
+    assert decode(<< 2, 255, 255, "rest">>) == ok 65_535, <<"rest">>
+  end
+
+  test "decode a long with 30 data bytes" do
+    assert decode(max_long_bytes() <> "rest") == ok max_long(), <<"rest">>
+  end
+
+  test "decode when length is invalid" do
+    assert decode(<<0>>) == error :invalid_short_length, <<0>>
+    assert decode(<<31>>) == error :invalid_short_length, <<31>>
+  end
+
+  test "decode with insufficient bytes" do
+    assert decode(<<2, 0>>) == error :insufficient_bytes, <<2, 0>>
   end
 end
 

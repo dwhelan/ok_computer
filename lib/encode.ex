@@ -5,6 +5,10 @@ defmodule DataTypes do
     end
   end
 
+  defmacro is_byte value do
+    is_integer? value, 0, 255
+  end
+
   defmacro is_short_length value do
     is_integer? value, 1, 30
   end
@@ -12,6 +16,10 @@ defmodule DataTypes do
   def max_long do
     # 30 0xffs
     0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  end
+
+  def max_long_bytes do
+    <<30, max_long()::240>>
   end
 
   defmacro is_long value do
@@ -49,8 +57,8 @@ defmodule Codec do
       OkError.ok {value, rest}
     end
 
-    def error reason, value do
-      OkError.error {reason, value}
+    def error reason, bytes do
+      OkError.error {reason, bytes}
     end
 
     defmacro __using__ _ do

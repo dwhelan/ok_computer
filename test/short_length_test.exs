@@ -36,12 +36,12 @@ defmodule ShortLength.DecodeTest do
   end
 
   test "decode a short length" do
-    assert decode(<< 1, "rest">>) == ok  1, "rest"
+    assert decode(<<1,  "rest">>) == ok 1,  "rest"
     assert decode(<<30, "rest">>) == ok 30, "rest"
   end
 
   test "decode a non short length" do
-    assert decode(<< 0, "rest">>) == error :invalid_short_length, << 0>>
+    assert decode(<<0,  "rest">>) == error :invalid_short_length, <<0>>
     assert decode(<<31, "rest">>) == error :invalid_short_length, <<31>>
   end
 end
@@ -50,14 +50,15 @@ defmodule ShortLength.EncodeTest do
   use ExUnit.Case
 
   import ShortLength.Encode
+  import Codec.Encode
 
   test "encode a short length" do
-    assert encode(1)  == {:ok, <<1>>}
-    assert encode(30) == {:ok, <<30>>}
+    assert encode(1)  == ok <<1>>
+    assert encode(30) == ok <<30>>
   end
 
   test "encode a non short length" do
-    assert encode(0)  == {:error, {:invalid_short_length, 0}}
-    assert encode(31) == {:error, {:invalid_short_length, 31}}
+    assert encode(0)  == error :invalid_short_length, 0
+    assert encode(31) == error :invalid_short_length, 31
   end
 end
