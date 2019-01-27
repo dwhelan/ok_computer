@@ -37,11 +37,17 @@ defmodule Codec do
   end
 
   defmodule Decode do
+    import OkError
+
+    def ok value, rest do
+      ok {value, rest}
+    end
 
     defmacro __using__ _ do
       quote do
         import DataTypes
         import OkError
+        import Decode
 
         def decode <<>> do
           {:error, {:insufficient_bytes, <<>>}}
