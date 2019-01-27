@@ -11,10 +11,12 @@ defmodule Encode do
 end
 
 defmodule Decode do
-  require OkError
 
-#  def decode f, bytes do
-#    value |> f.() |> OkError.return
-#
-#  end
+  defmacro __using__ _ do
+    quote do
+      def decode <<>> do
+        {:error, :insufficient_bytes}
+      end
+    end
+  end
 end
