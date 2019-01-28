@@ -15,7 +15,15 @@ defmodule Long do
     use Codec.Decode
 
     def decode bytes do
-      bytes |> ShortLength.Decode.decode |> bind(&to_unsigned/1)
+      bytes |> ShortLength.Decode.decode |> bind(&check_length/1) |> bind(&to_unsigned/1)
+    end
+
+    defp check_length {0, bytes} do
+      error :long_must_have_at_least_one_data_byte, <<0>> <> bytes, 0
+    end
+
+    defp check_length {length, bytes} do
+      ok length, bytes
     end
 
     defp to_unsigned {length, bytes} do
@@ -51,6 +59,10 @@ defmodule Long.DecodeTest do
 
   test "decode with insufficient bytes" do
     assert decode(<<1>>) == error :insufficient_bytes_for_short_length, <<1>>, 1
+  end
+
+  test "decode with a length of 0 bytes" do
+    assert decode(<<0>>) == error :long_must_have_at_least_one_data_byte, <<0>>, 0
   end
 
   test "decode a one byte long" do
