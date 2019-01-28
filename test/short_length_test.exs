@@ -19,20 +19,20 @@ defmodule ShortLength do
   defmodule Encode do
     use Codec.Encode
 
-    def prepend(bytes) when is_binary(bytes) and byte_size(bytes) <= 30 do
-      ok <<byte_size(bytes)>> <> bytes
-    end
-
-    def prepend(bytes) when is_binary(bytes) do
-      error :short_length_cannot_exceed_30_bytes, bytes
-    end
-
     def encode(value) when is_short_length(value) do
       ok <<value>>
     end
 
     def encode value do
       error :invalid_short_length, value
+    end
+
+    def prepend(bytes) when is_binary(bytes) and is_short_length(byte_size bytes) do
+      ok <<byte_size(bytes)>> <> bytes
+    end
+
+    def prepend(bytes) when is_binary(bytes) do
+      error :short_length_cannot_exceed_30_bytes, bytes
     end
   end
 end
@@ -51,7 +51,7 @@ defmodule ShortLength.DecodeTest do
   @thirty_chars String.duplicate("a", 30)
 
   test "decode a short length with sufficient bytes" do
-    assert decode(<<1,  "rest">>)        == ok 1,  "rest"
+    assert decode(<<0,  "rest">>)        == ok 0,  "rest"
     assert decode(<<30, @thirty_chars>>) == ok 30, @thirty_chars
   end
 
@@ -60,7 +60,6 @@ defmodule ShortLength.DecodeTest do
   end
 
   test "decode a non short length" do
-    assert decode(<<0,  "rest">>) == error :invalid_short_length, <<0>>
     assert decode(<<31, "rest">>) == error :invalid_short_length, <<31>>
   end
 end
@@ -78,7 +77,6 @@ defmodule ShortLength.EncodeTest do
   end
 
   test "encode a non short length" do
-    assert encode(0)  == error :invalid_short_length, 0
     assert encode(31) == error :invalid_short_length, 31
   end
 
@@ -86,6 +84,8 @@ defmodule ShortLength.EncodeTest do
     @thirty_chars String.duplicate("a", 30)
 
     test "with valid values" do
+      import DataTypes
+      IO.inspect is_short_length("")
       assert prepend("")            == ok <<0>>
       assert prepend("a")           == ok <<1, "a">>
       assert prepend(@thirty_chars) == ok <<30>> <> @thirty_chars
