@@ -27,23 +27,19 @@ defmodule DataTypes do
   end
 end
 
-defmodule Codec do
+defmodule Codec.Encode do
+  def error code, value do
+    OkError.error code: code, value: value
+  end
+
+  def error code, bytes, value do
+    OkError.error code: code, bytes: bytes, value: value
+  end
+
   defmacro __using__ _ do
     quote do
       import DataTypes
       import OkError
-    end
-  end
-end
-
-defmodule Codec.Encode do
-  def error reason, value do
-    OkError.error {reason, value}
-  end
-
-  defmacro __using__ _ do
-    quote do
-      use Codec
       import Codec.Encode
     end
   end
@@ -54,17 +50,22 @@ defmodule Codec.Decode do
     OkError.ok {value, rest}
   end
 
-  def error reason, bytes do
-    OkError.error {reason, bytes}
+  def error code, bytes do
+    OkError.error code: code, bytes: bytes
+  end
+
+  def error code, bytes, value do
+    OkError.error code: code, bytes: bytes, value: value
   end
 
   defmacro __using__ _ do
     quote do
-      use Codec
+      import DataTypes
+      import OkError
       import Codec.Decode
 
       def decode <<>> do
-        {:error, {:insufficient_bytes, <<>>}}
+        error :insufficient_bytes, <<>>
       end
     end
   end

@@ -41,14 +41,16 @@ defmodule Long do
 end
 
 defmodule Long.DecodeTest do
-  use ExUnit.Case
+  use DecodeTest
 
   import Long.Decode
-  import Codec.Decode
-  import DataTypes
 
   test "decode with no bytes" do
     assert decode(<<>>) == error :insufficient_bytes, <<>>
+  end
+
+  test "decode with insufficient bytes" do
+    assert decode(<<1>>) == error :insufficient_bytes_for_short_length, <<1>>, 1
   end
 
   test "decode a one byte long" do
@@ -67,12 +69,9 @@ defmodule Long.DecodeTest do
 end
 
 defmodule Long.EncodeTest do
-  use ExUnit.Case
+  use EncodeTest
 
   import Long.Encode
-  import Codec.Encode
-  import DataTypes
-  import OkError
 
   test "encode a one byte long" do
     assert encode(0)   == ok <<1, 0>>

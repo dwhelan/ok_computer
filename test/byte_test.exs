@@ -10,8 +10,8 @@ defmodule Byte do
   defmodule Encode do
     use Codec.Encode
 
-    def encode(value) when is_byte(value) do
-      ok <<value>>
+    def encode(byte) when is_byte(byte) do
+      ok <<byte>>
     end
 
     def encode value do
@@ -21,10 +21,9 @@ defmodule Byte do
 end
 
 defmodule Byte.DecodeTest do
-  use ExUnit.Case
+  use DecodeTest
 
   import Byte.Decode
-  import Codec.Decode
 
   test "decode with no bytes" do
     assert decode(<<>>) == error :insufficient_bytes, <<>>
@@ -37,11 +36,9 @@ defmodule Byte.DecodeTest do
 end
 
 defmodule Byte.EncodeTest do
-  use ExUnit.Case
+  use EncodeTest
 
   import Byte.Encode
-  import Codec.Encode
-  import OkError
 
   test "encode with a byte" do
     assert encode(0)   == ok <<0>>
