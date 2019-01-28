@@ -14,17 +14,18 @@ defmodule Long do
   defmodule Decode do
     use Codec.Decode
 
-    def decode(<<length, rest::binary>>) when is_short_length(length) and length <= byte_size(rest) do
-      {value_bytes, rest} = String.split_at rest, length
-      ok :binary.decode_unsigned(value_bytes), rest
+    def compose(bytes, f, g) do
+      case f.(bytes) do
+        {:ok, value} -> g.(value)
+        error -> error
+      end
     end
 
-    def decode(bytes = <<length, _rest::binary>>) when is_short_length(length) do
-      error :insufficient_bytes, bytes
-    end
-
-    def decode(<<length, _bytes::binary>>) do
-      error :invalid_short_length, <<length>>
+    def decode(bytes) do
+      compose(bytes, &ShortLength.Decode.decode/1, fn {length, bytes} ->
+        {long_bytes, rest} = bytes |> String.split_at(length)
+        ok :binary.decode_unsigned(long_bytes), rest
+      end)
     end
   end
 
@@ -32,8 +33,7 @@ defmodule Long do
     use Codec.Encode
 
     def encode(value) when is_long(value) do
-      bytes = :binary.encode_unsigned value
-      ok <<byte_size(bytes)>> <> bytes
+      value |> :binary.encode_unsigned |> ShortLength.Encode.prepend
     end
 
     def encode value do
@@ -65,15 +65,6 @@ defmodule Long.DecodeTest do
 
   test "decode max long" do
     assert decode(max_long_bytes() <> "rest") == ok max_long(), <<"rest">>
-  end
-
-  test "decode when length is invalid" do
-    assert decode(<<0>>)  == error :invalid_short_length, <<0>>
-    assert decode(<<31>>) == error :invalid_short_length, <<31>>
-  end
-
-  test "decode with insufficient bytes" do
-    assert decode(<<2, 0>>) == error :insufficient_bytes, <<2, 0>>
   end
 end
 

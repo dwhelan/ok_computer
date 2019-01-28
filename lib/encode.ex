@@ -61,6 +61,10 @@ defmodule Codec do
       OkError.error {reason, bytes}
     end
 
+    def error details do
+      OkError.error details
+    end
+
     defmacro __using__ _ do
       quote do
         import DataTypes
