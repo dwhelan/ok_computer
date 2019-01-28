@@ -3,28 +3,28 @@ defmodule ShortLength do
   defmodule Decode do
     use Codec.Decode
 
-    def decode(<<length, bytes::binary>>) when is_short_length(length) and length <= byte_size(bytes) do
-      ok length, bytes
+    def decode(<<length, rest::binary>>) when is_short_length(length) and length <= byte_size(rest) do
+      ok length, rest
     end
 
-    def decode(<<length, bytes::binary>>) when is_short_length(length) do
+    def decode(bytes = <<length, _::binary>>) when is_short_length(length) do
       error insufficient_bytes: [length: length, bytes: bytes]
     end
 
-    def decode <<value, _rest::binary>> do
-      error :invalid_short_length, <<value>>
+    def decode bytes = <<length, _::binary>> do
+      error invalid_short_length: [length: length, bytes: bytes]
     end
   end
 
   defmodule Encode do
     use Codec.Encode
 
-    def encode(value) when is_short_length(value) do
-      ok <<value>>
+    def encode(length) when is_short_length(length) do
+      ok <<length>>
     end
 
-    def encode value do
-      error :invalid_short_length, value
+    def encode length do
+      error :invalid_short_length, length
     end
 
     def prepend(bytes) when is_binary(bytes) and is_short_length(byte_size bytes) do
@@ -56,11 +56,11 @@ defmodule ShortLength.DecodeTest do
   end
 
   test "decode a short length with insufficient bytes" do
-    assert decode(<<1>>) == error insufficient_bytes: [length: 1, bytes: ""]
+    assert decode(<<5, "rest">>) == error insufficient_bytes: [length: 5, bytes: <<5, "rest">>]
   end
 
   test "decode a non short length" do
-    assert decode(<<31, "rest">>) == error :invalid_short_length, <<31>>
+    assert decode(<<31, "rest">>) == error invalid_short_length: [length: 31, bytes: <<31, "rest">>]
   end
 end
 
