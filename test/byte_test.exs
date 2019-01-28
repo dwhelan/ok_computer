@@ -2,6 +2,7 @@ defmodule Byte do
   defmodule Decode do
     use Codec.Decode
 
+    @spec decode(binary) :: OkError.ok
     def decode <<byte, rest::binary>> do
       ok byte, rest
     end
@@ -10,10 +11,12 @@ defmodule Byte do
   defmodule Encode do
     use Codec.Encode
 
+    @spec encode(byte) :: OkError.ok
     def encode(byte) when is_byte(byte) do
       ok <<byte>>
     end
 
+    @spec encode(any) :: OkError.error
     def encode value do
       error :invalid_byte, value
     end
