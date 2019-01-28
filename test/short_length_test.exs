@@ -8,11 +8,11 @@ defmodule ShortLength do
     end
 
     def decode(bytes = <<length, _::binary>>) when is_short_length(length) do
-      error insufficient_bytes: [length: length, bytes: bytes]
+      error insufficient_bytes_for_short_length: [value: length, bytes: bytes]
     end
 
     def decode bytes = <<length, _::binary>> do
-      error invalid_short_length: [length: length, bytes: bytes]
+      error invalid_short_length: [value: length, bytes: bytes]
     end
   end
 
@@ -24,7 +24,7 @@ defmodule ShortLength do
     end
 
     def encode length do
-      error :invalid_short_length, length
+      error invalid_short_length: [value: length]
     end
 
     def prepend(bytes) when is_binary(bytes) and is_short_length(byte_size bytes) do
@@ -32,7 +32,7 @@ defmodule ShortLength do
     end
 
     def prepend(bytes) when is_binary(bytes) do
-      error :short_length_cannot_exceed_30_bytes, bytes
+      error short_length_cannot_exceed_30_bytes: [bytes: bytes]
     end
   end
 end
@@ -56,11 +56,11 @@ defmodule ShortLength.DecodeTest do
   end
 
   test "decode a short length with insufficient bytes" do
-    assert decode(<<5, "rest">>) == error insufficient_bytes: [length: 5, bytes: <<5, "rest">>]
+    assert decode(<<5, "rest">>) == error insufficient_bytes_for_short_length: [value: 5, bytes: <<5, "rest">>]
   end
 
   test "decode a non short length" do
-    assert decode(<<31, "rest">>) == error invalid_short_length: [length: 31, bytes: <<31, "rest">>]
+    assert decode(<<31, "rest">>) == error invalid_short_length: [value: 31, bytes: <<31, "rest">>]
   end
 end
 
@@ -77,7 +77,7 @@ defmodule ShortLength.EncodeTest do
   end
 
   test "encode a non short length" do
-    assert encode(31) == error :invalid_short_length, 31
+    assert encode(31) == error invalid_short_length: [value: 31]
   end
 
   describe "prepend" do
@@ -94,7 +94,7 @@ defmodule ShortLength.EncodeTest do
     @thirty_one_chars String.duplicate("a", 31)
 
     test "with too many bytes" do
-      assert prepend(@thirty_one_chars) == error :short_length_cannot_exceed_30_bytes, @thirty_one_chars
+      assert prepend(@thirty_one_chars) == error short_length_cannot_exceed_30_bytes: [bytes: @thirty_one_chars]
     end
   end
 end
