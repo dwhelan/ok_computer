@@ -42,6 +42,7 @@ defmodule ShortLength.DecodeTest do
 
   import ShortLength.Decode
   import Codec.Decode
+  import OkError
 
   test "decode with no bytes" do
     assert decode(<<>>) == error :insufficient_bytes, <<>>
@@ -69,6 +70,7 @@ defmodule ShortLength.EncodeTest do
 
   import ShortLength.Encode
   import Codec.Encode
+  import OkError
 
   test "encode a short length" do
     assert encode(1)  == ok <<1>>

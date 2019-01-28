@@ -14,18 +14,16 @@ defmodule Long do
   defmodule Decode do
     use Codec.Decode
 
-    def compose(bytes, f, g) do
-      case f.(bytes) do
-        {:ok, value} -> g.(value)
-        error -> error
-      end
+    def decode bytes do
+      bytes |> ShortLength.Decode.decode |> bind(&to_unsigned/1)
     end
 
-    def decode(bytes) do
-      compose(bytes, &ShortLength.Decode.decode/1, fn {length, bytes} ->
-        {long_bytes, rest} = bytes |> String.split_at(length)
-        ok :binary.decode_unsigned(long_bytes), rest
-      end)
+    defp to_unsigned {length, bytes} do
+      bytes |> String.split_at(length) |> decode_long
+    end
+
+    defp decode_long {long_bytes, rest} do
+      ok :binary.decode_unsigned(long_bytes), rest
     end
   end
 
@@ -74,6 +72,7 @@ defmodule Long.EncodeTest do
   import Long.Encode
   import Codec.Encode
   import DataTypes
+  import OkError
 
   test "encode a one byte long" do
     assert encode(0)   == ok <<1, 0>>

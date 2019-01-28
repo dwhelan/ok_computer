@@ -41,6 +41,7 @@ defmodule Byte.EncodeTest do
 
   import Byte.Encode
   import Codec.Encode
+  import OkError
 
   test "encode with a byte" do
     assert encode(0)   == ok <<0>>
