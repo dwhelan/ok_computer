@@ -37,33 +37,11 @@ defmodule Long do
     end
 
     def encode value do
-      error :invalid_byte, value
+      error :invalid_long, value
     end
   end
 end
 
-#
-#      examples: [
-#        { << l(1), 0 >>,        0      },
-#        { << l(1), 255 >>,      255    },
-#        { << l(2), 1,   0 >>,   256    },
-#        { << l(2), 255, 255 >>, 65_535 },
-#
-#        { max_long_bytes(), max_long() }
-#      ],
-#
-#      decode_errors: [
-#        { <<0>>,  :invalid_long },
-#        { <<1>>,  :invalid_long },
-#        { <<31>>, :invalid_long },
-#      ],
-#
-#      encode_errors: [
-#        { -1,              :invalid_long },
-#        { max_long()+1,    :invalid_long },
-#        { :not_an_integer, :invalid_long },
-#      ]
-#
 defmodule Long.DecodeTest do
   use ExUnit.Case
 
@@ -75,22 +53,22 @@ defmodule Long.DecodeTest do
     assert decode(<<>>) == error :insufficient_bytes, <<>>
   end
 
-  test "decode a long with one data byte" do
+  test "decode a one byte long" do
     assert decode(<< 1, 0,   "rest">>) == ok 0,   <<"rest">>
     assert decode(<< 1, 255, "rest">>) == ok 255, <<"rest">>
   end
 
-  test "decode a long with two data bytes" do
+  test "decode a two byte long" do
     assert decode(<< 2, 1,   0,   "rest">>) == ok 256,    <<"rest">>
     assert decode(<< 2, 255, 255, "rest">>) == ok 65_535, <<"rest">>
   end
 
-  test "decode a long with 30 data bytes" do
+  test "decode max long" do
     assert decode(max_long_bytes() <> "rest") == ok max_long(), <<"rest">>
   end
 
   test "decode when length is invalid" do
-    assert decode(<<0>>) == error :invalid_short_length, <<0>>
+    assert decode(<<0>>)  == error :invalid_short_length, <<0>>
     assert decode(<<31>>) == error :invalid_short_length, <<31>>
   end
 
@@ -102,14 +80,26 @@ end
 defmodule Long.EncodeTest do
   use ExUnit.Case
 
-  import Byte.Encode
+  import Long.Encode
+  import Codec.Encode
+  import DataTypes
 
-  test "encode with a byte value" do
-    assert encode(0)   == {:ok, <<0>>}
-    assert encode(255) == {:ok, <<255>>}
+  test "encode a one byte long" do
+    assert encode(0)   == ok <<1, 0>>
+    assert encode(255) == ok <<1, 255>>
   end
 
-  test "encode with a non-byte value" do
-    assert encode(256) == {:error, {:invalid_byte, 256}}
+  test "encode a two byte long" do
+    assert encode(256)    == ok <<2, 1,   0>>
+    assert encode(65_535) == ok <<2, 255, 255>>
+  end
+
+  test "encode max long" do
+    assert encode(max_long()) == ok max_long_bytes()
+  end
+
+  test "encode value out of range" do
+    assert encode(-1)           == error :invalid_long, -1
+    assert encode(max_long()+1) == error :invalid_long, max_long()+1
   end
 end

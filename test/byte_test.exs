@@ -27,7 +27,7 @@ defmodule Byte.DecodeTest do
   import Codec.Decode
 
   test "decode with no bytes" do
-    assert decode(<<>>) == {:error, {:insufficient_bytes, <<>>}}
+    assert decode(<<>>) == error :insufficient_bytes, <<>>
   end
 
   test "decode with bytes" do
