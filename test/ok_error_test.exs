@@ -28,23 +28,30 @@ defmodule OkErrorTest do
 
   describe "~> operator" do
     def upcase a do
+      String.upcase(a)
+    end
+
+    def ok_upcase a do
       ok String.upcase(a)
     end
 
     test "anonymous function" do
       assert ok("a") ~> fn a -> ok String.upcase(a) end == ok "A"
+      assert ok("a") ~> fn a ->    String.upcase(a) end == ok "A"
     end
 
     test "captured function" do
-      assert ok("a") ~> (&upcase/1) == ok "A"
+      assert ok("a") ~> (&ok_upcase/1) == ok "A"
+      assert ok("a") ~> (&upcase/1)    == ok "A"
     end
 
     test "local function" do
-      assert ok("a") ~> upcase == ok "A"
+      assert ok("a") ~> ok_upcase == ok "A"
+      assert ok("a") ~> upcase    == ok "A"
     end
 
     test "module function" do
-      assert ok("a") ~> __MODULE__.upcase == ok "A"
+      assert ok("a") ~> __MODULE__.ok_upcase == ok "A"
     end
 
     test "anonymous function call" do
