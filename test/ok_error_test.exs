@@ -25,8 +25,9 @@ defmodule OkErrorTest do
     assert error "a" == {:error, "a"}
   end
 
-
   describe "~> operator" do
+    import Monad.Operators
+
     def upcase a do
       String.upcase(a)
     end
