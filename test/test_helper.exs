@@ -1,6 +1,6 @@
 ExUnit.start()
 
-defmodule CodecTest do
+defmodule OkComputerTest do
   def assert_code_raise error, code do
     ExUnit.Assertions.assert_raise error, fn -> Code.eval_string(code) end
   end

@@ -14,6 +14,10 @@ defmodule Long do
   defmodule Decode do
     use Codec.Decode
 
+    def lhs ~> rhs do
+      lhs |> bind(rhs)
+    end
+
     def decode bytes do
       bytes |> ShortLength.Decode.decode |> bind(&check_length/1) |> bind(&to_unsigned/1)
     end

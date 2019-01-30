@@ -1,6 +1,6 @@
 defmodule OkErrorTest do
   use ExUnit.Case
-
+  import OkComputerTest
   import OkError
 
   use Monad.Laws
@@ -23,5 +23,36 @@ defmodule OkErrorTest do
 
   test "error" do
     assert error "a" == {:error, "a"}
+  end
+
+
+  describe "~> operator" do
+    def upcase a do
+      ok String.upcase(a)
+    end
+
+    test "anonymous function" do
+      assert ok("a") ~> fn a -> ok String.upcase(a) end == ok "A"
+    end
+
+    test "captured function" do
+      assert ok("a") ~> (&upcase/1) == ok "A"
+    end
+
+    test "local function" do
+      assert ok("a") ~> upcase == ok "A"
+    end
+
+    test "module function" do
+      assert ok("a") ~> __MODULE__.upcase == ok "A"
+    end
+
+    test "anonymous function call" do
+      assert_code_raise CompileError, ~s[ok("a") ~> f == ok "A"]
+    end
+
+    test "called anonymous function" do
+      assert_code_raise CompileError, ~s[ok("a") ~> (fn a -> ok String.upcase(a) end).()]
+    end
   end
 end
