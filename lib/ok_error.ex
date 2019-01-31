@@ -20,4 +20,9 @@ defmodule OkError do
 
   @spec error(any) :: error
   def error(a), do: {:error, a}
+
+  def bind_first(a, fs) when is_list(fs), do: Enum.reduce_while(fs, nil, fn f, _ -> f.(a) |> halt_if_ok end)
+
+  defp halt_if_ok({:ok, a}),    do: {:halt, {:ok, a}}
+  defp halt_if_ok({:error, a}), do: {:cont, {:error, a}}
 end
