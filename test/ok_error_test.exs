@@ -4,6 +4,14 @@ defmodule OkErrorTest do
 
   use Monad.Laws
 
+  test "ok" do
+    assert ok "a" == {:ok, "a"}
+  end
+
+  test "error" do
+    assert error "a" == {:error, "a"}
+  end
+
   test "return" do
     assert return(nil)           == {:error, nil}
     assert return({:error, "a"}) == {:error, "a"}
@@ -12,18 +20,15 @@ defmodule OkErrorTest do
   end
 
   test "bind" do
-    assert bind({:ok, "a"},    fn a -> ok "f(#{a})" end) == {:ok, "f(a)"}
-    assert bind({:error, "a"}, fn a -> ok "f(#{a})" end) == {:error, "a"}
+    assert bind({:ok, "a"},    fn a -> ok "f(#{a})" end)    == {:ok, "f(a)"}
+    assert bind({:error, "a"}, fn a -> error "f(#{a})" end) == {:error, "a"}
   end
 
-  test "ok" do
-    assert ok "a" == {:ok, "a"}
+  test "bind_error" do
+    assert bind_error({:ok, "a"},    fn a -> ok "f(#{a})" end)    == {:ok, "a"}
+    assert bind_error({:error, "a"}, fn a -> error "f(#{a})" end) == {:error, "f(a)"}
   end
 
-  test "error" do
-    assert error "a" == {:error, "a"}
-  end
-  
   describe "bind_first" do
     test "with single ok should return its result" do
       assert bind_first("a", [fn _ -> ok "A" end]) == {:ok, "A"}
