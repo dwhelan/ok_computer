@@ -36,18 +36,19 @@ defmodule OkError do
 
   defp halt_if_ok({:ok, a}),    do: {:halt, {:ok, a}}
   defp halt_if_ok({:error, a}), do: {:cont, {:error, a}}
+end
 
-  defmodule Operators do
-    defmacro a ~>> f  do
-      pipe_bind a, f
-    end
+defmodule OkError.Operators do
+  defmacro a ~>> f  do
+    pipe_bind a, f
+  end
 
-    defp pipe_bind(a, f = {atom, _, _}) when atom in [:fn, :&] do
-      quote location: :keep, do: unquote(a) |> OkError.bind_error(unquote f) |> OkError.return_error
-    end
+  defp pipe_bind(a, f = {atom, _, _}) when atom in [:fn, :&] do
+    quote location: :keep, do: unquote(a) |> OkError.bind_error(unquote f) |> OkError.return_error
+  end
 
-    defp pipe_bind a, f do
-      quote location: :keep, do: unquote(a) |> OkError.bind_error(&unquote(f)/1) |> OkError.return_error
-    end
+  defp pipe_bind a, f do
+    quote location: :keep, do: unquote(a) |> OkError.bind_error(&unquote(f)/1) |> OkError.return_error
   end
 end
+
