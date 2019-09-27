@@ -44,11 +44,21 @@ defmodule OkError.Operators do
   end
 
   defp pipe_bind(a, f = {atom, _, _}) when atom in [:fn, :&] do
-    quote location: :keep, do: unquote(a) |> OkError.bind_error(unquote f) |> OkError.return_error
+    quote location: :keep do
+      unquote(a)
+      |> OkError.return
+      |> OkError.bind_error(unquote f)
+      |> OkError.return_error
+    end
   end
 
   defp pipe_bind a, f do
-    quote location: :keep, do: unquote(a) |> OkError.bind_error(&unquote(f)/1) |> OkError.return_error
+    quote location: :keep do
+      unquote(a)
+      |> OkError.return
+      |> OkError.bind_error(&unquote(f)/1)
+      |> OkError.return_error
+    end
   end
 end
 

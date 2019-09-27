@@ -10,11 +10,21 @@ defmodule Monad do
     end
 
     defp pipe_bind(a, f = {atom, _, _}) when atom in [:fn, :&] do
-      quote location: :keep, do: unquote(a) |> bind(unquote f) |> return
+      quote location: :keep do
+        unquote(a)
+        |> return
+        |> bind(unquote f)
+        |> return
+      end
     end
 
     defp pipe_bind a, f do
-      quote location: :keep, do: unquote(a) |> bind(&unquote(f)/1) |> return
+      quote location: :keep do
+        unquote(a)
+        |> return
+        |> bind(&unquote(f)/1)
+        |> return
+      end
     end
   end
 end
