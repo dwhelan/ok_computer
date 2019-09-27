@@ -48,23 +48,13 @@ defmodule OkComputer.NonNil do
     end
   end
 
-  defmacro case_ok(value, do: [{:->, _, [[left], right]}]) do
-    quote do
-      case unquote(value) do
-        nil -> nil
-        unquote(left) -> unquote(right)
-      end
-    end
-  end
-
-  defmacro case_ok(value, do: [{:->, _, [[left], right]} | tail]) do
+  defmacro case_ok(value, do: do_clauses) do
     quote do
       value = unquote(value)
 
       case value do
         nil -> nil
-        unquote(left) -> unquote(right)
-        _ -> case_ok(value, do: unquote(tail))
+        _ -> case unquote(value), do: unquote(do_clauses)
       end
     end
   end

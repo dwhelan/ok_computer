@@ -70,14 +70,14 @@ defmodule OkComputer.Truthy do
   In the example above if `value` is `nil`, or `false` it will be returned.
   This may be convenient as you don't need to create clauses for `nil` or `false` values.
   """
-  defmacro case_ok(value, do: clauses) do
+  defmacro case_ok(value, do: do_clauses) do
     quote do
       value = unquote(value)
 
       case value do
         nil -> nil
         false -> false
-        _ -> case unquote(value), do: unquote(clauses)
+        _ -> case unquote(value), do: unquote(do_clauses)
       end
     end
   end
