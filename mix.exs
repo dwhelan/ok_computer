@@ -20,8 +20,8 @@ defmodule OkComputer.MixProject do
 
   defp deps do
     [
-      {:mix_test_watch, "~> 0.8",  only: :dev},
-      {:ex_doc,         "~> 0.19", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 0.8", only: :dev},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 
