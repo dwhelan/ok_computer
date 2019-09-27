@@ -6,8 +6,8 @@ defmodule OkComputer.MixProject do
       app: :ok_computer,
       version: "0.1.0",
       name: "ok_computer",
-      description: "Monads and do-syntax for Elixir",
-      source_url: "https://github.com/rmies/monad",
+      description: "Pipes and things to remove conditional logic",
+      source_url: "https://github.com/dwhelan/ok_computer",
       package: package(),
       elixir: "~> 1.7",
       deps: deps()
