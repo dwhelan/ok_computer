@@ -1,9 +1,14 @@
-defmodule OkComputer.Core do
-  defmacro foo do
+defmodule OkComputer.Case do
+end
+
+defmodule OkComputer.Monad do
+  defmacro monad do
     quote do
       import OkComputer.Pipes
+      import OkComputer.Case
 
       def error?(value), do: not ok?(value)
+
       @doc """
       Pipes ok values to case statements.
 

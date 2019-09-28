@@ -2,19 +2,20 @@ defmodule OkComputer.TruthyTest do
   use ExUnit.Case
   import OkComputer.Truthy
   import OkComputer.Pipes
+  import OkComputer.Case
 
   doctest OkComputer.Truthy
 
   test "ok operator" do
-    assert((nil ~> to_string()) == nil)
-    assert((false ~> to_string()) == false)
-    assert((:anything_else ~> to_string()) == "anything_else")
+    assert(nil ~> to_string() == nil)
+    assert(false ~> to_string() == false)
+    assert(:anything_else ~> to_string() == "anything_else")
   end
 
   test "error operator" do
-    assert((nil ~>> to_string()) == "")
-    assert((false ~>> to_string()) == "false")
-    assert((:anything_else ~>> to_string()) == :anything_else)
+    assert(nil ~>> to_string() == "")
+    assert(false ~>> to_string() == "false")
+    assert(:anything_else ~>> to_string() == :anything_else)
   end
 
   test "case_ok" do
