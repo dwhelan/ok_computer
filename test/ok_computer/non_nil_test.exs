@@ -15,13 +15,13 @@ defmodule OkComputer.NonNilTest do
   end
 
   test "case_ok" do
-    f = fn value ->
+    stringify_oks = fn value ->
       case_ok value do
         value -> to_string(value)
       end
     end
 
-    assert f.(nil) == nil
-    assert f.(:anything_else) == "anything_else"
+    assert stringify_oks.(nil) == nil
+    assert stringify_oks.(:anything_else) == "anything_else"
   end
 end

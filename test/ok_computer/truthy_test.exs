@@ -19,14 +19,14 @@ defmodule OkComputer.TruthyTest do
   end
 
   test "case_ok" do
-    f = fn value ->
+    stringify_oks = fn value ->
       case_ok value do
         value -> to_string(value)
       end
     end
 
-    assert f.(nil) == nil
-    assert f.(false) == false
-    assert f.(:anything_else) == "anything_else"
+    assert stringify_oks.(nil) == nil
+    assert stringify_oks.(false) == false
+    assert stringify_oks.(:anything_else) == "anything_else"
   end
 end

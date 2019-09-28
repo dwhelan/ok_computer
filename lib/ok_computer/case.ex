@@ -1,6 +1,6 @@
 defmodule OkComputer.Case do
   @doc """
-  A case statement that only applies to ok values.
+  A case statement that is only applied to ok values.
 
   If `value` is ok, then it will be pattern matched through the `case` statement and the result returned,
   otherwise `value` will be returned.
@@ -13,7 +13,7 @@ defmodule OkComputer.Case do
 
       case ok?(value) do
         true ->
-          case value do
+         case value do
             unquote(clauses)
           end
 
