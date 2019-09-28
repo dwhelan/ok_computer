@@ -1,29 +1,7 @@
 defmodule OkComputer.Core do
-  defmacro left ~> right do
-    quote do
-      value = unquote(left)
-
-      case ok?(value) do
-        true -> unquote(Macro.pipe(left, right, 0))
-        false -> value
-      end
-    end
-  end
-
-  defmacro left ~>> right do
-    quote do
-      value = unquote(left)
-
-      case ok?(value) do
-        true -> value
-        false -> unquote(Macro.pipe(left, right, 0))
-      end
-    end
-  end
-
   defmacro foo do
     quote do
-      import OkComputer.Core
+      import OkComputer.Pipes
 
       def error?(value), do: not ok?(value)
       @doc """
