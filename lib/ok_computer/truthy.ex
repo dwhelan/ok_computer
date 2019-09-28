@@ -11,7 +11,6 @@ defmodule OkComputer.Truthy do
       def ok?(nil), do: false
       def ok?(false), do: false
       def ok?(_), do: true
-
     end
   end
 end
