@@ -6,10 +6,4 @@ defmodule OkComputer.Monad do
       import OkComputer.Case
     end
   end
-
-  defmacro monad do
-    quote do
-      def error?(value), do: not ok?(value)
-    end
-  end
 end

@@ -1,17 +1,17 @@
 defmodule OkComputer.Truthy do
+  def bind(nil, f), do: nil
+  def bind(false, f), do: false
+  def bind(a, f), do: f.(a)
+
   defmacro __using__(opts \\ []) do
     quote do
       use OkComputer.Monad
-
-      monad()
+      import OkComputer.Truthy
 
       def ok?(nil), do: false
       def ok?(false), do: false
       def ok?(_), do: true
 
-      def bind(nil, f), do: nil
-      def bind(false, f), do: false
-      def bind(a, f), do: f.(a)
     end
   end
 end

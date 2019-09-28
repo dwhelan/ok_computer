@@ -18,12 +18,10 @@ defmodule OkComputer.Pipes do
   """
   defmacro left ~> right do
     quote do
-      value = unquote(left)
-
-      case ok?(value) do
-        true -> unquote(Macro.pipe(left, right, 0))
-        false -> value
-      end
+      unquote(left)
+      |> bind(fn value ->
+        unquote(Macro.pipe(left, right, 0))
+      end)
     end
   end
 
@@ -46,9 +44,9 @@ defmodule OkComputer.Pipes do
     quote do
       value = unquote(left)
 
-      case error?(value) do
-        true -> unquote(Macro.pipe(left, right, 0))
-        false -> value
+      case ok?(value) do
+        false -> unquote(Macro.pipe(left, right, 0))
+        true -> value
       end
     end
   end

@@ -3,8 +3,6 @@ defmodule OkComputer.NonNil do
     quote do
       use OkComputer.Monad
 
-      monad()
-
       def ok?(nil), do: false
       def ok?(_), do: true
 
