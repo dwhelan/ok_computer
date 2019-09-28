@@ -6,13 +6,13 @@ defmodule OkComputer.TruthyTest do
 
   doctest OkComputer.Truthy
 
-  test "ok operator" do
+  test "ok pipe" do
     assert(nil ~> to_string() == nil)
     assert(false ~> to_string() == false)
     assert(:anything_else ~> to_string() == "anything_else")
   end
 
-  test "error operator" do
+  test "error pipe" do
     assert(nil ~>> to_string() == "")
     assert(false ~>> to_string() == "false")
     assert(:anything_else ~>> to_string() == :anything_else)
