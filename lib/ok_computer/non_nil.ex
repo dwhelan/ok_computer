@@ -1,6 +1,6 @@
 defmodule OkComputer.NonNil do
   @moduledoc """
-  Pipe operators and macros for non-nil values.
+  A monad that treats `nil` values as errors and everthing else as ok.
   """
   @doc """
   Ok operator that pipes non-`nil` values.
