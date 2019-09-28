@@ -19,11 +19,12 @@ defmodule OkComputer.Truthy do
   """
   defmacro left ~> right do
     quote do
-      if unquote(left) do
-        unquote(Macro.pipe(left, right, 0))
-      else
-        unquote(left)
-      end
+      when_ok(
+        unquote(left),
+        fn value ->
+          unquote(Macro.pipe(left, right, 0))
+        end
+      )
     end
   end
 
@@ -44,11 +45,12 @@ defmodule OkComputer.Truthy do
   """
   defmacro left ~>> right do
     quote do
-      if unquote(left) do
-        unquote(left)
-      else
-        unquote(Macro.pipe(left, right, 0))
-      end
+      when_error(
+        unquote(left),
+        fn value ->
+          unquote(Macro.pipe(left, right, 0))
+        end
+      )
     end
   end
 
@@ -72,13 +74,22 @@ defmodule OkComputer.Truthy do
   """
   defmacro case_ok(value, do: do_clauses) do
     quote do
-      value = unquote(value)
-
-      case value do
-        nil -> nil
-        false -> false
-        _ -> case unquote(value), do: unquote(do_clauses)
-      end
+      when_ok(
+        unquote(value),
+        fn value ->
+          case value do
+            unquote(do_clauses)
+          end
+        end
+      )
     end
   end
+
+  def when_ok(nil, _f), do: nil
+  def when_ok(false, _f), do: false
+  def when_ok(value, f), do: f.(value)
+
+  def when_error(nil, f), do: f.(nil)
+  def when_error(false, f), do: f.(false)
+  def when_error(value, _f), do: value
 end

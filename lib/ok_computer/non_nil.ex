@@ -54,7 +54,7 @@ defmodule OkComputer.NonNil do
 
       case value do
         nil -> nil
-        _ -> case unquote(value), do: unquote(do_clauses)
+        _ -> case value, do: unquote(do_clauses)
       end
     end
   end
