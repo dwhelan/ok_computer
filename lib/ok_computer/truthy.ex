@@ -1,9 +1,7 @@
 defmodule OkComputer.Truthy do
   defmacro __using__(opts \\ []) do
     quote do
-      import OkComputer.Monad
-      import OkComputer.Pipes
-      import OkComputer.Case
+      use OkComputer.Monad
 
       monad()
 
