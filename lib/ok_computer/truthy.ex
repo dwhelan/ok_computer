@@ -1,8 +1,10 @@
-
 defmodule OkComputer.Truthy do
+  import OkComputer.Core
+
   @moduledoc """
   Pipe operators and macros for truthy values.
   """
+
   @doc """
   Ok operator that pipes truthy values (not `nil`,  not `false`).
 
@@ -19,14 +21,7 @@ defmodule OkComputer.Truthy do
       nil
   """
   defmacro left ~> right do
-    quote do
-      when_ok(
-        unquote(left),
-        fn value ->
-          unquote(Macro.pipe(left, right, 0))
-        end
-      )
-    end
+    ok_pipe(left, right, __MODULE__)
   end
 
   @doc """
@@ -45,14 +40,7 @@ defmodule OkComputer.Truthy do
       ""
   """
   defmacro left ~>> right do
-    quote do
-      when_error(
-        unquote(left),
-        fn value ->
-          unquote(Macro.pipe(left, right, 0))
-        end
-      )
-    end
+    error_pipe(left, right, __MODULE__)
   end
 
   @doc """
@@ -74,18 +62,10 @@ defmodule OkComputer.Truthy do
   This may be convenient as you don't need to create clauses for `nil` or `false` values.
   """
   defmacro case_ok(value, do: do_clauses) do
-    OkComputer.Core.case_ok(value, do_clauses, __MODULE__)
+    case_ok(value, do_clauses, __MODULE__)
   end
 
   def ok?(nil), do: false
   def ok?(false), do: false
   def ok?(value), do: true
-
-  def when_ok(nil, _f), do: nil
-  def when_ok(false, _f), do: false
-  def when_ok(value, f), do: f.(value)
-
-  def when_error(nil, f), do: f.(nil)
-  def when_error(false, f), do: f.(false)
-  def when_error(value, _f), do: value
 end
