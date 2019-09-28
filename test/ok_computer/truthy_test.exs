@@ -1,8 +1,6 @@
 defmodule OkComputer.TruthyTest do
   use ExUnit.Case
-  import OkComputer.Truthy
-  import OkComputer.Pipes
-  import OkComputer.Case
+  use OkComputer.Truthy
 
   doctest OkComputer.Truthy
 
@@ -19,14 +17,14 @@ defmodule OkComputer.TruthyTest do
   end
 
   test "case_ok" do
-    stringify_oks = fn value ->
+    stringify = fn value ->
       case_ok value do
         value -> to_string(value)
       end
     end
 
-    assert stringify_oks.(nil) == nil
-    assert stringify_oks.(false) == false
-    assert stringify_oks.(:anything_else) == "anything_else"
+    assert stringify.(nil) == nil
+    assert stringify.(false) == false
+    assert stringify.(:anything_else) == "anything_else"
   end
 end

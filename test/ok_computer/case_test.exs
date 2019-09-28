@@ -5,13 +5,13 @@ defmodule OkComputer.CaseTest do
   def ok?(value), do: value != nil
 
   test "case_ok" do
-    f = fn value ->
+    stringify = fn value ->
       case_ok value do
         value -> to_string(value)
       end
     end
 
-    assert f.(nil) == nil
-    assert f.(:anything_else) == "anything_else"
+    assert stringify.(nil) == nil
+    assert stringify.(:anything_else) == "anything_else"
   end
 end

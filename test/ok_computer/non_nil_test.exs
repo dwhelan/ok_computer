@@ -1,8 +1,6 @@
 defmodule OkComputer.NonNilTest do
   use ExUnit.Case
-  import OkComputer.NonNil
-  import OkComputer.Pipes
-  import OkComputer.Case
+  use OkComputer.NonNil
 
   doctest OkComputer.NonNil
 
