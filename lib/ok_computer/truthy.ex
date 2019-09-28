@@ -1,3 +1,4 @@
+
 defmodule OkComputer.Truthy do
   @moduledoc """
   Pipe operators and macros for truthy values.
@@ -73,17 +74,12 @@ defmodule OkComputer.Truthy do
   This may be convenient as you don't need to create clauses for `nil` or `false` values.
   """
   defmacro case_ok(value, do: do_clauses) do
-    quote do
-      when_ok(
-        unquote(value),
-        fn value ->
-          case value do
-            unquote(do_clauses)
-          end
-        end
-      )
-    end
+    OkComputer.Core.case_ok(value, do_clauses, __MODULE__)
   end
+
+  def ok?(nil), do: false
+  def ok?(false), do: false
+  def ok?(value), do: true
 
   def when_ok(nil, _f), do: nil
   def when_ok(false, _f), do: false
