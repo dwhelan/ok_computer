@@ -1,5 +1,5 @@
 defmodule OkComputer.Core do
-  def ok_pipe(left, right) do
+  defmacro left ~> right do
     quote do
       value = unquote(left)
 
@@ -10,7 +10,7 @@ defmodule OkComputer.Core do
     end
   end
 
-  def error_pipe(left, right) do
+  defmacro left ~>> right do
     quote do
       value = unquote(left)
 
@@ -21,7 +21,38 @@ defmodule OkComputer.Core do
     end
   end
 
-  def case_ok(value, do_clauses) do
+  defmacro foo do
+    quote do
+      import OkComputer.Core
+
+      def error?(value), do: not ok?(value)
+      @doc """
+      Pipes ok values to case statements.
+
+      If `value` is ok, then it will be pattern matched through the `case` statement and the result returned,
+      otherwise `value` will be returned.
+
+      This may be convenient as you don't need to create `case` clauses for error values.
+      """
+      defmacro case_ok(value, do: clauses) do
+        quote do
+          value = unquote(value)
+
+          case ok?(value) do
+            true ->
+              case value do
+                unquote(clauses)
+              end
+
+            false ->
+              value
+          end
+        end
+      end
+    end
+  end
+
+  def case_ok2(value, do_clauses) do
     quote do
       value = unquote(value)
 
@@ -31,7 +62,8 @@ defmodule OkComputer.Core do
             unquote(do_clauses)
           end
 
-        false -> value
+        false ->
+          value
       end
     end
   end

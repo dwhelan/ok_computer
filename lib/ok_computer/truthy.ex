@@ -1,6 +1,8 @@
 defmodule OkComputer.Truthy do
   import OkComputer.Core
 
+  foo()
+
   @moduledoc """
   Pipe operators and macros for truthy values.
   """
@@ -20,9 +22,6 @@ defmodule OkComputer.Truthy do
       iex> nil ~> to_string
       nil
   """
-  defmacro left ~> right do
-    ok_pipe(left, right)
-  end
 
   @doc """
   Error operator that pipes falsey values (`nil` or `false`).
@@ -39,9 +38,6 @@ defmodule OkComputer.Truthy do
       iex> nil ~>> to_string
       ""
   """
-  defmacro left ~>> right do
-    error_pipe(left, right)
-  end
 
   @doc """
   Applies truthy values to a case expression.
@@ -61,9 +57,6 @@ defmodule OkComputer.Truthy do
   In the example above if `value` is `nil`, or `false` it will be returned.
   This may be convenient as you don't need to create clauses for `nil` or `false` values.
   """
-  defmacro case_ok(value, do: do_clauses) do
-    case_ok(value, do_clauses)
-  end
 
   def ok?(nil), do: false
   def ok?(false), do: false
