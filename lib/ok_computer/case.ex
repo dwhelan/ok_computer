@@ -9,17 +9,12 @@ defmodule OkComputer.Case do
   """
   defmacro case_ok(value, do: clauses) do
     quote do
-      value = unquote(value)
-
-      case ok?(value) do
-        true ->
-          case value do
-            unquote(clauses)
-          end
-
-        false ->
-          value
-      end
+      unquote(value)
+      |> bind(fn value ->
+        case(value) do
+          unquote(clauses)
+        end
+      end)
     end
   end
 end

@@ -8,6 +8,10 @@ defmodule OkComputer.Truthy do
       def ok?(nil), do: false
       def ok?(false), do: false
       def ok?(_), do: true
+
+      def bind(nil, f), do: nil
+      def bind(false, f), do: false
+      def bind(a, f), do: f.(a)
     end
   end
 end

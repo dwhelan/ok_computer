@@ -3,6 +3,10 @@ defmodule OkComputer.CaseTest do
   import OkComputer.Case
 
   def ok?(value), do: value != nil
+  def ok?(value), do: value != nil
+
+  def bind(nil, f), do: nil
+  def bind(a, f), do: f.(a)
 
   test "case_ok" do
     stringify = fn value ->
