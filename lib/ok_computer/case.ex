@@ -13,7 +13,7 @@ defmodule OkComputer.Case do
 
       case ok?(value) do
         true ->
-         case value do
+          case value do
             unquote(clauses)
           end
 
@@ -23,4 +23,3 @@ defmodule OkComputer.Case do
     end
   end
 end
-
