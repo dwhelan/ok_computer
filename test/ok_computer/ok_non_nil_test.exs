@@ -1,4 +1,4 @@
-defmodule OkComputer.NonNilTest do
+defmodule OkComputer.OkNonNilTest do
   use ExUnit.Case
   use OkComputer.OkNonNil
 
