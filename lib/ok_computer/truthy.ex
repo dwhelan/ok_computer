@@ -21,7 +21,7 @@ defmodule OkComputer.Truthy do
       nil
   """
   defmacro left ~> right do
-    ok_pipe(left, right, __MODULE__)
+    ok_pipe(left, right)
   end
 
   @doc """
@@ -40,7 +40,7 @@ defmodule OkComputer.Truthy do
       ""
   """
   defmacro left ~>> right do
-    error_pipe(left, right, __MODULE__)
+    error_pipe(left, right)
   end
 
   @doc """
@@ -62,7 +62,7 @@ defmodule OkComputer.Truthy do
   This may be convenient as you don't need to create clauses for `nil` or `false` values.
   """
   defmacro case_ok(value, do: do_clauses) do
-    case_ok(value, do_clauses, __MODULE__)
+    case_ok(value, do_clauses)
   end
 
   def ok?(nil), do: false
