@@ -24,4 +24,15 @@ defmodule OkComputer.NonNilTest do
     assert stringify.(nil) == nil
     assert stringify.(:anything_else) == "anything_else"
   end
+
+  test "case_error" do
+    stringify = fn value ->
+      case_error value do
+        value -> to_string(value)
+      end
+    end
+
+    assert stringify.(nil) == ""
+    assert stringify.(:anything_else) == :anything_else
+  end
 end
