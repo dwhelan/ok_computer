@@ -1,49 +1,24 @@
-defmodule OkComputer.Pipes do
+defmodule OkComputer.Pipe do
   @moduledoc """
   Pipe operators for ok and error values.
 
-  The `~>` operator will pipe ok values and return error values.
+  The ok operator, `~>`, will pipe ok values and return error values.
 
-  ## Examples
-
-    `NonNil` treats `nil` values as errors and anything else as ok.
-
-      iex> import OkComputer.NonNil
-      ...>
-      iex> nil ~> to_string
-      nil
-      ...>
-      iex> :anything_else ~> to_string
-      "a"
-      ...>
-
-  The `~>>` operator will pipe error values and return ok values.
-
-  ## Examples
-
-      iex> :a ~>> to_string
-      :a
-      ...>
-      iex> nil ~>> to_string
-      ""
+  The error operator, `~>>`, will pipe error values and return ok values.
   """
-  defmacro defpipes() do
+  defmacro monadic_pipe() do
     quote do
       defmacro left ~> right do
         quote do
           unquote(left)
-          |> ok_monad().bind(fn value ->
-            unquote(Macro.pipe(left, right, 0))
-          end)
+          |> ok_monad().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
         end
       end
 
       defmacro left ~>> right do
         quote do
           unquote(left)
-          |> error_monad().bind(fn value ->
-            unquote(Macro.pipe(left, right, 0))
-          end)
+          |> error_monad().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
         end
       end
     end

@@ -1,12 +1,12 @@
 defmodule OkComputer.PipesTest do
   use ExUnit.Case
-  import OkComputer.Pipes
+  import OkComputer.Pipe
   alias OkComputer.Monads.{NonNil, Nil}
 
   def ok_monad(), do: NonNil
   def error_monad(), do: Nil
 
-  defpipes
+  monadic_pipe
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)

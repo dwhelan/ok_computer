@@ -1,20 +1,11 @@
 defmodule OkComputer.Railroad do
   defmacro defrailroad() do
     quote do
-      import OkComputer.Pipes
+      import OkComputer.Pipe
+      import OkComputer.Case
 
-      defpipes
-
-      defmacro case_ok(value, do: clauses) do
-        quote do
-          unquote(value)
-          |> ok_monad().bind(fn value ->
-            case(value) do
-              unquote(clauses)
-            end
-          end)
-        end
-      end
+      monadic_pipe
+      monadic_case
     end
   end
 end

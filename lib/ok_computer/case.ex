@@ -1,20 +1,28 @@
 defmodule OkComputer.Case do
   @doc """
-  A case statement that is only applied to ok values.
+  Case statements for ok and error values.
 
-  If `value` is ok, then it will be pattern matched through the `case` statement and the result returned,
-  otherwise `value` will be returned.
+  `case_ok` will execute a `case` statement with ok values
+  and return error values.
+
+  `case_error` will execute a `case` statement with error values
+  and return ok values.
 
   This may be convenient as you don't need to create `case` clauses for error values.
+  If there is only one remaining clause then you can use pipes instead.
   """
-  #  defmacro case_ok(value, do: clauses) do
-  #    quote do
-  #      unquote(value)
-  #      |> bind(fn value ->
-  #        case(value) do
-  #          unquote(clauses)
-  #        end
-  #      end)
-  #    end
-  #  end
+  defmacro monadic_case() do
+    quote do
+      defmacro case_ok(value, do: clauses) do
+        quote do
+          unquote(value)
+          |> ok_monad().bind(fn value ->
+            case(value) do
+              unquote(clauses)
+            end
+          end)
+        end
+      end
+    end
+  end
 end
