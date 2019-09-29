@@ -1,8 +1,8 @@
-defmodule OkComputer.OkNonNilTest do
+defmodule OkComputer.Monads.NonNilTest do
   use ExUnit.Case
-  use OkComputer.OkNonNil
+  use OkComputer.RailRoad.NonNil
 
-  doctest OkComputer.OkNonNil
+  doctest OkComputer.RailRoad.NonNil
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)

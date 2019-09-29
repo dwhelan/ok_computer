@@ -1,11 +1,11 @@
-defmodule OkComputer.OkNonNil do
+defmodule OkComputer.RailRoad.NonNil do
   def bind(nil, f), do: nil
   def bind(a, f), do: f.(a)
 
   defmacro __using__(opts \\ []) do
     quote do
-      use OkComputer.Monad
-      import OkComputer.OkNonNil
+      use OkComputer.Railroad
+      import OkComputer.RailRoad.NonNil
 
       def ok?(nil), do: false
       def ok?(_), do: true

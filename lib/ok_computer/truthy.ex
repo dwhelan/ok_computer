@@ -5,7 +5,7 @@ defmodule OkComputer.Truthy do
 
   defmacro __using__(opts \\ []) do
     quote do
-      use OkComputer.Monad
+      use OkComputer.Railroad
       import OkComputer.Truthy
 
       def ok?(nil), do: false

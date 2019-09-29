@@ -1,6 +1,6 @@
-defmodule OkComputer.NonNilTest do
+defmodule OkComputer.Monads.NonNilTest do
   use ExUnit.Case
-  import OkComputer.NonNil
+  import OkComputer.Monads.NonNil
 
   test "bind" do
     assert bind(nil, &to_string/1) == nil
