@@ -28,7 +28,9 @@ defmodule OkComputer.Monad.ErrorTupleTest do
   import ErrorTuple
 
   test "return" do
+    assert return({:ok, :a}) == {:ok, :a}
     assert return({:error, :a}) == {:error, :a}
+    assert return(nil) == {:error, nil}
     assert return(:a) == {:error, :a}
   end
 

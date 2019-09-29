@@ -18,7 +18,9 @@ defmodule OkComputer.Monad.ErrorTuple do
   @behaviour Monad
 
   @impl Monad
+  def return({:ok, a}), do: {:ok, a}
   def return({:error, a}), do: {:error, a}
+  def return(nil), do: {:error, nil}
   def return(a), do: {:error, a}
 
   @impl Monad
