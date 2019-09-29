@@ -1,8 +1,8 @@
-defmodule OkComputer.OkNonNilTest do
+defmodule OkComputer.NonNilTest do
   use ExUnit.Case
-  import OkComputer.OkNonNil
+  import OkComputer.NonNil
 
-  doctest OkComputer.OkNonNil
+  doctest OkComputer.NonNil
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)

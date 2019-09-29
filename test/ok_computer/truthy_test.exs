@@ -1,8 +1,8 @@
-defmodule OkComputer.OkTruthyTest do
+defmodule OkComputer.TruthyTest do
   use ExUnit.Case
-  import OkComputer.OkTruthy
+  import OkComputer.Truthy
 
-  doctest OkComputer.OkTruthy
+  doctest OkComputer.Truthy
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)

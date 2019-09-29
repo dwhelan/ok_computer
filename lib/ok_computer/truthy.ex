@@ -1,4 +1,4 @@
-defmodule OkComputer.OkTruthy do
+defmodule OkComputer.Truthy do
   import OkComputer.Switch
 
   def ok_monad(), do: OkComputer.Monads.Truthy

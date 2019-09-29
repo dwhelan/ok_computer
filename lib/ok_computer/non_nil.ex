@@ -1,4 +1,4 @@
-defmodule OkComputer.OkNonNil do
+defmodule OkComputer.NonNil do
   import OkComputer.Switch
 
   def ok_monad(), do: OkComputer.Monads.NonNil
