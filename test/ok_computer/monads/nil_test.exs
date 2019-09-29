@@ -1,7 +1,7 @@
 defmodule OkComputer.Monads.NilTest do
   use ExUnit.Case
-  import Monad.Laws
   alias OkComputer.Monads.Nil
+  import Monad.Laws
   import Nil
 
   test "return" do

@@ -14,5 +14,5 @@ defmodule OkComputer.Monads.NonNilTest do
     assert bind(:anything_else, &to_string/1) == "anything_else"
   end
 
-  test_monad(NonNil, "a")
+  test_monad(NonNil, :anything_but_nil)
 end

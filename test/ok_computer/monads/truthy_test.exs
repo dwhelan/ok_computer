@@ -16,5 +16,5 @@ defmodule OkComputer.Monads.TruthyTest do
     assert bind(:anything_else, &to_string/1) == "anything_else"
   end
 
-  test_monad(Truthy, "a")
+  test_monad(Truthy, :anything_truthy)
 end
