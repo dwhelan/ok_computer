@@ -16,7 +16,6 @@ end
 ```
 
 ## To do
-- monad laws
 - type specs
 - `ok_tuple`
 
