@@ -1,18 +1,21 @@
-defmodule OkComputer.Monads.NilTest do
+defmodule OkComputer.Monad.FalseyTest do
   use ExUnit.Case
-  alias OkComputer.Monads.Nil
   import Monad.Laws
-  import Nil
+  alias OkComputer.Monad.Falsey
+  import Falsey
 
   test "return" do
     assert return(nil) == nil
+    assert return(false) == false
     assert return(:anything_else) == :anything_else
   end
 
   test "bind" do
     assert bind(nil, &to_string/1) == ""
+    assert bind(false, &to_string/1) == "false"
     assert bind(:anything_else, &to_string/1) == :anything_else
   end
 
-  test_monad(Nil, nil)
+  test_monad(Falsey, nil)
+  test_monad(Falsey, false)
 end

@@ -1,4 +1,4 @@
-defmodule OkComputer.Monads.Falsey do
+defmodule OkComputer.Monad.Nil do
   alias OkComputer.Monad
   @behaviour Monad
 
@@ -7,6 +7,5 @@ defmodule OkComputer.Monads.Falsey do
 
   @impl Monad
   def bind(nil, f), do: f.(nil)
-  def bind(false, f), do: f.(false)
   def bind(a, f), do: a
 end
