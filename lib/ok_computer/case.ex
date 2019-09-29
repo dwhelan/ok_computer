@@ -23,6 +23,17 @@ defmodule OkComputer.Case do
           end)
         end
       end
+
+      defmacro case_error(value, do: clauses) do
+        quote do
+          unquote(value)
+          |> error_monad().bind(fn value ->
+            case(value) do
+              unquote(clauses)
+            end
+          end)
+        end
+      end
     end
   end
 end
