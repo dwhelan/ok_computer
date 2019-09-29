@@ -1,9 +1,8 @@
 defmodule OkComputer.OkNonNil do
-  import OkComputer.Railroad
-  alias OkComputer.Monads.{NonNil, Nil}
+  import OkComputer.Switch
 
-  def ok_monad(), do: NonNil
-  def error_monad(), do: Nil
+  def ok_monad(), do: OkComputer.Monads.NonNil
+  def error_monad(), do: OkComputer.Monads.Nil
 
-  defrailroad
+  monadic_switch
 end

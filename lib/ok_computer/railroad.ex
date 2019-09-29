@@ -1,5 +1,5 @@
-defmodule OkComputer.Railroad do
-  defmacro defrailroad() do
+defmodule OkComputer.Switch do
+  defmacro monadic_switch() do
     quote do
       import OkComputer.Pipe
       import OkComputer.Case
