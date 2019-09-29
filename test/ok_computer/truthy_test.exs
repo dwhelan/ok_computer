@@ -1,4 +1,4 @@
-#defmodule OkComputer.TruthyTest do
+# defmodule OkComputer.TruthyTest do
 #  use ExUnit.Case
 #  use OkComputer.Truthy
 #
@@ -27,4 +27,4 @@
 #    assert stringify.(false) == false
 #    assert stringify.(:anything_else) == "anything_else"
 #  end
-#end
+# end

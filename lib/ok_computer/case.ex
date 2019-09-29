@@ -7,14 +7,14 @@ defmodule OkComputer.Case do
 
   This may be convenient as you don't need to create `case` clauses for error values.
   """
-#  defmacro case_ok(value, do: clauses) do
-#    quote do
-#      unquote(value)
-#      |> bind(fn value ->
-#        case(value) do
-#          unquote(clauses)
-#        end
-#      end)
-#    end
-#  end
+  #  defmacro case_ok(value, do: clauses) do
+  #    quote do
+  #      unquote(value)
+  #      |> bind(fn value ->
+  #        case(value) do
+  #          unquote(clauses)
+  #        end
+  #      end)
+  #    end
+  #  end
 end

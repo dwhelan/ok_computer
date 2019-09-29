@@ -3,7 +3,10 @@ defmodule OkComputer.PipesTest do
   import OkComputer.Pipes
   alias OkComputer.Monads.{NonNil, Nil}
 
-  defpipes NonNil, Nil
+  def ok_monad(), do: NonNil
+  def error_monad(), do: Nil
+
+  defrailroad(NonNil, Nil)
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)

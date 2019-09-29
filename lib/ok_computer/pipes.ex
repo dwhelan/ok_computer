@@ -1,11 +1,13 @@
 defmodule OkComputer.Pipes do
-  defmacro defpipes(ok_monad, error_monad) do
+  defmacro defrailroad(ok_monad, error_monad) do
     quote do
       @ok_monad unquote(ok_monad)
       @error_monad unquote(error_monad)
 
       defmacro left ~> right do
         quote do
+          IO.inspect(ok_monad: @ok_monad)
+
           unquote(left)
           |> @ok_monad.bind(fn value ->
             unquote(Macro.pipe(left, right, 0))
@@ -24,6 +26,8 @@ defmodule OkComputer.Pipes do
 
       defmacro case_ok(value, do: clauses) do
         quote do
+          IO.inspect(case_ok_monad: @ok_monad)
+
           unquote(value)
           |> @ok_monad.bind(fn value ->
             case(value) do
@@ -52,15 +56,15 @@ defmodule OkComputer.Pipes do
       iex> :anything_else ~> to_string
       "a"
   """
-#  defmacro left
-#           ~> right do
-#    quote do
-#      unquote(left)
-#      |> bind(fn value ->
-#        unquote(Macro.pipe(left, right, 0))
-#      end)
-#    end
-#  end
+  #  defmacro left
+  #           ~> right do
+  #    quote do
+  #      unquote(left)
+  #      |> bind(fn value ->
+  #        unquote(Macro.pipe(left, right, 0))
+  #      end)
+  #    end
+  #  end
 
   @doc """
   Error operator that pipes falsey values (`nil` or `false`).
@@ -77,15 +81,15 @@ defmodule OkComputer.Pipes do
       iex> nil ~>> to_string
       ""
   """
-#  defmacro left
-#           ~>> right do
-#    quote do
-#      value = unquote(left)
-#
-#      case ok?(value) do
-#        false -> unquote(Macro.pipe(left, right, 0))
-#        true -> value
-#      end
-#    end
-#  end
+  #  defmacro left
+  #           ~>> right do
+  #    quote do
+  #      value = unquote(left)
+  #
+  #      case ok?(value) do
+  #        false -> unquote(Macro.pipe(left, right, 0))
+  #        true -> value
+  #      end
+  #    end
+  #  end
 end

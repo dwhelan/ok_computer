@@ -1,4 +1,4 @@
-#defmodule OkComputer.OkTruthy do
+# defmodule OkComputer.OkTruthy do
 #  defmacro __using__(opts \\ []) do
 #    quote do
 #      use OkComputer.Railroad
@@ -8,4 +8,4 @@
 #      def ok?(_), do: true
 #    end
 #  end
-#end
+# end
