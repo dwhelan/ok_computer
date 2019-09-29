@@ -1,8 +1,6 @@
 defmodule OkComputer.NonNil do
   import OkComputer.Switch
+  alias OkComputer.Monads.{NonNil, Nil}
 
-  def ok_monad(), do: OkComputer.Monads.NonNil
-  def error_monad(), do: OkComputer.Monads.Nil
-
-  monadic_switch
+  monadic_switch NonNil, Nil
 end

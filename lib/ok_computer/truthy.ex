@@ -1,8 +1,6 @@
 defmodule OkComputer.Truthy do
   import OkComputer.Switch
+  alias OkComputer.Monads.{Truthy, Falsey}
 
-  def ok_monad(), do: OkComputer.Monads.Truthy
-  def error_monad(), do: OkComputer.Monads.Falsey
-
-  monadic_switch
+  monadic_switch Truthy, Falsey
 end
