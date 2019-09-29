@@ -1,15 +1,38 @@
 defmodule OkComputer.Pipes do
-  defmacro defrailroad(ok_monad, error_monad) do
-    quote do
-      @ok_monad unquote(ok_monad)
-      @error_monad unquote(error_monad)
+  @moduledoc """
+  Pipe operators for ok and error values.
 
+  The `~>` operator will pipe ok values and return error values.
+
+  ## Examples
+
+    `NonNil` treats `nil` values as errors and anything else as ok.
+
+      iex> import OkComputer.NonNil
+      ...>
+      iex> nil ~> to_string
+      nil
+      ...>
+      iex> :anything_else ~> to_string
+      "a"
+      ...>
+
+  The `~>>` operator will pipe error values and return ok values.
+
+  ## Examples
+
+      iex> :a ~>> to_string
+      :a
+      ...>
+      iex> nil ~>> to_string
+      ""
+  """
+  defmacro defpipes() do
+    quote do
       defmacro left ~> right do
         quote do
-          IO.inspect(ok_monad: @ok_monad)
-
           unquote(left)
-          |> @ok_monad.bind(fn value ->
+          |> ok_monad().bind(fn value ->
             unquote(Macro.pipe(left, right, 0))
           end)
         end
@@ -18,78 +41,11 @@ defmodule OkComputer.Pipes do
       defmacro left ~>> right do
         quote do
           unquote(left)
-          |> @error_monad.bind(fn value ->
+          |> error_monad().bind(fn value ->
             unquote(Macro.pipe(left, right, 0))
-          end)
-        end
-      end
-
-      defmacro case_ok(value, do: clauses) do
-        quote do
-          IO.inspect(case_ok_monad: @ok_monad)
-
-          unquote(value)
-          |> @ok_monad.bind(fn value ->
-            case(value) do
-              unquote(clauses)
-            end
           end)
         end
       end
     end
   end
-
-  @moduledoc """
-  Pipe operators.
-  """
-
-  @doc """
-  An pipe operator that only pipes ok values.
-
-  ## Examples
-
-      iex> import OkComputer.Truthy
-      iex> nil ~> to_string
-      nil
-      iex> false ~> to_string
-      false
-      iex> :anything_else ~> to_string
-      "a"
-  """
-  #  defmacro left
-  #           ~> right do
-  #    quote do
-  #      unquote(left)
-  #      |> bind(fn value ->
-  #        unquote(Macro.pipe(left, right, 0))
-  #      end)
-  #    end
-  #  end
-
-  @doc """
-  Error operator that pipes falsey values (`nil` or `false`).
-
-  If the input is falsey (`nil` or `false`) then it will be piped to the `right` function, otherwise it will be returned.
-
-  ## Examples
-
-      iex> import OkComputer.Truthy
-      iex> :a ~>> to_string
-      :a
-      iex> false ~>> to_string
-      "false"
-      iex> nil ~>> to_string
-      ""
-  """
-  #  defmacro left
-  #           ~>> right do
-  #    quote do
-  #      value = unquote(left)
-  #
-  #      case ok?(value) do
-  #        false -> unquote(Macro.pipe(left, right, 0))
-  #        true -> value
-  #      end
-  #    end
-  #  end
 end

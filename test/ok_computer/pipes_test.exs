@@ -6,7 +6,7 @@ defmodule OkComputer.PipesTest do
   def ok_monad(), do: NonNil
   def error_monad(), do: Nil
 
-  defrailroad(NonNil, Nil)
+  defpipes
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)
