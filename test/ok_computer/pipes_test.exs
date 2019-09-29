@@ -5,7 +5,7 @@ defmodule OkComputer.PipesTest do
   def ok_monad(), do: OkComputer.Monads.NonNil
   def error_monad(), do: OkComputer.Monads.Nil
 
-  monadic_pipe
+  monadic_pipe()
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)
