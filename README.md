@@ -16,6 +16,8 @@ end
 ```
 
 ## To do
+- monad laws
+- type specs
 - `ok_tuple`
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)

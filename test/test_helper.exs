@@ -31,26 +31,26 @@ defmodule DecodeTest do
 end
 
 defmodule Monad.Laws do
-  defmacro __using__(_) do
+  defmacro test_monad(monad, m) do
     quote do
-      import Monad.Laws
+      @monad unquote(monad)
+      @m unquote(m)
 
-      test "left identity" do
-        f = fn _a -> return("f(a)") end
-        assert return("a") |> bind(f) == f.("a")
-      end
+      describe "#{inspect @m}" do
+        test "left identity" do
+          f = fn a -> @monad.return("f(#{inspect a})") end
+          assert @m |> @monad.return() |> @monad.bind(f) == f.(@m)
+        end
 
-      test "right identity" do
-        m = return("a")
-        assert m |> return == m
-      end
+        test "right identity" do
+          assert @m |> @monad.bind(&@monad.return/1) == @m
+        end
 
-      test "associativity" do
-        f = fn _a -> return("f(a)") end
-        g = fn _a -> return("g(a)") end
-        m = return("a")
-
-        assert m |> bind(f) |> bind(g) == m |> bind(fn a -> f.(a) |> bind(g) end)
+        test "associativity" do
+          f = fn a -> @monad.return("f(#{inspect a})") end
+          g = fn a -> @monad.return("g(#{inspect a})") end
+          assert @m |> @monad.bind(f) |> @monad.bind(g) == @m |> @monad.bind(fn y -> f.(y) |> @monad.bind(g) end)
+        end
       end
     end
   end
