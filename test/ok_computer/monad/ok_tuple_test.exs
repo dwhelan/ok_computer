@@ -6,6 +6,8 @@ defmodule OkComputer.Monad.OkTupleTest do
 
   test "return" do
     assert return({:ok, :a}) == {:ok, :a}
+    assert return({:error, :a}) == {:error, :a}
+    assert return(nil) == {:error, nil}
     assert return(:a) == {:ok, :a}
   end
 
