@@ -1,10 +1,9 @@
 defmodule OkComputer.PipesTest do
   use ExUnit.Case
   import OkComputer.Pipe
-  alias OkComputer.Monads.{NonNil, Nil}
 
-  def ok_monad(), do: NonNil
-  def error_monad(), do: Nil
+  def ok_monad(), do: OkComputer.Monads.NonNil
+  def error_monad(), do: OkComputer.Monads.Nil
 
   monadic_pipe
 
