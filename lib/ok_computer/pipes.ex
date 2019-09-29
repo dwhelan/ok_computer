@@ -1,4 +1,28 @@
 defmodule OkComputer.Pipes do
+  defmacro defpipes(ok_monad, error_monad) do
+    quote do
+      @ok_monad unquote(ok_monad)
+      @error_monad unquote(error_monad)
+
+      defmacro left >>> right do
+        quote do
+          unquote(left)
+          |> @ok_monad.bind(fn value ->
+            unquote(Macro.pipe(left, right, 0))
+          end)
+        end
+      end
+      defmacro left <<< right do
+        quote do
+          unquote(left)
+          |> @error_monad.bind(fn value ->
+            unquote(Macro.pipe(left, right, 0))
+          end)
+        end
+      end
+    end
+  end
+
   @moduledoc """
   Pipe operators.
   """
@@ -16,7 +40,8 @@ defmodule OkComputer.Pipes do
       iex> :anything_else ~> to_string
       "a"
   """
-  defmacro left ~> right do
+  defmacro left
+           ~> right do
     quote do
       unquote(left)
       |> bind(fn value ->
@@ -40,7 +65,8 @@ defmodule OkComputer.Pipes do
       iex> nil ~>> to_string
       ""
   """
-  defmacro left ~>> right do
+  defmacro left
+           ~>> right do
     quote do
       value = unquote(left)
 
