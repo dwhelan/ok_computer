@@ -8,5 +8,5 @@ defmodule OkComputer.Monad.Falsey do
   @impl Monad
   def bind(nil, f), do: f.(nil)
   def bind(false, f), do: f.(false)
-  def bind(a, f), do: a
+  def bind(a, _f), do: a
 end

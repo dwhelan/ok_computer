@@ -21,6 +21,7 @@ defmodule OkComputer.MixProject do
   defp deps do
     [
       {:mix_test_watch, "~> 0.8", only: :dev},
+      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end

@@ -6,7 +6,7 @@ defmodule OkComputer.Monad.Truthy do
   def return(a), do: a
 
   @impl Monad
-  def bind(nil, f), do: nil
-  def bind(false, f), do: false
+  def bind(nil, _f), do: nil
+  def bind(false, _f), do: false
   def bind(a, f), do: f.(a)
 end

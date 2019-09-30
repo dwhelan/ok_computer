@@ -19,8 +19,8 @@ defmodule OkComputer.Switch do
       @impl Switch
       def error_monad(), do: unquote(error_monad)
 
-      monadic_pipe
-      monadic_case
+      monadic_pipe()
+      monadic_case()
     end
   end
 end
