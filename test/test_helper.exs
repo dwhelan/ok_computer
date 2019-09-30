@@ -38,6 +38,7 @@ defmodule Monad.Laws do
 
       describe "#{inspect @m}" do
         test "left identity" do
+          IO.inspect m: @m
           f = fn a -> @monad.return("f(#{inspect a})") end
           assert @m |> @monad.return() |> @monad.bind(f) == f.(@m)
         end
