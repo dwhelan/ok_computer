@@ -14,6 +14,7 @@ defmodule OkComputer.Switch do
       iex> 
       
   """
+
   @callback ok_monad() :: module
 
   @doc "The error monad to use"
@@ -36,7 +37,7 @@ defmodule OkComputer.Switch do
       def error_monad(), do: unquote(error_monad)
 
       pipe()
-      monadic_case()
+      case_()
     end
   end
 end
