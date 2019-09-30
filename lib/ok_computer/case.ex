@@ -11,8 +11,10 @@ defmodule OkComputer.Case do
   This may be convenient as you don't need to create `case` clauses for error values.
   If there is only one remaining clause then you can use pipes instead.
   """
+  @spec monadic_case() :: Macro.t()
   defmacro monadic_case() do
     quote do
+      @spec case_ok(term, do: Macro.t()) :: Macro.t()
       defmacro case_ok(value, do: clauses) do
         quote do
           unquote(value)
@@ -24,6 +26,7 @@ defmodule OkComputer.Case do
         end
       end
 
+      @spec case_error(term, do: Macro.t) :: Macro.t()
       defmacro case_error(value, do: clauses) do
         quote do
           unquote(value)
