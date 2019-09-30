@@ -26,7 +26,7 @@ defmodule OkComputer.Case do
         end
       end
 
-      @spec case_error(term, do: Macro.t) :: Macro.t()
+      @spec case_error(term, do: Macro.t()) :: Macro.t()
       defmacro case_error(value, do: clauses) do
         quote do
           unquote(value)

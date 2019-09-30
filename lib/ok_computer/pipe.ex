@@ -9,6 +9,7 @@ defmodule OkComputer.Pipe do
   @spec monadic_pipe() :: Macro.t()
   defmacro monadic_pipe() do
     quote do
+      @spec Macro.t() ~> Macro.t() :: Macro.t()
       defmacro left ~> right do
         quote do
           unquote(left)
@@ -16,6 +17,7 @@ defmodule OkComputer.Pipe do
         end
       end
 
+      @spec Macro.t() ~>> Macro.t() :: Macro.t()
       defmacro left ~>> right do
         quote do
           unquote(left)
