@@ -19,8 +19,8 @@ defmodule OkComputer.Switch do
   @doc "The error monad to use"
   @callback error_monad() :: module
 
-  @spec monadic_switch(module, module) :: Macro.t()
-  defmacro monadic_switch(ok_monad, error_monad) do
+  @spec switch(module, module) :: Macro.t()
+  defmacro switch(ok_monad, error_monad) do
     quote do
       alias OkComputer.{Pipe, Case, Switch}
 

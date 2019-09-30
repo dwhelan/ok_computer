@@ -3,5 +3,5 @@ defmodule OkComputer.Truthy do
 
   import OkComputer.Switch
 
-  monadic_switch(Truthy, Falsey)
+  switch(Truthy, Falsey)
 end

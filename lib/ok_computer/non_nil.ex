@@ -3,5 +3,5 @@ defmodule OkComputer.NonNil do
 
   import OkComputer.Switch
 
-  monadic_switch(NonNil, Nil)
+  switch(NonNil, Nil)
 end
