@@ -1,5 +1,6 @@
 defmodule OkComputer.Monad.OkTuple do
   alias OkComputer.Monad
+
   @behaviour Monad
 
   @impl Monad

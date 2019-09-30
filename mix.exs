@@ -10,7 +10,12 @@ defmodule OkComputer.MixProject do
       source_url: "https://github.com/dwhelan/ok_computer",
       package: package(),
       elixir: "~> 1.7",
-      deps: deps()
+      deps: deps(),
+      aliases: aliases(),
+      preferred_cli_env: [
+        build: :test
+      ],
+      default_task: "build"
     ]
   end
 
@@ -20,9 +25,14 @@ defmodule OkComputer.MixProject do
 
   defp deps do
     [
-      {:mix_test_watch, "~> 0.8", only: :dev},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      build: ["format", "compile", "docs", "dialyzer"]
     ]
   end
 

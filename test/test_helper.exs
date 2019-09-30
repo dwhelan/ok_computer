@@ -36,10 +36,9 @@ defmodule Monad.Laws do
       @monad unquote(monad)
       @m unquote(m)
 
-      describe "#{inspect @m}" do
+      describe "#{inspect(@m)}" do
         test "left identity" do
-          IO.inspect m: @m
-          f = fn a -> @monad.return("f(#{inspect a})") end
+          f = fn a -> @monad.return("f(#{inspect(a)})") end
           assert @m |> @monad.return() |> @monad.bind(f) == f.(@m)
         end
 
@@ -48,9 +47,11 @@ defmodule Monad.Laws do
         end
 
         test "associativity" do
-          f = fn a -> @monad.return("f(#{inspect a})") end
-          g = fn a -> @monad.return("g(#{inspect a})") end
-          assert @m |> @monad.bind(f) |> @monad.bind(g) == @m |> @monad.bind(fn y -> f.(y) |> @monad.bind(g) end)
+          f = fn a -> @monad.return("f(#{inspect(a)})") end
+          g = fn a -> @monad.return("g(#{inspect(a)})") end
+
+          assert @m |> @monad.bind(f) |> @monad.bind(g) ==
+                   @m |> @monad.bind(fn y -> f.(y) |> @monad.bind(g) end)
         end
       end
     end

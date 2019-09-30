@@ -16,7 +16,7 @@ defmodule OkComputer.Monad.OkTupleTest do
     assert bind({:ok, :a}, f) == {:ok, "a"}
   end
 
-  test_monad OkTuple, :a
+  test_monad(OkTuple, :a)
 end
 
 defmodule OkComputer.Monad.ErrorTupleTest do
@@ -37,5 +37,5 @@ defmodule OkComputer.Monad.ErrorTupleTest do
     assert bind({:ok, :a}, f) == {:ok, :a}
   end
 
-  test_monad ErrorTuple, :a
+  test_monad(ErrorTuple, :a)
 end

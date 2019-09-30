@@ -1,5 +1,19 @@
 defmodule OkComputer.Switch do
-  @doc "The ok monad to use"
+  @moduledoc """
+  Pipes and macros for handling ok and error values.
+
+  A switch provides pipe operators and macros for handling
+  both ok and error values.
+  """
+  @doc """
+  The ok monad to use
+
+  Any
+  ## Examples
+
+      iex> 
+      
+  """
   @callback ok_monad() :: module
 
   @doc "The error monad to use"
@@ -8,6 +22,7 @@ defmodule OkComputer.Switch do
   defmacro monadic_switch(ok_monad, error_monad) do
     quote do
       alias OkComputer.{Pipe, Case, Switch}
+
       import Pipe
       import Case
 
