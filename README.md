@@ -16,7 +16,6 @@ end
 ```
 
 ## To do
-- type specs
 - `ok_tuple`
   - for `case` clauses; for each clause
       replace ast `{:<-, _, [left, right]}` with

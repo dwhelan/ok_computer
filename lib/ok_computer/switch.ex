@@ -5,21 +5,10 @@ defmodule OkComputer.Switch do
   A switch provides pipe operators and macros for handling
   both ok and error values.
   """
+
   @doc """
-  The ok monad to use
-
-  Any
-  ## Examples
-
-      iex> 
-      
+  Creates a switch using an ok monad and an error monad.
   """
-
-  @callback ok_monad() :: module
-
-  @doc "The error monad to use"
-  @callback error_monad() :: module
-
   @spec switch(module, module) :: Macro.t()
   defmacro switch(ok_monad, error_monad) do
     quote do
@@ -28,12 +17,7 @@ defmodule OkComputer.Switch do
       import Pipe
       import Case
 
-      @behaviour Switch
-
-      @impl Switch
       def ok_monad(), do: unquote(ok_monad)
-
-      @impl Switch
       def error_monad(), do: unquote(error_monad)
 
       pipe()
