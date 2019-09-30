@@ -1,5 +1,6 @@
 defmodule OkComputer.Monad.Nil do
   alias OkComputer.Monad
+
   @behaviour Monad
 
   @impl Monad

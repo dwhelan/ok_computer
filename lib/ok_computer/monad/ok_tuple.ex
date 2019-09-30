@@ -13,6 +13,7 @@ end
 
 defmodule OkComputer.Monad.ErrorTuple do
   alias OkComputer.Monad
+
   @behaviour Monad
 
   @impl Monad

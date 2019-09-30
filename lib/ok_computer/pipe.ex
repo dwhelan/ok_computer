@@ -6,6 +6,7 @@ defmodule OkComputer.Pipe do
 
   The error operator, `~>>`, will pipe error values and return ok values.
   """
+  @spec monadic_pipe() :: Macro.t()
   defmacro monadic_pipe() do
     quote do
       defmacro left ~> right do
