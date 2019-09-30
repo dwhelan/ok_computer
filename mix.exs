@@ -6,15 +6,13 @@ defmodule OkComputer.MixProject do
       app: :ok_computer,
       version: "0.1.0",
       name: "ok_computer",
-      description: "Pipes and things to remove conditional logic",
+      description: "Supports railroad style processing for ok and error values.",
       source_url: "https://github.com/dwhelan/ok_computer",
       package: package(),
       elixir: "~> 1.7",
       deps: deps(),
       aliases: aliases(),
-      preferred_cli_env: [
-        build: :test
-      ],
+      preferred_cli_env: [build: :test],
       default_task: "build"
     ]
   end
@@ -32,7 +30,7 @@ defmodule OkComputer.MixProject do
 
   defp aliases do
     [
-      build: ["format", "compile", "docs", "dialyzer"]
+      build: ["clean", "format", "dialyzer", "compile", "docs", "test"]
     ]
   end
 
