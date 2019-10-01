@@ -9,9 +9,4 @@ defmodule OkComputer.Monad.Nil do
   @impl Monad
   def bind(nil, f), do: f.(nil)
   def bind(a, _f), do: a
-
-  @impl Monad
-  def value_quoted(nil) do
-    nil
-  end
 end

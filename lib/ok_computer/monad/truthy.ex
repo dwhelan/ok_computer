@@ -10,9 +10,4 @@ defmodule OkComputer.Monad.Truthy do
   def bind(nil, _f), do: nil
   def bind(false, _f), do: false
   def bind(a, f), do: f.(a)
-
-  @impl Monad
-  def value_quoted(value) when value not in [nil, false] do
-    value
-  end
 end

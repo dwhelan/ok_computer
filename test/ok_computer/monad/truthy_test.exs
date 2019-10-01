@@ -16,9 +16,5 @@ defmodule OkComputer.Monad.TruthyTest do
     assert bind(:anything_else, &to_string/1) == "anything_else"
   end
 
-  test "value_quoted" do
-    assert value_quoted(:a) == :a
-  end
-
   test_monad(Truthy, :anything_truthy)
 end

@@ -9,6 +9,4 @@ defmodule OkComputer.Monad do
 
   @doc "bind"
   @callback bind(t, (any -> t)) :: t
-
-  @callback value_quoted(Macro.t) :: Macro.t
 end

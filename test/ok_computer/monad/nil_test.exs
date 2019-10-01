@@ -14,9 +14,5 @@ defmodule OkComputer.Monad.NilTest do
     assert bind(:anything_else, &to_string/1) == :anything_else
   end
 
-  test "value_quoted" do
-    assert value_quoted(nil) == nil
-  end
-
   test_monad(Nil, nil)
 end
