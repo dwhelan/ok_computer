@@ -16,6 +16,10 @@ defmodule OkComputer.Monad.OkTupleTest do
     assert bind({:ok, :a}, f) == {:ok, "a"}
   end
 
+  test "value_quoted" do
+    assert value_quoted({:ok, :a}) == :a
+  end
+
   test_monad(OkTuple, :a)
 end
 
@@ -35,6 +39,10 @@ defmodule OkComputer.Monad.ErrorTupleTest do
     assert bind({:error, :a}, f) == {:error, "a"}
     assert bind(nil, f) == nil
     assert bind({:ok, :a}, f) == {:ok, :a}
+  end
+
+  test "value_quoted" do
+    assert value_quoted({:error, :a}) == :a
   end
 
   test_monad(ErrorTuple, :a)

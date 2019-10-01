@@ -9,6 +9,11 @@ defmodule OkComputer.Monad.OkTuple do
   @impl Monad
   def bind({:ok, a}, f), do: f.(a)
   def bind(a, _f), do: a
+
+  @impl Monad
+  def value_quoted({:ok, value}) do
+    value
+  end
 end
 
 defmodule OkComputer.Monad.ErrorTuple do
@@ -22,4 +27,9 @@ defmodule OkComputer.Monad.ErrorTuple do
   @impl Monad
   def bind({:error, a}, f), do: f.(a)
   def bind(a, _f), do: a
+
+  @impl Monad
+  def value_quoted({:error, value}) do
+    value
+  end
 end

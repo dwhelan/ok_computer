@@ -16,6 +16,10 @@ defmodule OkComputer.Monad.FalseyTest do
     assert bind(:anything_else, &to_string/1) == :anything_else
   end
 
+  test "value_quoted" do
+    assert value_quoted(false) == false
+  end
+
   test_monad(Falsey, nil)
   test_monad(Falsey, false)
 end
