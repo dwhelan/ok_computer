@@ -23,7 +23,38 @@ end
                   
       in general: `{:<-, _, [left, right]}` with
                   `{:<-, _, [monad.return(left}, right]}`
-
+- rename ok_monad to monad_ok
+- A switch is an n-ary monad
+- use macros to build Switches like
+  ```elixir
+  defmacro build_switch([ok: monad_ok, error: monad_error], [Case, Pipe]) do
+    # in a loop
+    quote do
+      def unquote("return_#{key}")(a, f) do
+        unquote(value).return(a, f)
+      end
+    
+      def unquote("bind_#{key}")(a, f) do
+        unquote(value).bind(a, f)
+      end
+    end
+  end
+  ```                  
+- this can be extended to build operations
+  ```elixir
+  defmacro build_operation(name, switch, do: block) do
+    block = quote do
+      
+    end
+    switch_name =  Macro.camelize "#{name}"
+     Module.create(:"#{__MODULE__}.#{switch_name}", block, Macro.Env.location(__ENV__))
+   
+    quote do
+      
+    end
+  end
+  ``` 
+- use string compilation to pass ok_monad and error_monad directly into the code (avoid module attributes)
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/ok_computer](https://hexdocs.pm/ok_computer).
