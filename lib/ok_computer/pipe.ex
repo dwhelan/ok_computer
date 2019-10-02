@@ -22,7 +22,7 @@ defmodule OkComputer.Pipe do
       defmacro left ~>> right do
         quote do
           unquote(left)
-          |> error_monad().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
+          |> monad_error().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
         end
       end
     end

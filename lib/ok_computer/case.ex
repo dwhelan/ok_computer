@@ -34,7 +34,7 @@ defmodule OkComputer.Case do
       defmacro unquote(:"case_#{monad_name}")(value, do: clauses) do
         quote do
           unquote(value)
-          |> error_monad().bind(fn value ->
+          |> monad_error().bind(fn value ->
             case(value) do
               unquote(clauses)
             end

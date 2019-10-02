@@ -55,7 +55,7 @@ end
     end
   end
   ``` 
-- use string compilation to pass ok_monad and error_monad directly into the code (avoid module attributes)
+- use string compilation to pass ok_monad and monad_error directly into the code (avoid module attributes)
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/ok_computer](https://hexdocs.pm/ok_computer).

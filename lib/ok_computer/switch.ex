@@ -10,7 +10,7 @@ defmodule OkComputer.Switch do
   Creates a switch using an ok monad and an error monad.
   """
   @spec switch(module, module) :: Macro.t()
-  defmacro switch(monad_ok, error_monad) do
+  defmacro switch(monad_ok, monad_error) do
     quote do
       alias OkComputer.{Pipe, Case}
 
@@ -18,11 +18,11 @@ defmodule OkComputer.Switch do
       import Case
 
       def monad_ok(), do: unquote(monad_ok)
-      def error_monad(), do: unquote(error_monad)
+      def monad_error(), do: unquote(monad_error)
 
       pipe()
       case_(:ok, unquote(monad_ok))
-      case_(:error, unquote(error_monad))
+      case_(:error, unquote(monad_error))
     end
   end
 end
