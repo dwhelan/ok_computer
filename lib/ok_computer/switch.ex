@@ -21,8 +21,8 @@ defmodule OkComputer.Switch do
       def monad_error(), do: unquote(monad_error)
 
       pipe()
-      case_(:ok, unquote(monad_ok))
-      case_(:error, unquote(monad_error))
+      build(:ok, unquote(monad_ok))
+      build(:error, unquote(monad_error))
     end
   end
 end
