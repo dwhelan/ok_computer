@@ -6,7 +6,7 @@ defmodule OkComputer.CaseTest do
   def ok_monad(), do: OkComputer.Monad.NonNil
   def error_monad(), do: OkComputer.Monad.Nil
 
-  case_()
+  case_(:ok, OkComputer.Monad.NonNil)
 
   test "case_ok" do
     stringify = fn value ->

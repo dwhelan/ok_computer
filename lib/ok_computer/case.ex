@@ -11,8 +11,8 @@ defmodule OkComputer.Case do
   This may be convenient as you don't need to create `case` clauses for error values.
   If there is only one remaining clause then you can use pipes instead.
   """
-  @spec case_() :: Macro.t()
-  defmacro case_() do
+  @spec case_(atom, module) :: Macro.t()
+  defmacro case_(monad_name, monad) do
     quote do
       @spec case_ok(term, do: Macro.t()) :: Macro.t()
       defmacro case_ok(value, do: clauses) do
