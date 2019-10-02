@@ -22,6 +22,7 @@ defmodule OkComputer.Switch do
 
       pipe()
       case_(:ok, unquote(ok_monad))
+      case_error2(:error, unquote(error_monad))
     end
   end
 end
