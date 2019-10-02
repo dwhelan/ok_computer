@@ -12,29 +12,13 @@ defmodule OkComputer.Case do
   If there is only one remaining clause then you can use pipes instead.
   """
 #  @spec case_(atom, module) :: Macro.t()
-  defmacro case_(:ok = monad_name, monad) do
+  defmacro case_(monad_name, monad) do
     quote do
-      @spec case_ok(term, do: Macro.t()) :: Macro.t()
+      @monad unquote(monad)
       defmacro unquote(:"case_#{monad_name}")(value, do: clauses) do
         quote do
           unquote(value)
-          |> monad_ok().bind(fn value ->
-            case(value) do
-              unquote(clauses)
-            end
-          end)
-        end
-      end
-    end
-  end
-
-  defmacro case_(:error = monad_name, monad) do
-    quote do
-      @spec case_error(term, do: Macro.t()) :: Macro.t()
-      defmacro unquote(:"case_#{monad_name}")(value, do: clauses) do
-        quote do
-          unquote(value)
-          |> monad_error().bind(fn value ->
+          |> unquote(@monad).bind(fn value ->
             case(value) do
               unquote(clauses)
             end
