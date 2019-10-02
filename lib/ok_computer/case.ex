@@ -28,7 +28,7 @@ defmodule OkComputer.Case do
     end
   end
 
-  defmacro case_error2(:error = monad_name, monad) do
+  defmacro case_(:error = monad_name, monad) do
     quote do
       @spec case_error(term, do: Macro.t()) :: Macro.t()
       defmacro case_error(value, do: clauses) do

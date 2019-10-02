@@ -19,7 +19,7 @@ defmodule OkComputer.CaseTest do
     assert stringify.(:anything_else) == "anything_else"
   end
 
-  case_error2(:error, OkComputer.Monad.NonNil)
+  case_(:error, OkComputer.Monad.NonNil)
 
   test "case_error" do
     stringify = fn value ->
