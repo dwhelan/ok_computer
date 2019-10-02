@@ -23,7 +23,8 @@ end
                   
       in general: `{:<-, _, [left, right]}` with
                   `{:<-, _, [monad.return(left}, right]}`
-- rename ok_monad to monad_ok
+- rename monad_ok to monad_ok
+- switch() macro should create a module instead of injecting functions
 - A switch is an n-ary monad
 - use macros to build Switches like
   ```elixir

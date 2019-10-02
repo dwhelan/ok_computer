@@ -3,7 +3,7 @@ defmodule OkComputer.CaseTest do
 
   import OkComputer.Case
 
-  def ok_monad(), do: OkComputer.Monad.NonNil
+  def monad_ok(), do: OkComputer.Monad.NonNil
   def error_monad(), do: OkComputer.Monad.Nil
 
   case_(:ok, OkComputer.Monad.NonNil)

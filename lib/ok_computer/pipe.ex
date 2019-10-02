@@ -14,7 +14,7 @@ defmodule OkComputer.Pipe do
       defmacro left ~> right do
         quote do
           unquote(left)
-          |> ok_monad().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
+          |> monad_ok().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
         end
       end
 
