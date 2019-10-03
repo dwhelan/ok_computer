@@ -4,11 +4,11 @@ defmodule OkComputer.Monad.OkTuple do
   @behaviour Monad
 
   @impl Monad
-  def return(a), do: {:ok, a}
+  def return(value), do: {:ok, value}
 
   @impl Monad
-  def bind({:ok, a}, f), do: f.(a)
-  def bind(a, _f), do: a
+  def bind({:ok, value}, f), do: f.(value)
+  def bind(value, _f), do: value
 
   @impl Monad
   def wrap({:ok, value}), do: {:ok, value}
@@ -23,11 +23,11 @@ defmodule OkComputer.Monad.ErrorTuple do
   @behaviour Monad
 
   @impl Monad
-  def return(a), do: {:error, a}
+  def return(value), do: {:error, value}
 
   @impl Monad
-  def bind({:error, a}, f), do: f.(a)
-  def bind(a, _f), do: a
+  def bind({:error, value}, f), do: f.(value)
+  def bind(value, _f), do: value
 
   @impl Monad
   def wrap({:ok, value}), do: {:ok, value}

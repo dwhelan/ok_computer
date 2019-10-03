@@ -5,15 +5,15 @@ defmodule OkComputer.Monad.OkTupleTest do
   import OkTuple
 
   test "return" do
-    assert return(:a) == {:ok, :a}
+    assert return(:value) == {:ok, :value}
   end
 
   test "bind" do
-    f = fn a -> {:ok, to_string(a)} end
+    f = fn value -> {:ok, to_string(value)} end
 
-    assert bind({:error, :a}, f) == {:error, :a}
+    assert bind({:error, :value}, f) == {:error, :value}
     assert bind(nil, f) == nil
-    assert bind({:ok, :a}, f) == {:ok, "a"}
+    assert bind({:ok, :value}, f) == {:ok, "value"}
   end
 
   test "wrap" do
@@ -23,7 +23,7 @@ defmodule OkComputer.Monad.OkTupleTest do
     assert wrap(:value) == {:ok, :value}
   end
 
-  test_monad(OkTuple, :a)
+  test_monad(OkTuple, :value)
 end
 
 defmodule OkComputer.Monad.ErrorTupleTest do
@@ -33,15 +33,15 @@ defmodule OkComputer.Monad.ErrorTupleTest do
   import ErrorTuple
 
   test "return" do
-    assert return(:a) == {:error, :a}
+    assert return(:value) == {:error, :value}
   end
 
   test "bind" do
-    f = fn a -> {:error, to_string(a)} end
+    f = fn value -> {:error, to_string(value)} end
 
-    assert bind({:error, :a}, f) == {:error, "a"}
+    assert bind({:error, :value}, f) == {:error, "value"}
     assert bind(nil, f) == nil
-    assert bind({:ok, :a}, f) == {:ok, :a}
+    assert bind({:ok, :value}, f) == {:ok, :value}
   end
 
   test "wrap" do
@@ -51,5 +51,5 @@ defmodule OkComputer.Monad.ErrorTupleTest do
     assert wrap(:value) == {:ok, :value}
   end
 
-  test_monad(ErrorTuple, :a)
+  test_monad(ErrorTuple, :value)
 end
