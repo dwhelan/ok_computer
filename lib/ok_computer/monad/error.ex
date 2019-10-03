@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad.ErrorTuple do
+defmodule OkComputer.Monad.Error do
   alias OkComputer.Monad
 
   @behaviour Monad

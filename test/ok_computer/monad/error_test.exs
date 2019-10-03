@@ -1,8 +1,8 @@
-defmodule OkComputer.Monad.ErrorTupleTest do
+defmodule OkComputer.Monad.ErrorTest do
   use ExUnit.Case
   import Monad.Laws
-  alias OkComputer.Monad.ErrorTuple
-  import ErrorTuple
+  alias OkComputer.Monad.Error
+  import Error
 
   test "return" do
     assert return(:value) == {:error, :value}
@@ -23,5 +23,5 @@ defmodule OkComputer.Monad.ErrorTupleTest do
     assert wrap(:value) == {:ok, :value}
   end
 
-  test_monad(ErrorTuple, :value)
+  test_monad(Error, :value)
 end
