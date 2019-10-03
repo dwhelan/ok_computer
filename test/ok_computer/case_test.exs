@@ -1,6 +1,5 @@
 defmodule OkComputer.CaseTest do
   use ExUnit.Case
-
   import OkComputer.Case
 
   def monad_ok(), do: OkComputer.Monad.NonNil

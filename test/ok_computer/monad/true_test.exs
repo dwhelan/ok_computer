@@ -1,8 +1,9 @@
-defmodule OkComputer.Monad.TruthyTest do
+defmodule OkComputer.Monad.TrueTest do
+  alias OkComputer.Monad.True
+
   use ExUnit.Case
   import Monad.Laws
-  alias OkComputer.Monad.Truthy
-  import Truthy
+  import True
 
   test "return" do
     assert return(nil) == nil
@@ -22,5 +23,5 @@ defmodule OkComputer.Monad.TruthyTest do
     assert wrap(:anything_else) == :anything_else
   end
 
-  test_monad(Truthy, :anything_truthy)
+  test_monad(True, :anything_truthy)
 end

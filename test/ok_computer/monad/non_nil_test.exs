@@ -1,7 +1,8 @@
 defmodule OkComputer.Monad.NonNilTest do
+  alias OkComputer.Monad.NonNil
+
   use ExUnit.Case
   import Monad.Laws
-  alias OkComputer.Monad.NonNil
   import NonNil
 
   test "return" do

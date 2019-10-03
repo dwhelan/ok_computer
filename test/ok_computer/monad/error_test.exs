@@ -1,7 +1,8 @@
 defmodule OkComputer.Monad.ErrorTest do
+  alias OkComputer.Monad.Error
+
   use ExUnit.Case
   import Monad.Laws
-  alias OkComputer.Monad.Error
   import Error
 
   test "return" do
