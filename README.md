@@ -15,6 +15,11 @@ def deps do
 end
 ```
 
+## Principles
+- minimilistic
+- composable
+- clear abstractions expressed as `@behaviours`: Switch, Pipe, Operation, Monad 
+- should have properties for each `@behaviour` (<- property based testing)
 ## To do
 - `ok` case
   - for `case` clauses; for each clause

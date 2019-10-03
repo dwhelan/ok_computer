@@ -1,38 +1,30 @@
-defmodule OkComputer.NonNilTest do
+defmodule OkComputer.Switch.NonNilTest do
+  import OkComputer.Switch.NonNil
   use ExUnit.Case
-  import OkComputer.NonNil
 
-  doctest OkComputer.NonNil
+  doctest OkComputer.Switch.NonNil
 
   test "ok pipe" do
-    assert(nil ~> to_string() == nil)
-    assert(:anything_else ~> to_string() == "anything_else")
+    assert :value ~> to_string() == "value"
   end
 
   test "error pipe" do
-    assert(nil ~>> to_string() == "")
-    assert(:anything_else ~>> to_string() == :anything_else)
+    assert nil ~>> to_string() == ""
   end
 
   test "case_ok" do
-    stringify = fn value ->
-      case_ok value do
+    assert(
+      case_ok(:value) do
         value -> to_string(value)
-      end
-    end
-
-    assert stringify.(nil) == nil
-    assert stringify.(:anything_else) == "anything_else"
+      end == "value"
+    )
   end
 
   test "case_error" do
-    stringify = fn value ->
-      case_error value do
+    assert(
+      case_error nil do
         value -> to_string(value)
-      end
-    end
-
-    assert stringify.(nil) == ""
-    assert stringify.(:anything_else) == :anything_else
+      end == ""
+    )
   end
 end
