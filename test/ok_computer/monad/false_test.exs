@@ -1,8 +1,8 @@
-defmodule OkComputer.Monad.FalseyTest do
+defmodule OkComputer.Monad.FalseTest do
   use ExUnit.Case
   import Monad.Laws
-  alias OkComputer.Monad.Falsey
-  import Falsey
+  alias OkComputer.Monad.False
+  import False
 
   test "return" do
     assert return(nil) == nil
@@ -22,6 +22,6 @@ defmodule OkComputer.Monad.FalseyTest do
     assert wrap(:anything_else) == :anything_else
   end
 
-  test_monad(Falsey, nil)
-  test_monad(Falsey, false)
+  test_monad(False, nil)
+  test_monad(False, false)
 end

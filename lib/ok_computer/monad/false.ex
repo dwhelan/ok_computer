@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad.Falsey do
+defmodule OkComputer.Monad.False do
   alias OkComputer.Monad
 
   @behaviour Monad
