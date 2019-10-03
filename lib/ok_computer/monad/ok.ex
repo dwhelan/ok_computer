@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad.OkTuple do
+defmodule OkComputer.Monad.Ok do
   alias OkComputer.Monad
 
   @behaviour Monad

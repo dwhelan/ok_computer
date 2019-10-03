@@ -1,8 +1,8 @@
-defmodule OkComputer.OkTupleTest do
+defmodule OkComputer.OkTest do
   use ExUnit.Case
-  import OkComputer.OkTuple
+  import OkComputer.Ok
 
-  doctest OkComputer.OkTuple
+  doctest OkComputer.Ok
 
   @tag :skip
   test "ok pipe" do
