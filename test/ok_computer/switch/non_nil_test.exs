@@ -1,8 +1,10 @@
 defmodule OkComputer.Switch.NonNilTest do
-  use ExUnit.Case
-  import OkComputer.Switch.NonNil
+  alias OkComputer.Switch.NonNil
 
-  doctest OkComputer.Switch.NonNil
+  use ExUnit.Case
+  import NonNil
+
+  doctest NonNil
 
   test "ok pipe" do
     assert :value ~> to_string() == "value"

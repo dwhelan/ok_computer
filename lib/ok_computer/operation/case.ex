@@ -1,4 +1,4 @@
-defmodule OkComputer.Case do
+defmodule OkComputer.Operation.Case do
   @doc """
   Macros for building monadic case statements.
   """

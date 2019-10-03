@@ -20,7 +20,10 @@ end
 - composable
 - clear abstractions expressed as `@behaviours`: Switch, Pipe, Operation, Monad 
 - should have properties for each `@behaviour` (<- property based testing)
+- developer friendly: e.g. provide functions that validate Switch, Pipe, Operation, Monad properties
+
 ## To do
+- move `wrap` responsibility to `Switch`
 - `ok` case
   - for `case` clauses; for each clause
       replace ast `{:<-, _, [left, right]}` with
@@ -28,7 +31,6 @@ end
                   
       in general: `{:<-, _, [left, right]}` with
                   `{:<-, _, [monad.return(left}, right]}`
-- switch() macro should create a module instead of injecting functions?
 - allow setting of operators to use:
   ```elixir
   @spec build(keyword()) :: Macro.t
