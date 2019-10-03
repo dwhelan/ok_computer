@@ -16,15 +16,38 @@ end
 ```
 
 ## To do
-- `ok_tuple`
+- `ok` case
   - for `case` clauses; for each clause
       replace ast `{:<-, _, [left, right]}` with
                   `{:<-, _, [{:ok, left}, right]}`
                   
       in general: `{:<-, _, [left, right]}` with
                   `{:<-, _, [monad.return(left}, right]}`
-- rename monad_ok to monad_ok
-- switch() macro should create a module instead of injecting functions
+- switch() macro should create a module instead of injecting functions?
+- allow setting of operators to use:
+  ```elixir
+  @spec build(keyword()) :: Macro.t
+  defmacro build_monads(monads) do
+  end
+
+  build_monads ok: Ok, error: Error
+  build_monads ok: {Ok, :~>}, error: Error
+
+  build_operations [Pipe, Case]
+
+  switch [Pipe, Case], ok: {Ok, :~>}, error: {Error, :"->>"}
+  switch ok: {Ok, :~>}, error: {Error, :"->>"} # defaults operations
+  ```
+- `Switch` properties:
+  - for any value one and only one of its monads should fire
+  
+
+- `Operator` properties:
+  - has a `build` macro that returns a macro bound to the input monad.
+    When that macro is called it will call `monad.bind()` passing a function
+    that operates on the value. 
+    How that operation is defined is up to each operator   
+- Create Pipe operations and simply have operators delegate to it
 - A switch is an n-ary monad
 - use macros to build Switches like
   ```elixir
