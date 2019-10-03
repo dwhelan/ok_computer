@@ -1,13 +1,13 @@
-defmodule OkComputer.Monad.Ok do
+defmodule OkComputer.Monad.ErrorTuple do
   alias OkComputer.Monad
 
   @behaviour Monad
 
   @impl Monad
-  def return(value), do: {:ok, value}
+  def return(value), do: {:error, value}
 
   @impl Monad
-  def bind({:ok, value}, f), do: f.(value)
+  def bind({:error, value}, f), do: f.(value)
   def bind(value, _f), do: value
 
   @impl Monad
