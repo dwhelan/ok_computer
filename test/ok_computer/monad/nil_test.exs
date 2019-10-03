@@ -16,7 +16,6 @@ defmodule OkComputer.Monad.NilTest do
 
   test "wrap" do
     assert wrap(nil) == nil
-    assert wrap(false) == false
     assert wrap(:anything_else) == :anything_else
   end
 
