@@ -1,17 +1,8 @@
 defmodule OkComputer.Case do
   @doc """
-  Case statements for ok and error values.
-
-  `case_ok` will execute a `case` statement with ok values
-  and return error values.
-
-  `case_error` will execute a `case` statement with error values
-  and return ok values.
-
-  This may be convenient as you don't need to create `case` clauses for error values.
-  If there is only one remaining clause then you can use pipes instead.
+  Macros for building monadic case statements.
   """
-#  @spec build(atom, module) :: Macro.t()
+  @spec build(atom, module) :: Macro.t()
   defmacro build(monad_name, monad) do
     quote do
       @monad unquote(monad)

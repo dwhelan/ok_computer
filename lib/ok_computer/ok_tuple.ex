@@ -1,7 +1,7 @@
 defmodule OkComputer.OkTuple do
-  alias OkComputer.Monad.{OkTuple, Falsey}
+  alias OkComputer.Monad.{OkTuple, ErrorTuple}
 
   import OkComputer.Switch
 
-  switch(OkTuple, Falsey)
+  switch(OkTuple, ErrorTuple)
 end
