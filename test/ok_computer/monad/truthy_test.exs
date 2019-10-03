@@ -16,5 +16,11 @@ defmodule OkComputer.Monad.TruthyTest do
     assert bind(:anything_else, &to_string/1) == "anything_else"
   end
 
+  test "wrap" do
+    assert wrap(nil) == nil
+    assert wrap(false) == false
+    assert wrap(:anything_else) == :anything_else
+  end
+
   test_monad(Truthy, :anything_truthy)
 end
