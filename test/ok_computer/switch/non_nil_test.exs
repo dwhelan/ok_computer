@@ -1,6 +1,6 @@
 defmodule OkComputer.Switch.NonNilTest do
-  import OkComputer.Switch.NonNil
   use ExUnit.Case
+  import OkComputer.Switch.NonNil
 
   doctest OkComputer.Switch.NonNil
 

@@ -1,8 +1,8 @@
-defmodule OkComputer.OkTest do
+defmodule OkComputer.Switch.OkTest do
   use ExUnit.Case
-  import OkComputer.Ok
+  import OkComputer.Switch.Ok
 
-  doctest OkComputer.Ok
+  doctest OkComputer.Switch.Ok
 
   @tag :skip
   test "ok pipe" do
