@@ -28,4 +28,10 @@ defmodule OkComputer.Monad.ErrorTuple do
   @impl Monad
   def bind({:error, a}, f), do: f.(a)
   def bind(a, _f), do: a
+
+  @impl Monad
+  def wrap({:ok, value}), do: {:ok, value}
+  def wrap({:error, reason}), do: {:error, reason}
+  def wrap(nil), do: {:error, nil}
+  def wrap(other), do: {:ok, other}
 end

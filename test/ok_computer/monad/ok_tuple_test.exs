@@ -44,5 +44,12 @@ defmodule OkComputer.Monad.ErrorTupleTest do
     assert bind({:ok, :a}, f) == {:ok, :a}
   end
 
+  test "wrap" do
+    assert wrap({:ok, :value}) == {:ok, :value}
+    assert wrap({:error, :reason}) == {:error, :reason}
+    assert wrap(nil) == {:error, nil}
+    assert wrap(:value) == {:ok, :value}
+  end
+
   test_monad(ErrorTuple, :a)
 end
