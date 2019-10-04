@@ -11,8 +11,19 @@ defmodule OkComputer.Operation.Pipe do
   @spec build(atom, module) :: Macro.t()
   defmacro build(operator, monad) do
     case operator do
-      :~> -> quote do defmacro left ~> right do pipe(left, right, unquote(monad)) end end
-      :~>> -> quote do defmacro left ~>> right do pipe(left, right, unquote(monad)) end end
+      :~> ->
+        quote do
+          defmacro left ~> right do
+            pipe(left, right, unquote(monad))
+          end
+        end
+
+      :~>> ->
+        quote do
+          defmacro left ~>> right do
+            pipe(left, right, unquote(monad))
+          end
+        end
     end
   end
 end
