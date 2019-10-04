@@ -17,23 +17,31 @@ defmodule OkComputer.Switch do
 
     [
       build_operations(operations, monads),
-      quote do
-        alias OkComputer.Operation.{Pipe, Case}
-
-        import Pipe
-        Pipe.build(:~>, unquote(monad_ok))
-        Pipe.build(:~>>, unquote(monad_error))
-      end
+      build_pipes(monads),
     ]
   end
 
-  def build_operations(operations, monads) do
+  defp build_pipes(monads) do
+    for monad <- monads, into: [] do
+      build_pipe(monad)
+    end
+  end
+
+  defp build_pipe({_, {monad, pipe}}) do
+    quote do
+      alias OkComputer.Operation.Pipe
+      import Pipe
+      Pipe.build(unquote(pipe), unquote(monad))
+    end
+  end
+
+  defp build_operations(operations, monads) do
     for operation <- operations, {name, monad} <- monads, into: [] do
       build_operation(operation, {name, monad})
     end
   end
 
-  def build_operation(operation, {name, {monad, _pipe}}) do
+  defp build_operation(operation, {name, {monad, _pipe}}) do
     quote do
       require unquote(operation)
       unquote(operation).build(unquote(name), unquote(monad))
