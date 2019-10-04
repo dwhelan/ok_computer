@@ -12,7 +12,8 @@ defmodule OkComputer.Switch do
   @spec switch(module, module) :: Macro.t()
   defmacro switch(monad_ok, monad_error) do
     quote do
-      alias OkComputer.{Pipe, Case}
+      alias OkComputer.Pipe
+      alias OkComputer.Operation.Case
 
       import Pipe
       import Case
