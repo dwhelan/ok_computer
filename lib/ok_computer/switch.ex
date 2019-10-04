@@ -22,10 +22,10 @@ defmodule OkComputer.Switch do
     end
   end
 
-  defp build_pipe({_, {monad, pipe}}) do
+  defp build_pipe({_, {pipe, monad}}) do
     quote do
       alias OkComputer.Operation.Pipe
-      import Pipe
+      require Pipe
       Pipe.build(unquote(pipe), unquote(monad))
     end
   end
@@ -36,7 +36,7 @@ defmodule OkComputer.Switch do
     end
   end
 
-  defp build_operation(operation, {name, {monad, _pipe}}) do
+  defp build_operation(operation, {name, {_pipe, monad}}) do
     quote do
       require unquote(operation)
       unquote(operation).build(unquote(name), unquote(monad))
