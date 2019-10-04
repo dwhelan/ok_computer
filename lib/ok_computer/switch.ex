@@ -15,8 +15,8 @@ defmodule OkComputer.Switch do
       alias OkComputer.Operation.{Pipe, Case}
 
       import Pipe
-      Pipe.build(:ok, unquote(monad_ok), :~>)
-      Pipe.build(:error, unquote(monad_error), :~>>)
+      Pipe.build(:~>, unquote(monad_ok))
+      Pipe.build(:~>>, unquote(monad_error))
 
       import Case
       Case.build(:ok, unquote(monad_ok))

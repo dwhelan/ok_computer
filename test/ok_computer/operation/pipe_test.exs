@@ -1,14 +1,11 @@
-defmodule OkComputer.Operation.PipesTest do
+defmodule OkComputer.Operation.PipeTest do
   alias OkComputer.Monad.{NonNil, Nil}
 
   use ExUnit.Case
   import OkComputer.Operation.Pipe
 
-  def monad_ok(), do: OkComputer.Monad.NonNil
-  def monad_error(), do: OkComputer.Monad.Nil
-
-  build(:foo, NonNil, :~>)
-  build(:foo, Nil, :~>>)
+  build(:~>, NonNil)
+  build(:~>>, Nil)
 
   test "ok pipe" do
     assert(nil ~> to_string() == nil)
