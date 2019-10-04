@@ -15,13 +15,10 @@ defmodule OkComputer.Switch do
       alias OkComputer.Operation.{Pipe, Case}
 
       import Pipe
-      import Case
-
-      def monad_ok(), do: unquote(monad_ok)
-      def monad_error(), do: unquote(monad_error)
-
       Pipe.build(:ok, unquote(monad_ok), :~>)
       Pipe.build(:error, unquote(monad_error), :~>>)
+
+      import Case
       Case.build(:ok, unquote(monad_ok))
       Case.build(:error, unquote(monad_error))
     end

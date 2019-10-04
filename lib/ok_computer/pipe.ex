@@ -18,9 +18,9 @@ defmodule OkComputer.Operation.Pipe do
       :~> -> quote do defmacro left ~> right do pipe(left, right, unquote(monad)) end end
       :~>> -> quote do defmacro left ~>> right do pipe(left, right, unquote(monad)) end end
     end
-    quote do
-      defmacro left ~> right do pipe(left, right, monad_ok()) end
-      defmacro left ~>> right do pipe(left, right, monad_error()) end
-    end
+#    quote do
+#      defmacro left ~> right do pipe(left, right, monad_ok()) end
+#      defmacro left ~>> right do pipe(left, right, monad_error()) end
+#    end
   end
 end
