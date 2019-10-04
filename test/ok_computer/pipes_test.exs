@@ -1,6 +1,6 @@
-defmodule OkComputer.PipesTest do
+defmodule OkComputer.Operation.PipesTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Operation.Pipe
 
   def monad_ok(), do: OkComputer.Monad.NonNil
   def monad_error(), do: OkComputer.Monad.Nil

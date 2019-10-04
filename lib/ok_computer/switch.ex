@@ -12,8 +12,7 @@ defmodule OkComputer.Switch do
   @spec switch(module, module) :: Macro.t()
   defmacro switch(monad_ok, monad_error) do
     quote do
-      alias OkComputer.Pipe
-      alias OkComputer.Operation.Case
+      alias OkComputer.Operation.{Pipe, Case}
 
       import Pipe
       import Case
@@ -21,9 +20,10 @@ defmodule OkComputer.Switch do
       def monad_ok(), do: unquote(monad_ok)
       def monad_error(), do: unquote(monad_error)
 
-      pipe()
-      build(:ok, unquote(monad_ok))
-      build(:error, unquote(monad_error))
+      Pipe.build(:ok, unquote(monad_ok), :~>)
+      Pipe.build(:error, unquote(monad_error), :~>>)
+      Case.build(:ok, unquote(monad_ok))
+      Case.build(:error, unquote(monad_error))
     end
   end
 end

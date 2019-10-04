@@ -1,4 +1,4 @@
-defmodule OkComputer.Pipe do
+defmodule OkComputer.Operation.Pipe do
   @moduledoc """
   Pipe operators for ok and error values.
 
@@ -6,25 +6,28 @@ defmodule OkComputer.Pipe do
 
   The error operator, `~>>`, will pipe error values and return ok values.
   """
+  def pipe(left, right, monad) do
+    quote do
+      unquote(monad).bind(unquote(left), fn _ -> unquote(Macro.pipe(left, right, 0)) end)
+    end
+  end
 
   @spec pipe() :: Macro.t()
   defmacro pipe() do
     quote do
-      @spec Macro.t() ~> Macro.t() :: Macro.t()
-      defmacro left ~> right do
-        quote do
-          unquote(left)
-          |> monad_ok().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
-        end
-      end
+      defmacro left ~> right do pipe(left, right, monad_ok()) end
+      defmacro left ~>> right do pipe(left, right, monad_error()) end
+    end
+  end
 
-      @spec Macro.t() ~>> Macro.t() :: Macro.t()
-      defmacro left ~>> right do
-        quote do
-          unquote(left)
-          |> monad_error().bind(fn _ -> unquote(Macro.pipe(left, right, 0)) end)
-        end
-      end
+  defmacro build(name, monad, operator) do
+    case operator do
+      :~> -> quote do defmacro left ~> right do pipe(left, right, unquote(monad)) end end
+      :~>> -> quote do defmacro left ~>> right do pipe(left, right, unquote(monad)) end end
+    end
+    quote do
+      defmacro left ~> right do pipe(left, right, monad_ok()) end
+      defmacro left ~>> right do pipe(left, right, monad_error()) end
     end
   end
 end
