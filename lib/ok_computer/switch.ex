@@ -16,11 +16,8 @@ defmodule OkComputer.Switch do
     monads = [ok: {monad_ok, :~>}, error: {monad_error, :~>>}]
 
     [
-      for operation <- operations, {name, {monad, pipe}} <- monads, into: [] do
-        quote do
-          require unquote(operation)
-          unquote(operation).build(unquote(name), unquote(monad))
-        end
+      for operation <- operations, {name, monad} <- monads, into: [] do
+        build_operation(operation, {name, monad})
       end,
       quote do
         alias OkComputer.Operation.{Pipe, Case}
@@ -30,5 +27,12 @@ defmodule OkComputer.Switch do
         Pipe.build(:~>>, unquote(monad_error))
       end
     ]
+  end
+
+  def build_operation(operation, {name, {monad, _pipe}}) do
+    quote do
+      require unquote(operation)
+      unquote(operation).build(unquote(name), unquote(monad))
+    end
   end
 end
