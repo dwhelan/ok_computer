@@ -20,11 +20,8 @@ defmodule OkComputer.Operation.Case do
       @monad unquote(monad)
       defmacro unquote(:"case_#{name}")(value, do: clauses) do
         quote do
-          monad = unquote(@monad)
-          value = unquote(value)
-
-          monad.bind(
-            value,
+          unquote(@monad).bind(
+            unquote(value),
             fn value ->
               case(value) do
                 unquote(clauses)
