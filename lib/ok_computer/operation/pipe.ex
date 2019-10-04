@@ -14,14 +14,14 @@ defmodule OkComputer.Operation.Pipe do
       :~> ->
         quote do
           defmacro left ~> right do
-            pipe(left, right, unquote(monad))
+            OkComputer.Operation.Pipe.pipe(left, right, unquote(monad))
           end
         end
 
       :~>> ->
         quote do
           defmacro left ~>> right do
-            pipe(left, right, unquote(monad))
+            OkComputer.Operation.Pipe.pipe(left, right, unquote(monad))
           end
         end
     end

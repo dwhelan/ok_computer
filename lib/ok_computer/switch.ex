@@ -21,6 +21,13 @@ defmodule OkComputer.Switch do
     ]
   end
 
+  defmacro switch2(operations, monads) do
+    [
+      build_operations(operations, monads),
+      build_pipes(monads),
+    ]
+  end
+
   defp build_pipes(monads) do
     for monad <- monads, into: [] do
       build_pipe(monad)
