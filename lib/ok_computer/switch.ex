@@ -7,24 +7,12 @@ defmodule OkComputer.Switch do
   """
 
   @doc """
-  Creates a switch using an ok monad and an error monad.
+  Builds a switch with operators and pipes.
   """
-  @spec switch(module, module) :: Macro.t()
-  defmacro switch(monad_ok, monad_error) do
-    alias OkComputer.Operation.{Pipe, Case}
-    operations = [Case]
-    monads = [ok: {monad_ok, :~>}, error: {monad_error, :~>>}]
-
+  defmacro build(operations, monads) do
     [
       build_operations(operations, monads),
-      build_pipes(monads),
-    ]
-  end
-
-  defmacro switch2(operations, monads) do
-    [
-      build_operations(operations, monads),
-      build_pipes(monads),
+      build_pipes(monads)
     ]
   end
 

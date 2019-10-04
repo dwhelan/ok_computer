@@ -4,5 +4,5 @@ defmodule OkComputer.Switch.True do
 
   import OkComputer.Switch
 
-  switch2([Case], ok: {True, :~>}, error: {False, :~>>})
+  build [Case], ok: {True, :~>}, error: {False, :~>>}
 end
