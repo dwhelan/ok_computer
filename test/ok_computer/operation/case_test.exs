@@ -2,9 +2,6 @@ defmodule OkComputer.Operation.CaseTest do
   use ExUnit.Case
   import OkComputer.Operation.Case
 
-  def monad_ok(), do: OkComputer.Monad.NonNil
-  def monad_error(), do: OkComputer.Monad.Nil
-
   build(:ok, OkComputer.Monad.NonNil)
 
   test "case_ok" do
@@ -23,6 +20,19 @@ defmodule OkComputer.Operation.CaseTest do
   test "case_error" do
     stringify = fn value ->
       case_error value do
+        value -> to_string(value)
+      end
+    end
+
+    assert stringify.(nil) == ""
+    assert stringify.(:anything_else) == :anything_else
+  end
+
+  build(:nil, OkComputer.Monad.Nil)
+
+  test "case_nil" do
+    stringify = fn value ->
+      case_nil value do
         value -> to_string(value)
       end
     end

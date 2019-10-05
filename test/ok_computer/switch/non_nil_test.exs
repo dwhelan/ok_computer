@@ -10,7 +10,7 @@ defmodule OkComputer.Switch.NonNilTest do
     assert :value ~> to_string() == "value"
   end
 
-  test "error pipe" do
+  test "nil pipe" do
     assert nil ~>> to_string() == ""
   end
 
@@ -22,7 +22,7 @@ defmodule OkComputer.Switch.NonNilTest do
     )
   end
 
-  test "case_error" do
+  test "case_nil" do
     assert(
       case_nil nil do
         value -> to_string(value)
