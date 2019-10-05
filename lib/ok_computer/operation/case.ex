@@ -38,4 +38,25 @@ defmodule OkComputer.Operation.Case do
       end
     end
   end
+
+  defmacro build(monad) do
+    name = monad |> Macro.expand(__CALLER__) |> OkComputer.Monad.name()
+
+    quote do
+      @monad unquote(monad)
+
+      defmacro unquote(:"case_#{name}")(value, do: clauses) do
+        quote do
+          unquote(@monad).bind(
+            unquote(value),
+            fn value ->
+              case(value) do
+                unquote(clauses)
+              end
+            end
+          )
+        end
+      end
+    end
+  end
 end

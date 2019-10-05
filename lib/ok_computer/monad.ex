@@ -12,4 +12,10 @@ defmodule OkComputer.Monad do
 
   @impl Monad
   @callback wrap(any) :: any
+
+  def name(monad) do
+      monad |> Module.split() |> List.last |> String.downcase
+  end
+
 end
+
