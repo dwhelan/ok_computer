@@ -22,29 +22,6 @@ end
 - should have properties for each `@behaviour` (<- property based testing)
 - developer friendly: e.g. provide functions that validate Switch, Pipe, Operation, Monad properties
 
-## To do
-- move `wrap` responsibility to `Switch`
-- `ok` case
-  - for `case` clauses; for each clause
-      replace ast `{:<-, _, [left, right]}` with
-                  `{:<-, _, [{:ok, left}, right]}`
-                  
-      in general: `{:<-, _, [left, right]}` with
-                  `{:<-, _, [monad.return(left}, right]}`
-- allow setting of operators to use:
-  ```elixir
-  @spec build(keyword()) :: Macro.t
-  defmacro build_monads(monads) do
-  end
-
-  build_monads ok: Ok, error: Error
-  build_monads ok: {Ok, :~>}, error: Error
-
-  build_operations [Pipe, Case]
-
-  switch [Pipe, Case], ok: {Ok, :~>}, error: {Error, :"->>"}
-  switch ok: {Ok, :~>}, error: {Error, :"->>"} # defaults operations
-  ```
 - `Switch` properties:
   - for any value one and only one of its monads should fire
   
@@ -54,6 +31,10 @@ end
     When that macro is called it will call `monad.bind()` passing a function
     that operates on the value. 
     How that operation is defined is up to each operator   
+
+## To do
+- move `wrap` responsibility to `Switch`
+- create `case_m value, monad` macro?
 - Create Pipe operations and simply have operators delegate to it
 - A switch is an n-ary monad
 - use macros to build Switches like
