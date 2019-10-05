@@ -6,9 +6,10 @@ defmodule OkComputer.Switch.ValueNil do
 
   build [Case], value: {:~>, Value}, nil: {:~>>, Nil}
 
-  # build [{Value, :~>}, {Nil, :~>>}] # just pipes
-  # build [{Value, :~>}, {Nil, :~>>}] # just pipes
-  # build [{Value, :~>}, {Nil, :~>>}], [Case] # pipes and operations
-  # build [Value, Nil], [Case] # just operators
+  # pipes
+  build2(~>: Value, ~>>: Nil)
+  # build [Case], ~>: Value, ~>>: Nil # pipes and operations
+  # build [Case], [Value, Nil] # operators
+
   # build [Value, Nil] # error!
 end

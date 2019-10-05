@@ -16,10 +16,12 @@ defmodule OkComputer.Operation.Case do
   @impl Operation
   @spec build(atom, module) :: Macro.t()
   defmacro build(name, monad) do
-    macro_name = case name do
-      nil -> :"case_nil"
-      _ -> :"case_#{name}"
-    end
+    macro_name =
+      case name do
+        nil -> :case_nil
+        _ -> :"case_#{name}"
+      end
+
     quote do
       @monad unquote(monad)
       defmacro unquote(macro_name)(value, do: clauses) do

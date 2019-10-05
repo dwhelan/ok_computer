@@ -28,7 +28,7 @@ defmodule OkComputer.Operation.CaseTest do
     assert stringify.(:anything_else) == :anything_else
   end
 
-  build(:nil, OkComputer.Monad.Nil)
+  build(nil, OkComputer.Monad.Nil)
 
   test "case_nil" do
     stringify = fn value ->

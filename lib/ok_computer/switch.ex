@@ -9,17 +9,18 @@ defmodule OkComputer.Switch do
   @doc """
   Builds a switch with operators and pipes.
   """
-  defmacro build(operations, monads) do
-    [
-      build_operations(operations, monads),
-      build_pipes(monads)
-    ]
+  defmacro build2(pipes) do
   end
 
-  defp build_pipes(monads) do
-    for monad <- monads, into: [] do
-      build_pipe(monad)
-    end
+  defmacro build(operations, monads) do
+    [
+      for operation <- operations, {name, monad} <- monads do
+        build_operation(operation, {name, monad})
+      end,
+      for monad <- monads do
+        build_pipe(monad)
+      end
+    ]
   end
 
   defp build_pipe({_, {pipe, monad}}) do
@@ -27,12 +28,6 @@ defmodule OkComputer.Switch do
       alias OkComputer.Operation.Pipe
       require Pipe
       Pipe.build(unquote(pipe), unquote(monad))
-    end
-  end
-
-  defp build_operations(operations, monads) do
-    for operation <- operations, {name, monad} <- monads, into: [] do
-      build_operation(operation, {name, monad})
     end
   end
 
