@@ -2,7 +2,7 @@ defmodule OkComputer.Operation.CaseTest do
   use ExUnit.Case
   import OkComputer.Operation.Case
 
-  build(:ok, OkComputer.Monad.NonNil)
+  build(:ok, OkComputer.Monad.Value)
 
   test "case_ok" do
     stringify = fn value ->

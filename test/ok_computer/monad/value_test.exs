@@ -1,9 +1,9 @@
-defmodule OkComputer.Monad.NonNilTest do
-  alias OkComputer.Monad.NonNil
+defmodule OkComputer.Monad.ValueTest do
+  alias OkComputer.Monad.Value
 
   use ExUnit.Case
   import Monad.Laws
-  import NonNil
+  import Value
 
   test "return" do
     assert return(nil) == nil
@@ -15,5 +15,5 @@ defmodule OkComputer.Monad.NonNilTest do
     assert bind(:anything_else, &to_string/1) == "anything_else"
   end
 
-  test_monad(NonNil, :anything_but_nil)
+  test_monad(Value, :anything_but_nil)
 end

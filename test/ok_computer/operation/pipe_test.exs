@@ -1,10 +1,10 @@
 defmodule OkComputer.Operation.PipeTest do
-  alias OkComputer.Monad.{NonNil, Nil}
+  alias OkComputer.Monad.{Value, Nil}
 
   use ExUnit.Case
   import OkComputer.Operation.Pipe
 
-  build(:~>, NonNil)
+  build(:~>, Value)
   build(:~>>, Nil)
 
   test "ok pipe" do
