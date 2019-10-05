@@ -14,17 +14,17 @@ defmodule OkComputer.Switch.TrueTest do
     assert(false ~>> to_string() == "false")
   end
 
-  test "case_ok" do
+  test "case_true" do
     assert(
-      case_ok(true) do
-        value -> to_string(value)
+      case_true(true) do
+        value -> "#{value}"
       end == "true"
     )
   end
 
-  test "case_error" do
+  test "case_false" do
     assert(
-      case_error(false) do
+      case_false(false) do
         value -> to_string(value)
       end == "false"
     )
