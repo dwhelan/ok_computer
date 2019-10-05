@@ -23,7 +23,7 @@ defmodule OkComputer.Switch do
   defp build_pipes(pipe_monads) do
     for {pipe, monad} <- pipe_monads do
       quote do
-        alias OkComputer.Operation.Pipe
+        alias OkComputer.Pipe
         require Pipe
         Pipe.build(unquote(pipe), unquote(monad))
       end

@@ -1,4 +1,4 @@
-defmodule OkComputer.Operation.Pipe do
+defmodule OkComputer.Pipe do
   @moduledoc """
   Builds pipe operations.
   """
@@ -9,19 +9,19 @@ defmodule OkComputer.Operation.Pipe do
   end
 
   @spec build(atom, module) :: Macro.t()
-  defmacro build(operator, monad) do
-    case operator do
+  defmacro build(pipe, monad) do
+    case pipe do
       :~> ->
         quote do
           defmacro left ~> right do
-            OkComputer.Operation.Pipe.pipe(left, right, unquote(monad))
+            OkComputer.Pipe.pipe(left, right, unquote(monad))
           end
         end
 
       :~>> ->
         quote do
           defmacro left ~>> right do
-            OkComputer.Operation.Pipe.pipe(left, right, unquote(monad))
+            OkComputer.Pipe.pipe(left, right, unquote(monad))
           end
         end
     end

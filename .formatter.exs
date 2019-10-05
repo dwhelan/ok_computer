@@ -5,6 +5,6 @@
     "{config,lib,test}/**/*.{ex,exs}"
   ],
   locals_without_parens: [
-    build: 2
+    build: :*
   ]
 ]
