@@ -4,5 +4,5 @@ defmodule OkComputer.Switch.NonNil do
 
   import OkComputer.Switch
 
-  build [Case], ok: {:~>, NonNil}, error: {:~>>, Nil}
+  build [Case], ok: {:~>, NonNil}, nil: {:~>>, Nil}
 end

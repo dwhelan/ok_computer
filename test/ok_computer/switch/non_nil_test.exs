@@ -16,7 +16,7 @@ defmodule OkComputer.Switch.NonNilTest do
 
   test "case_ok" do
     assert(
-      case_ok(:value) do
+      case_ok :value do
         value -> to_string(value)
       end == "value"
     )
@@ -24,7 +24,7 @@ defmodule OkComputer.Switch.NonNilTest do
 
   test "case_error" do
     assert(
-      case_error nil do
+      case_nil nil do
         value -> to_string(value)
       end == ""
     )
