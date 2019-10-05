@@ -1,4 +1,4 @@
-defmodule OkComputer.Switch.True do
+defmodule OkComputer.Switch.TrueFalse do
   alias OkComputer.Monad.{True, False}
   alias OkComputer.Operation.{Case}
 

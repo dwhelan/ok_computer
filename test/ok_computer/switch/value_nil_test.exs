@@ -1,12 +1,12 @@
-defmodule OkComputer.Switch.ValueTest do
-  alias OkComputer.Switch.Value
+defmodule OkComputer.Switch.ValueNilTest do
+  alias OkComputer.Switch.ValueNil
 
   use ExUnit.Case
-  import Value
+  import ValueNil
 
-  doctest Value
+  doctest ValueNil
 
-  test "ok pipe" do
+  test "value pipe" do
     assert :value ~> to_string() == "value"
   end
 
@@ -14,9 +14,9 @@ defmodule OkComputer.Switch.ValueTest do
     assert nil ~>> to_string() == ""
   end
 
-  test "case_ok" do
+  test "case_value" do
     assert(
-      case_ok :value do
+      case_value :value do
         value -> to_string(value)
       end == "value"
     )

@@ -1,10 +1,10 @@
-defmodule OkComputer.Switch.TrueTest do
-  alias OkComputer.Switch.True
+defmodule OkComputer.Switch.TrueFalseTest do
+  alias OkComputer.Switch.TrueFalse
 
   use ExUnit.Case
-  import True
+  import TrueFalse
 
-  doctest True
+  doctest TrueFalse
 
   test "ok pipe" do
     assert(true ~> to_string() == "true")

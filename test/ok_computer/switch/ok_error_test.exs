@@ -1,10 +1,10 @@
-defmodule OkComputer.Switch.OkTest do
-  alias OkComputer.Switch.Ok
+defmodule OkComputer.Switch.OkErrorTest do
+  alias OkComputer.Switch.OkError
 
   use ExUnit.Case
-  import Ok
+  import OkError
 
-  doctest Ok
+  doctest OkError
 
   @tag :skip
   test "ok pipe" do
