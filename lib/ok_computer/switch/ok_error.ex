@@ -4,5 +4,5 @@ defmodule OkComputer.Switch.OkError do
 
   import OkComputer.Switch
 
-  build2 [Case], ~>: Ok, ~>>: Error
+  build([Case], ~>: Ok, ~>>: Error)
 end

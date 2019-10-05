@@ -14,8 +14,6 @@ defmodule OkComputer.Monad do
   @callback wrap(any) :: any
 
   def name(monad) do
-      monad |> Module.split() |> List.last |> String.downcase
+    monad |> Module.split() |> List.last() |> String.downcase()
   end
-
 end
-
