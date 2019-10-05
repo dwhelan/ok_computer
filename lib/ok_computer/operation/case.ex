@@ -15,12 +15,13 @@ defmodule OkComputer.Operation.Case do
   """
   @spec build(module) :: Macro.t()
   defmacro build(monad) do
-    name = monad |> Macro.expand(__CALLER__) |> OkComputer.Monad.name()
+    monad = Macro.expand(monad, __CALLER__)
+    macro_name = :"case_#{OkComputer.Monad.name(monad)}"
 
     quote do
       @monad unquote(monad)
 
-      defmacro unquote(:"case_#{name}")(value, do: clauses) do
+      defmacro unquote(macro_name)(value, do: clauses) do
         quote do
           unquote(@monad).bind(
             unquote(value),
