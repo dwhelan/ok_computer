@@ -1,6 +1,6 @@
 # OkComputer
 
-A library to simplify conditional logic and error handling.
+Pipes on steroids.
 
 ## Installation
 
@@ -24,7 +24,10 @@ end
 
 - `Switch` properties:
   - for any value one and only one of its monads should fire
-  
+  - is a monad
+    - bind should bind to the preferred monad
+      
+
 
 - `Operator` properties:
   - has a `build` macro that returns a macro bound to the input monad.
@@ -37,36 +40,12 @@ end
 - create `case_m value, monad` macro?
 - Create Pipe operations and simply have operators delegate to it
 - A switch is an n-ary monad
-- use macros to build Switches like
-  ```elixir
-  defmacro build_switch([ok: monad_ok, error: monad_error], [Case, Pipe]) do
-    # in a loop
-    quote do
-      def unquote("return_#{key}")(a, f) do
-        unquote(value).return(a, f)
-      end
-    
-      def unquote("bind_#{key}")(a, f) do
-        unquote(value).bind(a, f)
-      end
-    end
-  end
-  ```                  
-- this can be extended to build operations
-  ```elixir
-  defmacro build_operation(name, switch, do: block) do
-    block = quote do
-      
-    end
-    switch_name =  Macro.camelize "#{name}"
-     Module.create(:"#{__MODULE__}.#{switch_name}", block, Macro.Env.location(__ENV__))
-   
-    quote do
-      
-    end
-  end
-  ``` 
 - use string compilation to pass ok_monad and monad_error directly into the code (avoid module attributes)
+- use `Eex` to build operators
+- better error handling
+  - Switch.build with no operations or pipes `build [Value, Nil]`
+  - duplicate pipe operators
+
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/ok_computer](https://hexdocs.pm/ok_computer).

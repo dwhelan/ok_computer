@@ -6,18 +6,18 @@ defmodule OkComputer.Switch.TrueFalseTest do
 
   doctest TrueFalse
 
-  test "ok pipe" do
+  test "true pipe" do
     assert(true ~> to_string() == "true")
   end
 
-  test "error pipe" do
+  test "false pipe" do
     assert(false ~>> to_string() == "false")
   end
 
   test "case_true" do
     assert(
       case_true(true) do
-        value -> "#{value}"
+        value -> to_string(value)
       end == "true"
     )
   end
