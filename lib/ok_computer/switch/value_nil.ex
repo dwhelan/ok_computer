@@ -4,10 +4,10 @@ defmodule OkComputer.Switch.ValueNil do
 
   import OkComputer.Switch
 
-  build [Case], value: {:~>, Value}, nil: {:~>>, Nil}
+  build2 [Case], ~>: Value, ~>>: Nil
 
   # pipes
-  build2(~>: Value, ~>>: Nil)
+#  build2(~>: Value, ~>>: Nil)
   # build [Case], ~>: Value, ~>>: Nil # pipes and operations
   # build [Case], [Value, Nil] # operators
 

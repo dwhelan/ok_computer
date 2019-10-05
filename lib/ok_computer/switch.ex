@@ -13,6 +13,7 @@ defmodule OkComputer.Switch do
     for {pipe, monad} <- pipe_monads do
       quote do
         alias OkComputer.Operation.Pipe
+        require Pipe
         Pipe.build(unquote(pipe), unquote(monad))
       end
     end
@@ -23,12 +24,13 @@ defmodule OkComputer.Switch do
       for operation <- operations, {name, monad} <- pipe_monads do
         quote do
           require unquote(operation)
-          unquote(operation).build(unquote(name), unquote(monad))
+          unquote(operation).build(unquote(monad))
         end
       end,
       for {pipe, monad} <- pipe_monads do
         quote do
           alias OkComputer.Operation.Pipe
+          require Pipe
           Pipe.build(unquote(pipe), unquote(monad))
         end
       end
