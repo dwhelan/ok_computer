@@ -2,6 +2,7 @@ defmodule OkComputer.Switch.ValueNilTest do
   alias OkComputer.Switch.ValueNil
 
   use ExUnit.Case
+  import Monad.Laws
   import ValueNil
 
   doctest ValueNil
@@ -29,4 +30,7 @@ defmodule OkComputer.Switch.ValueNilTest do
       end == ""
     )
   end
+
+  test_monad(ValueNil, :value)
+  test_monad(ValueNil, :nil)
 end
