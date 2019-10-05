@@ -10,9 +10,10 @@ defmodule OkComputer.Switch do
   Builds a switch with operators and pipes.
   """
   defmacro build(operations, pipe_monads) do
+    IO.inspect pipe_monads: pipe_monads, esc: Macro.expand(pipe_monads, __CALLER__)
     [
-      build_operations(operations, pipe_monads),
-      build_pipes(pipe_monads)
+      build_pipes(pipe_monads),
+      build_operations(operations, pipe_monads)
     ]
   end
 
@@ -21,22 +22,36 @@ defmodule OkComputer.Switch do
   end
 
   defp build_pipes(pipe_monads) do
-    for pipe_monad <- pipe_monads, is_tuple(pipe_monad) do
-      {pipe, monad} = pipe_monad
-      quote do
-        alias OkComputer.Pipe
-        require Pipe
-        Pipe.build(unquote(pipe), unquote(monad))
-      end
+    for pipe_monad <- pipe_monads do
+      build_pipe(pipe_monad)
     end
   end
 
+  defp build_pipe({pipe, monad}) do
+    quote do
+      alias OkComputer.Pipe
+      require Pipe
+      Pipe.build(unquote(pipe), unquote(monad))
+    end
+  end
+
+  defp build_pipe(monad) do
+  end
+
   defp build_operations(operations, pipe_monads) do
-    for operation <- operations, {_pipe, monad} <- pipe_monads do
-      quote do
-        require unquote(operation)
-        unquote(operation).build(unquote(monad))
-      end
+    for operation <- operations, pipe_monad <- pipe_monads do
+      build_operation(operation, pipe_monad)
+    end
+  end
+
+  defp build_operation(operation, {_pipe, monad}) do
+    build_operation(operation, monad)
+  end
+
+  defp build_operation(operation, monad) do
+    quote do
+      require unquote(operation)
+      unquote(operation).build(unquote(monad))
     end
   end
 end
