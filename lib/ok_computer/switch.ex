@@ -21,7 +21,8 @@ defmodule OkComputer.Switch do
   end
 
   defp build_pipes(pipe_monads) do
-    for {pipe, monad} <- pipe_monads do
+    for pipe_monad <- pipe_monads, is_tuple(pipe_monad) do
+      {pipe, monad} = pipe_monad
       quote do
         alias OkComputer.Pipe
         require Pipe
@@ -31,7 +32,7 @@ defmodule OkComputer.Switch do
   end
 
   defp build_operations(operations, pipe_monads) do
-    for operation <- operations, {name, monad} <- pipe_monads do
+    for operation <- operations, {_pipe, monad} <- pipe_monads do
       quote do
         require unquote(operation)
         unquote(operation).build(unquote(monad))
