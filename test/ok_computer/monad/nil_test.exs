@@ -14,10 +14,5 @@ defmodule OkComputer.Monad.NilTest do
     assert bind(:anything_else, &to_string/1) == :anything_else
   end
 
-  test "wrap" do
-    assert wrap(nil) == nil
-    assert wrap(:anything_else) == :anything_else
-  end
-
   test_monad(Nil, nil)
 end

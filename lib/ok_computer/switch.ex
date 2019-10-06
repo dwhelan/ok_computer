@@ -5,6 +5,11 @@ defmodule OkComputer.Switch do
   A switch provides pipe operators and macros for handling
   both ok and error values.
   """
+  alias OkComputer.Monad
+
+  @behaviour Monad
+
+  @impl Monad
 
   @doc """
   Builds a switch with operators and pipes.

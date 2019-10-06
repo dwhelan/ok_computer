@@ -10,9 +10,6 @@ defmodule OkComputer.Monad do
   @doc "bind"
   @callback bind(t, (any -> t)) :: t
 
-  @impl Monad
-  @callback wrap(any) :: any
-
   def name(monad) do
     monad |> Module.split() |> List.last() |> String.downcase()
   end

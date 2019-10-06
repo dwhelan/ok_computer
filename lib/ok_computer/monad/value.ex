@@ -9,7 +9,4 @@ defmodule OkComputer.Monad.Value do
   @impl Monad
   def bind(nil, _f), do: nil
   def bind(a, f), do: f.(a)
-
-  @impl Monad
-  def wrap(a), do: a
 end

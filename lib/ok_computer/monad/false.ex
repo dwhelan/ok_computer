@@ -10,7 +10,4 @@ defmodule OkComputer.Monad.False do
   def bind(nil, f), do: f.(nil)
   def bind(false, f), do: f.(false)
   def bind(a, _f), do: a
-
-  @impl Monad
-  def wrap(a), do: a
 end

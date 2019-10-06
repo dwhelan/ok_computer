@@ -17,12 +17,5 @@ defmodule OkComputer.Monad.ErrorTest do
     assert bind({:ok, :value}, f) == {:ok, :value}
   end
 
-  test "wrap" do
-    assert wrap({:ok, :value}) == {:ok, :value}
-    assert wrap({:error, :reason}) == {:error, :reason}
-    assert wrap(nil) == {:error, nil}
-    assert wrap(:value) == {:ok, :value}
-  end
-
   test_monad(Error, :value)
 end

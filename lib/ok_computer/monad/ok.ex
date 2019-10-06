@@ -9,10 +9,4 @@ defmodule OkComputer.Monad.Ok do
   @impl Monad
   def bind({:ok, value}, f), do: f.(value)
   def bind(value, _f), do: value
-
-  @impl Monad
-  def wrap({:ok, value}), do: {:ok, value}
-  def wrap({:error, reason}), do: {:error, reason}
-  def wrap(nil), do: {:error, nil}
-  def wrap(other), do: {:ok, other}
 end
