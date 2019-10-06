@@ -7,9 +7,6 @@ defmodule OkComputer.Switch.TrueFalse do
   build [Case], ~>: True, ~>>: False
 
   @impl Monad
-  def return(a), do: a
-
-  @impl Monad
   def bind(nil, f), do: False.bind(nil, f)
   def bind(false, f), do: False.bind(false, f)
   def bind(a, f), do: True.bind(a, f)

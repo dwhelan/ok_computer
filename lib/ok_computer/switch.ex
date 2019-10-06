@@ -63,13 +63,19 @@ defmodule OkComputer.Switch do
       alias OkComputer.Switch
       import Switch
 
-      @behaviour Switch
       @behaviour Monad
+      @behaviour Switch
 
+      @impl Monad
+      def return(a), do: a
+
+      @impl Switch
       def wrap(a), do: a
+
+      @impl Switch
       def unwrap(a), do: a
 
-      defoverridable wrap: 1, unwrap: 1
+      defoverridable return: 1, wrap: 1, unwrap: 1
     end
   end
 end
