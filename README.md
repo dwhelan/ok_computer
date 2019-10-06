@@ -44,8 +44,18 @@ end
 - use `Eex` to build operators
 - better error handling
   - Switch.build with no operations or pipes `build [Value, Nil]`
-  - duplicate pipe operators
-
+  - check for duplicate pipe operators
+- remove duplication with creating pipes. Something like:
+```elixir
+    source = """
+      defmacro left <%= pipe %> right do
+        quote do
+          <%= monad %>.bind(unquote(left), fn _ -> unquote(Macro.pipe(left, right, 0)) end)
+        end
+      end
+    """
+    EEx.eval_string(source, pipe: pipe, monad: monad)
+```
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/ok_computer](https://hexdocs.pm/ok_computer).

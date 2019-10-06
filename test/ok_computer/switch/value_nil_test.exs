@@ -32,5 +32,5 @@ defmodule OkComputer.Switch.ValueNilTest do
   end
 
   test_monad(ValueNil, :value)
-  test_monad(ValueNil, :nil)
+  test_monad(ValueNil, nil)
 end

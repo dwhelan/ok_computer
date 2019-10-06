@@ -2,12 +2,14 @@ defmodule OkComputer.Switch.ValueNil do
   alias OkComputer.Monad.{Value, Nil}
   alias OkComputer.Operation.{Case}
 
-  import OkComputer.Switch
+  use OkComputer.Switch
 
   build [Case], ~>: Value, ~>>: Nil
 
+  @impl Monad
   def return(a), do: a
 
+  @impl Monad
   def bind(nil, f), do: Nil.bind(nil, f)
   def bind(a, f), do: Value.bind(a, f)
 end

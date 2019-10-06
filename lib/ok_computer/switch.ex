@@ -7,10 +7,6 @@ defmodule OkComputer.Switch do
   """
   alias OkComputer.Monad
 
-  @behaviour Monad
-
-  @impl Monad
-
   @doc """
   Builds a switch with operators and pipes.
   """
@@ -56,6 +52,14 @@ defmodule OkComputer.Switch do
     quote do
       require unquote(operation)
       unquote(operation).build(unquote(monad))
+    end
+  end
+
+  defmacro __using__(_) do
+    quote do
+      import OkComputer.Switch
+
+      @behaviour Monad
     end
   end
 end
