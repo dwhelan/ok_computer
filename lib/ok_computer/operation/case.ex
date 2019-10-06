@@ -35,4 +35,26 @@ defmodule OkComputer.Operation.Case do
       end
     end
   end
+
+  @spec build(module, (any -> Monad.t) ) :: Macro.t()
+  defmacro build(monad, wrap \\ __CALLER__.module) do
+    monad = Macro.expand(monad, __CALLER__)
+    macro_name = :"case_#{OkComputer.Monad.name(monad)}"
+
+    quote do
+      @monad unquote(monad)
+      @wrap unquote(wrap)
+
+      defmacro unquote(macro_name)(value, do: clauses) do
+        quote do
+          unquote(@monad).bind(
+            unquote(unwrap(value)),
+            fn a ->
+              wrap(case(a) do unquote(clauses) end)
+            end
+          )
+        end
+      end
+    end
+  end
 end
