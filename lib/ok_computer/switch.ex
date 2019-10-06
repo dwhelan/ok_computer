@@ -10,7 +10,6 @@ defmodule OkComputer.Switch do
   Builds a switch with operators and pipes.
   """
   defmacro build(operations, pipe_monads) do
-    IO.inspect pipe_monads: pipe_monads, esc: Macro.expand(pipe_monads, __CALLER__)
     [
       build_pipes(pipe_monads),
       build_operations(operations, pipe_monads)
