@@ -2,6 +2,7 @@ defmodule OkComputer.Switch.TrueFalseTest do
   alias OkComputer.Switch.TrueFalse
 
   use ExUnit.Case
+  import Monad.Laws
   import TrueFalse
 
   doctest TrueFalse
@@ -29,4 +30,9 @@ defmodule OkComputer.Switch.TrueFalseTest do
       end == "false"
     )
   end
+
+  test_monad(TrueFalse, :any)
+  test_monad(TrueFalse, true)
+  test_monad(TrueFalse, false)
+  test_monad(TrueFalse, nil)
 end
