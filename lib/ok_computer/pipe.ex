@@ -9,6 +9,7 @@ defmodule OkComputer.Pipe do
   """
   def pipe(a, f, monad) do
     pipe = Macro.pipe(a, f, 0)
+
     quote do
       unquote(monad).bind(unquote(a), fn _ -> unquote(pipe) end)
     end

@@ -1,10 +1,7 @@
 defmodule OkComputer.Monad.Value do
   alias OkComputer.Monad
 
-  @behaviour Monad
-
-  @impl Monad
-  def return(a), do: a
+  use Monad
 
   @impl Monad
   def bind(nil, _f), do: nil

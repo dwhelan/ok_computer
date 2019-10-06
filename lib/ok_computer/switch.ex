@@ -7,8 +7,8 @@ defmodule OkComputer.Switch do
   """
   alias OkComputer.Monad
 
-  @callback wrap(any) :: Monad.t
-  @callback unwrap(Monad.t) :: any
+  @callback wrap(any) :: Monad.t()
+  @callback unwrap(Monad.t()) :: any
 
   @doc """
   Builds a switch with operators and pipes.
@@ -61,13 +61,10 @@ defmodule OkComputer.Switch do
   defmacro __using__(_) do
     quote do
       alias OkComputer.Switch
+      use OkComputer.Monad
       import Switch
 
-      @behaviour Monad
       @behaviour Switch
-
-      @impl Monad
-      def return(a), do: a
 
       @impl Switch
       def wrap(a), do: a
@@ -75,7 +72,7 @@ defmodule OkComputer.Switch do
       @impl Switch
       def unwrap(a), do: a
 
-      defoverridable return: 1, wrap: 1, unwrap: 1
+      defoverridable wrap: 1, unwrap: 1
     end
   end
 end

@@ -17,5 +17,6 @@ defmodule OkComputer.Monad.OkTest do
     assert bind({:ok, :value}, f) == {:ok, "value"}
   end
 
+  test_monad(Ok, {:ok, :value})
   test_monad(Ok, :value)
 end
