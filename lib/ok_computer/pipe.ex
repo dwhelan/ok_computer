@@ -2,9 +2,15 @@ defmodule OkComputer.Pipe do
   @moduledoc """
   Builds pipe operations.
   """
-  def pipe(left, right, monad) do
+  @doc """
+  Creates ast for `monad.bind(a, fn _ -> a |> f)`.
+
+  `f` must be an acceptable `right` for a standard pipe `|>`
+  """
+  def pipe(a, f, monad) do
+    pipe = Macro.pipe(a, f, 0)
     quote do
-      unquote(monad).bind(unquote(left), fn _ -> unquote(Macro.pipe(left, right, 0)) end)
+      unquote(monad).bind(unquote(a), fn _ -> unquote(pipe) end)
     end
   end
 
@@ -13,15 +19,15 @@ defmodule OkComputer.Pipe do
     case pipe do
       :~> ->
         quote do
-          defmacro left ~> right do
-            OkComputer.Pipe.pipe(left, right, unquote(monad))
+          defmacro a ~> f do
+            OkComputer.Pipe.pipe(a, f, unquote(monad))
           end
         end
 
       :~>> ->
         quote do
-          defmacro left ~>> right do
-            OkComputer.Pipe.pipe(left, right, unquote(monad))
+          defmacro a ~>> f do
+            OkComputer.Pipe.pipe(a, f, unquote(monad))
           end
         end
     end
