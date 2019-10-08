@@ -26,8 +26,6 @@ end
   - is a monad via delegation
     - switch decides which monad to delegate to
       
-
-
 - `Operator` properties:
   - has a `build` macro that returns a macro bound to the input monad.
     When that macro is called it will call `monad.bind()` passing a function

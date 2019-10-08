@@ -30,7 +30,16 @@ defmodule OkComputer.Operation.CaseWithWrapperTest do
   build Value, __MODULE__
 
   test "case_value" do
-    assert(case_value :value do a -> to_string(a) end == {:ok, "value"} )
-    assert(case_value :value do a -> {:ok, to_string(a)} end == {:ok, "value"})
+    assert(
+      case_value :value do
+        a -> to_string(a)
+      end == {:ok, "value"}
+    )
+
+    assert(
+      case_value :value do
+        a -> {:ok, to_string(a)}
+      end == {:ok, "value"}
+    )
   end
 end

@@ -10,6 +10,9 @@ defmodule OkComputer.Monad do
   @doc "bind"
   @callback bind(t, (any -> t)) :: t
 
+  @doc "fmap"
+  @callback fmap(t, (any -> any)) :: t
+
   def name(monad) do
     monad
     |> Module.split()
@@ -26,6 +29,9 @@ defmodule OkComputer.Monad do
 
       @impl Monad
       def return(a), do: a
+
+      @impl Monad
+      def fmap(a, f), do: bind(a, fn a -> f.(a) |> return() end)
 
       defoverridable return: 1
     end
