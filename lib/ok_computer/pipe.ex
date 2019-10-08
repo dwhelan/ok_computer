@@ -5,9 +5,9 @@ defmodule OkComputer.Pipe do
   @doc """
   Creates ast for `monad.bind(m, fn a -> a |> f)`.
   """
-  def bind_pipe(lhs, rhs, module) do
+  def bind_pipe(lhs, rhs, module, function) do
     quote do
-      unquote(module).bind(unquote(lhs), fn a -> a |> unquote(rhs) end)
+      unquote(module).unquote(function)(unquote(lhs), fn a -> a |> unquote(rhs) end)
     end
   end
 
@@ -17,14 +17,14 @@ defmodule OkComputer.Pipe do
       :~> ->
         quote do
           defmacro lhs ~> rhs do
-            OkComputer.Pipe.bind_pipe(lhs, rhs, unquote(module))
+            OkComputer.Pipe.bind_pipe(lhs, rhs, unquote(module), :bind)
           end
         end
 
       :~>> ->
         quote do
           defmacro lhs ~>> rhs do
-            OkComputer.Pipe.bind_pipe(lhs, rhs, unquote(module))
+            OkComputer.Pipe.bind_pipe(lhs, rhs, unquote(module), :bind)
           end
         end
     end
