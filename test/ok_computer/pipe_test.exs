@@ -1,20 +1,18 @@
 defmodule OkComputer.PipeTest do
-  alias OkComputer.Monad.{Value, Nil}
+  alias OkComputer.Monad.Value
 
   use ExUnit.Case
   import OkComputer.Pipe
 
   build :~>, Value, :bind
 
-  test "value pipe" do
-    assert(nil ~> to_string() == nil)
-    assert(:anything_else ~> to_string() == "anything_else")
+  test :~> do
+    assert :a ~> to_string() == "a"
   end
 
-  build :~>>, Nil, :bind
+  build :~>>, Value, :bind
 
-  test "nil pipe" do
-    assert(nil ~>> to_string() == "")
-    assert(:anything_else ~>> to_string() == :anything_else)
+  test :~>> do
+    assert :a ~>> to_string() == "a"
   end
 end

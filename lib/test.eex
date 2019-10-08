@@ -1,0 +1,7 @@
+<%=
+  quote do
+    defmacro lhs ~> rhs do
+      OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
+    end
+  end
+%>
