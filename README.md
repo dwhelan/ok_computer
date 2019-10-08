@@ -1,6 +1,5 @@
 # OkComputer
-
-Pipes on steroids.
+Supports railway programming using pipes.
 
 ## Installation
 
@@ -24,8 +23,8 @@ end
 
 - `Switch` properties:
   - for any value one and only one of its monads should fire
-  - is a monad
-    - bind should bind to the preferred monad
+  - is a monad via delegation
+    - switch decides which monad to delegate to
       
 
 
@@ -37,6 +36,10 @@ end
 
 ## To do
 - move `wrap` responsibility to `Switch`
+- update Switch to include fmap and remove Operations
+  - `build Ok: :~>, Error: :<~ # builds fmap only pipes`
+  - `build Ok: {:~>, :~>>}, Error: {:<~, :<<~} # builds fmap and bind pipes`
+  - `build Ok, Error # builds standard pipes`
 - create `case_m value, monad` macro?
 - Create Pipe operations and simply have operators delegate to it
 - A switch is an n-ary monad
