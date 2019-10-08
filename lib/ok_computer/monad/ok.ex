@@ -1,7 +1,7 @@
 defmodule OkComputer.Monad.Ok do
   alias OkComputer.Monad
 
-  @behaviour Monad
+  use Monad
 
   @impl Monad
   def return(value), do: {:ok, value}
