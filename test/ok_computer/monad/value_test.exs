@@ -15,5 +15,6 @@ defmodule OkComputer.Monad.ValueTest do
     assert bind(:anything_else, &to_string/1) == "anything_else"
   end
 
+  # test_monad(Value, nil) <- this fails
   test_monad(Value, :anything_but_nil)
 end

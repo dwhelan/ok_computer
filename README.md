@@ -56,6 +56,20 @@ end
       end
     """
     EEx.eval_string(source, pipe: pipe, monad: monad)
+
+    # This does not work, considered creating a module with the macro but seems too complicated    
+    source = """
+      <%=
+      defmacro lhs ~> rhs do
+        quote do
+          OkComputer.Monad.Value.fmap(unquote(lhs), fn a -> a |> unquote(rhs) end)
+        end
+      end
+      %>
+    """
+
+    EEx.eval_string(source) #, module: module, function: function)
+    
 ```
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
