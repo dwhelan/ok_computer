@@ -4,14 +4,14 @@ defmodule OkComputer.PipeTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  build :~>, Value
+  build :~>, Value, :bind
 
   test "value pipe" do
     assert(nil ~> to_string() == nil)
     assert(:anything_else ~> to_string() == "anything_else")
   end
 
-  build :~>>, Nil
+  build :~>>, Nil, :bind
 
   test "nil pipe" do
     assert(nil ~>> to_string() == "")
