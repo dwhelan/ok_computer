@@ -5,26 +5,26 @@ defmodule OkComputer.Pipe do
   @doc """
   Creates ast for `monad.bind(m, fn a -> a |> f)`.
   """
-  def bind_pipe(m, f, monad) do
+  def bind_pipe(lhs, rhs, module) do
     quote do
-      unquote(monad).bind(unquote(m), fn a -> a |> unquote(f) end)
+      unquote(module).bind(unquote(lhs), fn a -> a |> unquote(rhs) end)
     end
   end
 
   @spec build(atom, module) :: Macro.t()
-  defmacro build(pipe, monad) do
+  defmacro build(pipe, module) do
     case pipe do
       :~> ->
         quote do
-          defmacro m ~> f do
-            OkComputer.Pipe.bind_pipe(m, f, unquote(monad))
+          defmacro lhs ~> rhs do
+            OkComputer.Pipe.bind_pipe(lhs, rhs, unquote(module))
           end
         end
 
       :~>> ->
         quote do
-          defmacro m ~>> f do
-            OkComputer.Pipe.bind_pipe(m, f, unquote(monad))
+          defmacro lhs ~>> rhs do
+            OkComputer.Pipe.bind_pipe(lhs, rhs, unquote(module))
           end
         end
     end
