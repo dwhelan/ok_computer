@@ -29,13 +29,17 @@ defmodule OkComputer.Pipe do
   end
 
   @spec pipe(module, keyword(atom)) :: Macro.t()
-  defmacro pipe(module, pipes) do
-    pipes
-    |> Enum.map(fn {function, pipe} -> _pipe(module, function, pipe) end)
+  defmacro pipe(module, []) do
+    raise ArgumentError, "must provide at least one function to pipe"
   end
 
-  defp _pipe(module, function, pipe) do
-    case pipe do
+  defmacro pipe(module, operators \\ [fmap: :~>, bind: :~>>]) do
+    operators
+    |> Enum.map(fn {function, operator} -> _pipe(module, function, operator) end)
+  end
+
+  defp _pipe(module, function, operator) do
+    case operator do
       :~> ->
         quote do
           defmacro lhs ~> rhs do
