@@ -28,15 +28,10 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  @spec build(module, keyword(atom)) :: Macro.t()
-  defmacro build(module, pipes) do
+  @spec pipes(module, keyword(atom)) :: Macro.t()
+  defmacro pipes(module, pipes) do
     pipes
     |> Enum.map(fn {function, pipe} -> _pipe(module, function, pipe) end)
-  end
-
-  @spec build(module, atom, atom) :: Macro.t()
-  defmacro build(module, function, pipe) do
-    _pipe(module, function, pipe)
   end
 
   defp _pipe(module, function, pipe) do

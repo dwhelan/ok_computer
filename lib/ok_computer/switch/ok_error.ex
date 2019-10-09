@@ -1,18 +1,11 @@
 defmodule OkComputer.Switch.OkError do
   @moduledoc """
-
-  ```
-  pipe Ok:    [~>: :fmap, ~>>: :bind],
-       Error: [<~: :fmap, <<~: :bind]
-
-  pipe Ok:    [fmap: :~>, bind: :~>>],
-       Error: [fmap: :<~, bind: :<<~]
-  ```
+g
   """
   alias OkComputer.Monad.{Ok, Error}
 
   import OkComputer.Pipe
 
-  build Ok, fmap: :~>,  bind: :~>>
-  build Error, fmap: :<~,  bind: :<<~
+  pipes Ok, fmap: :~>,  bind: :~>>
+  pipes Error, fmap: :<~,  bind: :<<~
 end
