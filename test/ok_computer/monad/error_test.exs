@@ -18,4 +18,5 @@ defmodule OkComputer.Monad.ErrorTest do
   end
 
   test_monad(Error, :value)
+  test_monad(Error, nil)
 end

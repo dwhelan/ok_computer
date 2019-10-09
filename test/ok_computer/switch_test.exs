@@ -1,5 +1,5 @@
 defmodule OkComputer.SwitchPipeTest do
-  alias OkComputer.Monad.{Value, Nil}
+  alias OkComputer.Pipe.{Value, Nil}
 
   use ExUnit.Case
   import OkComputer.Switch
@@ -16,7 +16,7 @@ defmodule OkComputer.SwitchPipeTest do
 end
 
 defmodule OkComputer.SwitchOperatorTest do
-  alias OkComputer.Monad.{Value, Nil}
+  alias OkComputer.Pipe.{Value, Nil}
   alias OkComputer.Operation.Case
 
   use ExUnit.Case
@@ -42,7 +42,7 @@ defmodule OkComputer.SwitchOperatorTest do
 end
 
 defmodule OkComputer.Switch.PipeAndOperatorTest do
-  alias OkComputer.Monad.{Value, Nil}
+  alias OkComputer.Pipe.{Value, Nil}
   alias OkComputer.Operation.Case
 
   use ExUnit.Case

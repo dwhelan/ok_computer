@@ -1,5 +1,5 @@
 defmodule OkComputer.Operation.CaseTest do
-  alias OkComputer.Monad.Value
+  alias OkComputer.Pipe.Value
 
   use ExUnit.Case
   import OkComputer.Operation.Case
@@ -16,7 +16,7 @@ defmodule OkComputer.Operation.CaseTest do
 end
 
 defmodule OkComputer.Operation.CaseWithWrapperTest do
-  alias OkComputer.Monad.Value
+  alias OkComputer.Pipe.Value
 
   use ExUnit.Case
   import OkComputer.Operation.Case

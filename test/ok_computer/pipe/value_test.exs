@@ -1,5 +1,5 @@
-defmodule OkComputer.Monad.ValueTest do
-  alias OkComputer.Monad.Value
+defmodule OkComputer.Pipe.ValueTest do
+  alias OkComputer.Pipe.Value
 
   use ExUnit.Case
   import Monad.Laws

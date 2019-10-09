@@ -1,5 +1,5 @@
-defmodule OkComputer.Monad.TrueTest do
-  alias OkComputer.Monad.True
+defmodule OkComputer.Pipe.TrueTest do
+  alias OkComputer.Pipe.True
 
   use ExUnit.Case
   import Monad.Laws

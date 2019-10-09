@@ -62,7 +62,7 @@ end
       <%=
       defmacro lhs ~> rhs do
         quote do
-          OkComputer.Monad.Value.fmap(unquote(lhs), fn a -> a |> unquote(rhs) end)
+          OkComputer.Pipe.Value.fmap(unquote(lhs), fn a -> a |> unquote(rhs) end)
         end
       end
       %>

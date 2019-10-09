@@ -7,18 +7,9 @@ defmodule OkComputer.Pipe do
   - `|>`, `<<<`, `>>>`, `<<~`, `~>>`, `<~`, `~>`, `<->`, `<|>`
   - `<`, `>`, `<=`, `>=`, `==`, `!=`, `=~`, `===`, `!==`, `&&`, `&&&`, `and`, `||`, `|||`, `or`, ``
   - `<-`, `\\`
-
-  Suggestion:
-  ~> ok with fmap
-  ~>> ok with bind
-  <~ handle error with fmap
-  <<~ handle error with bind
-
-  >>> ok with third option
-  <<< handle error third option
-
-  >>>
   """
+
+
   @doc """
   Creates ast for `monad.bind(m, fn a -> a |> f)`.
   """

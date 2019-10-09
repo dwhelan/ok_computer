@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad.False do
+defmodule OkComputer.Pipe.False do
   alias OkComputer.Monad
 
   use Monad

@@ -2,7 +2,7 @@ defmodule OkComputer.PipeDefaultTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Monad.Value
+  pipe OkComputer.Pipe.Value
 
   test :~> do
     assert :a ~> to_string() == "a"
@@ -17,7 +17,7 @@ defmodule OkComputer.PipeBindOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Monad.Value, bind: :~>>
+  pipe OkComputer.Pipe.Value, bind: :~>>
 
   test :~>> do
     assert :a ~>> to_string() == "a"
@@ -28,7 +28,7 @@ defmodule OkComputer.PipeFmapOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Monad.Value, fmap: :~>
+  pipe OkComputer.Pipe.Value, fmap: :~>
 
   test :~> do
     assert :a ~> to_string() == "a"
@@ -36,16 +36,13 @@ defmodule OkComputer.PipeFmapOnlyTest do
 end
 
 defmodule OkComputer.PipeTest do
-  alias OkComputer.Monad.Value
-
   use ExUnit.Case
-  import OkComputer.Pipe
 
   test "must provide at least one function to pipe" do
     source = """
       defmodule EmptySwitch do
         import OkComputer.Pipe
-        pipe OkComputer.Monad.Value, []
+        pipe OkComputer.Pipe.Value, []
       end
     """
     assert_raise ArgumentError, fn -> Code.eval_string(source) end

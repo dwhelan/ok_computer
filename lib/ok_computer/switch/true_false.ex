@@ -1,5 +1,5 @@
 defmodule OkComputer.Switch.TrueFalse do
-  alias OkComputer.Monad.{True, False}
+  alias OkComputer.Pipe.{True, False}
   alias OkComputer.Operation.{Case}
 
   use OkComputer.Switch

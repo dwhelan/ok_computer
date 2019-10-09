@@ -1,6 +1,6 @@
-defmodule OkComputer.Monad.NilTest do
+defmodule OkComputer.Pipe.NilTest do
   use ExUnit.Case
-  alias OkComputer.Monad.Nil
+  alias OkComputer.Pipe.Nil
   import Monad.Laws
   import Nil
 
@@ -15,4 +15,5 @@ defmodule OkComputer.Monad.NilTest do
   end
 
   test_monad(Nil, nil)
+#  test_monad(Nil, true)
 end

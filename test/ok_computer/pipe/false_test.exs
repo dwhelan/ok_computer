@@ -1,5 +1,5 @@
-defmodule OkComputer.Monad.FalseTest do
-  alias OkComputer.Monad.False
+defmodule OkComputer.Pipe.FalseTest do
+  alias OkComputer.Pipe.False
 
   use ExUnit.Case
   import Monad.Laws
@@ -19,4 +19,5 @@ defmodule OkComputer.Monad.FalseTest do
 
   test_monad(False, nil)
   test_monad(False, false)
+#  test_monad(False, true)
 end

@@ -1,5 +1,5 @@
 defmodule OkComputer.Switch.ValueNil do
-  alias OkComputer.Monad.{Value, Nil}
+  alias OkComputer.Pipe.{Value, Nil}
   alias OkComputer.Operation.{Case}
 
   use OkComputer.Switch
