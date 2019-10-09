@@ -4,13 +4,13 @@ defmodule OkComputer.PipeTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  build :~>, Value, :bind
+  build Value, :bind, :~>
 
   test :~> do
     assert :a ~> to_string() == "a"
   end
 
-  build :~>>, Value, :bind
+  build Value, :bind, :~>>
 
   test :~>> do
     assert :a ~>> to_string() == "a"

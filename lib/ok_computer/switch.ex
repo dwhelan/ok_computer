@@ -34,7 +34,7 @@ defmodule OkComputer.Switch do
     quote do
       alias OkComputer.Pipe
       require Pipe
-      Pipe.build(unquote(pipe), unquote(monad), :bind)
+      Pipe.build(unquote(monad), :bind, unquote(pipe))
     end
   end
 

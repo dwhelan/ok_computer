@@ -28,8 +28,8 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  @spec build(atom, module, atom) :: Macro.t()
-  defmacro build(pipe, module, function) do
+  @spec build(module, atom, atom) :: Macro.t()
+  defmacro build(module, function, pipe) do
     case pipe do
       :~> ->
         quote do
