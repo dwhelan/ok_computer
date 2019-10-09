@@ -13,6 +13,6 @@ defmodule OkComputer.Switch.OkError do
 
   import OkComputer.Pipe
 
-  build Ok, :fmap, :~>
-  build  Ok, :bind, :~>>
+  build Ok, fmap: :~>,  bind: :~>>
+  build Error, fmap: :<~,  bind: :<<~
 end
