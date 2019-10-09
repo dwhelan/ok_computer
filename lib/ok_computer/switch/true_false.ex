@@ -1,13 +1,8 @@
 defmodule OkComputer.Switch.TrueFalse do
   alias OkComputer.Pipe.{True, False}
-  alias OkComputer.Operation.{Case}
 
-  use OkComputer.Switch
+  import OkComputer.Pipe
 
-  build [Case], ~>: True, ~>>: False
-
-  @impl Monad
-  def bind(nil, f), do: False.bind(nil, f)
-  def bind(false, f), do: False.bind(false, f)
-  def bind(a, f), do: True.bind(a, f)
+  pipe True, fmap: :~>, bind: :~>>
+  pipe False, fmap: :<~, bind: :<<~
 end

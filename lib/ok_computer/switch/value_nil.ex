@@ -1,12 +1,8 @@
 defmodule OkComputer.Switch.ValueNil do
   alias OkComputer.Pipe.{Value, Nil}
-  alias OkComputer.Operation.{Case}
 
-  use OkComputer.Switch
+  import OkComputer.Pipe
 
-  build [Case], ~>: Value, ~>>: Nil
-
-  @impl Monad
-  def bind(nil, f), do: Nil.bind(nil, f)
-  def bind(a, f), do: Value.bind(a, f)
+  pipe Value, fmap: :~>, bind: :~>>
+  pipe Nil, fmap: :<~, bind: :<<~
 end

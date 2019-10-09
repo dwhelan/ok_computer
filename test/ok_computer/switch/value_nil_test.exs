@@ -7,30 +7,23 @@ defmodule OkComputer.Switch.ValueNilTest do
 
   doctest ValueNil
 
-  test "value pipe" do
-    assert :value ~> to_string() == "value"
+  test "~>" do
+    assert :a ~> to_string() == "a"
+    assert nil ~> to_string() == nil
   end
 
-  test "nil pipe" do
-    assert nil ~>> to_string() == ""
+  test "~>>" do
+    assert :a ~>> to_string() == "a"
+    assert nil ~>> to_string() == nil
   end
 
-  test "case_value" do
-    assert(
-      case_value :value do
-        value -> to_string(value)
-      end == "value"
-    )
+  test "<~" do
+    assert :a <~ to_string() == :a
+    assert nil <~ to_string() == ""
   end
 
-  test "case_nil" do
-    assert(
-      case_nil nil do
-        value -> to_string(value)
-      end == ""
-    )
+  test "<<~" do
+    assert :a <~ to_string() == :a
+    assert nil <~ to_string() == ""
   end
-
-  test_monad(ValueNil, :value)
-  test_monad(ValueNil, nil)
 end
