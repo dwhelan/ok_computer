@@ -1,8 +1,10 @@
 defmodule OkComputer.Switch.OkError do
   alias OkComputer.Monad.{Ok, Error}
-  alias OkComputer.Operation.{Case}
 
-  import OkComputer.Switch
+  import OkComputer.Pipe
 
-  build [Case], ~>: Ok, ~>>: Error
+  build :~>, Ok, :fmap
+  build :~>>, Ok, :bind
+
+#  build Ok: [~>: :fmap, ~>>: :bind]
 end

@@ -1,6 +1,23 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
   Builds monadic pipes.
+
+  Pipe operators are limited to binary operators that associate left to right:
+  - `.`, `*`, `/`, `+`, `-`, `^^^`, `in`, `not in`,
+  - `|>`, `<<<`, `>>>`, `<<~`, `~>>`, `<~`, `~>`, `<->`, `<|>`
+  - `<`, `>`, `<=`, `>=`, `==`, `!=`, `=~`, `===`, `!==`, `&&`, `&&&`, `and`, `||`, `|||`, `or`, ``
+  - `<-`, `\\`
+
+  Suggestion:
+  ~> ok with fmap
+  ~>> ok with bind
+  <~ handle error with fmap
+  <<~ handle error with bind
+
+  >>> ok with third option
+  <<< handle error third option
+
+  >>>
   """
   @doc """
   Creates ast for `monad.bind(m, fn a -> a |> f)`.
@@ -24,6 +41,20 @@ defmodule OkComputer.Pipe do
       :~>> ->
         quote do
           defmacro lhs ~>> rhs do
+            OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
+          end
+        end
+
+      :<~ ->
+        quote do
+          defmacro lhs <~ rhs do
+            OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
+          end
+        end
+
+      :<<~ ->
+        quote do
+          defmacro lhs <<~ rhs do
             OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
           end
         end
