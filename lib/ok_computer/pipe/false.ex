@@ -1,9 +1,8 @@
 defmodule OkComputer.Pipe.False do
-  alias OkComputer.Monad
+  alias OkComputer.Pipe
+  use Pipe
 
-  use Monad
-
-  @impl Monad
+  @impl Pipe
   def bind(nil, f), do: f.(nil)
   def bind(false, f), do: f.(false)
   def bind(a, _f), do: a

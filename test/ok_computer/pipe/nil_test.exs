@@ -4,16 +4,13 @@ defmodule OkComputer.Pipe.NilTest do
   import Monad.Laws
   import Nil
 
-  test "return" do
-    assert return(nil) == nil
-    assert return(:anything_else) == :anything_else
-  end
-
   test "bind" do
     assert bind(nil, &to_string/1) == ""
     assert bind(:anything_else, &to_string/1) == :anything_else
   end
 
-  test_monad(Nil, nil)
-#  test_monad(Nil, true)
+  test "fmap" do
+    assert fmap(nil, &to_string/1) == ""
+    assert fmap(:anything_else, &to_string/1) == :anything_else
+  end
 end

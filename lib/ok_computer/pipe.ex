@@ -9,6 +9,28 @@ defmodule OkComputer.Pipe do
   - `<-`, `\\`
   """
 
+  @type t :: any
+
+  @doc "bind"
+  @callback bind(t, (any -> t)) :: t
+
+  @doc "fmap"
+  @callback fmap(t, (any -> any)) :: t
+
+
+  defmacro __using__(_) do
+    quote do
+      alias OkComputer.Pipe
+      import Pipe
+
+      @behaviour Pipe
+
+      @impl Pipe
+      def fmap(a, f), do: bind(a, f)
+
+      defoverridable fmap: 2
+    end
+  end
 
   @doc """
   Creates ast for `monad.bind(m, fn a -> a |> f)`.
