@@ -6,6 +6,6 @@
   ],
   locals_without_parens: [
     build: :*,
-    pipes: 2
+    pipe: 2
   ]
 ]
