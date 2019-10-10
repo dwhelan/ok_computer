@@ -84,22 +84,15 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  defp pipe_macro(operator, module, function, env) do
-    """
-      defmacro lhs #{operator} rhs do
-        quote do
-          #{Macro.expand(module, env)}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
-         end
-      end
-    """
-  end
-
   defmacro foo(pipes) do
     pipe_macros =
       pipes
+      |> List.wrap()
       |> Enum.map(fn
-        {:~>, module} -> pipe_macro(:~>, module, :fmap, __CALLER__)
-        {:~>>, module} -> pipe_macro(:~>>, module, :bind, __CALLER__)
+        {:__aliases__, _, _} = alias -> pipe_macro(:~>, alias, :fmap, __CALLER__) <> pipe_macro(:~>>, alias, :bind, __CALLER__)
+        {:~>, alias} -> pipe_macro(:~>, alias, :fmap, __CALLER__)
+        {:~>>, alias} -> pipe_macro(:~>>, alias, :bind, __CALLER__)
+        x -> raise inspect x
       end)
       |> Enum.join()
 
@@ -112,5 +105,15 @@ defmodule OkComputer.Pipe do
     quote do
       import __MODULE__.Pipes
     end
+  end
+
+  defp pipe_macro(operator, alias, function, env) do
+    """
+      defmacro lhs #{operator} rhs do
+        quote do
+          #{Macro.expand(alias, env)}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
+         end
+      end
+    """
   end
 end

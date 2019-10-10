@@ -2,7 +2,7 @@ defmodule OkComputer.PipeDefaultTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe(OkComputer.Pipe.Value)
+  foo OkComputer.Pipe.Value
 
   test :~> do
     assert :a ~> to_string() == "a"
