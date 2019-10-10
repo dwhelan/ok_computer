@@ -3,6 +3,6 @@ defmodule OkComputer.Switch.ValueNil do
 
   import OkComputer.Pipe
 
-  pipe Value, fmap: :~>, bind: :~>>
+  pipe(Value)
   pipe Nil, fmap: :<~, bind: :<<~
 end

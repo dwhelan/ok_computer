@@ -3,6 +3,6 @@ defmodule OkComputer.Switch.TrueFalse do
 
   import OkComputer.Pipe
 
-  pipe True, fmap: :~>, bind: :~>>
+  pipe(True)
   pipe False, fmap: :<~, bind: :<<~
 end

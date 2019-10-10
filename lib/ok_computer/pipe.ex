@@ -17,7 +17,6 @@ defmodule OkComputer.Pipe do
   @doc "fmap"
   @callback fmap(t, (any -> any)) :: t
 
-
   defmacro __using__(_) do
     quote do
       alias OkComputer.Pipe
@@ -42,11 +41,12 @@ defmodule OkComputer.Pipe do
   end
 
   @spec pipe(module, keyword(atom)) :: Macro.t()
-  defmacro pipe(module, []) do
+  defmacro pipe(module, operators \\ [fmap: :~>, bind: :~>>])
+  defmacro pipe(_module, []) do
     raise ArgumentError, "must provide at least one function to pipe"
   end
 
-  defmacro pipe(module, operators \\ [fmap: :~>, bind: :~>>]) do
+  defmacro pipe(module, operators) do
     operators
     |> Enum.map(fn {function, operator} -> _pipe(module, function, operator) end)
   end

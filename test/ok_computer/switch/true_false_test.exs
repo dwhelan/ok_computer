@@ -6,5 +6,4 @@ defmodule OkComputer.Switch.TrueFalseTest do
   import TrueFalse
 
   doctest TrueFalse
-
 end

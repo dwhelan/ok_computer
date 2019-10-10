@@ -14,4 +14,3 @@ defmodule OkComputer.SwitchPipeTest do
     assert nil ~>> to_string() == ""
   end
 end
-
