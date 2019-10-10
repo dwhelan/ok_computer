@@ -1,18 +1,3 @@
-defmodule OkComputer.PipeDefaultTest do
-  use ExUnit.Case
-  import OkComputer.Pipe
-
-  pipe(OkComputer.Pipe.Value)
-
-  test :~> do
-    assert :a ~> to_string() == "a"
-  end
-
-  test :~>> do
-    assert :a ~>> to_string() == "a"
-  end
-end
-
 defmodule OkComputer.PipeBindOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe

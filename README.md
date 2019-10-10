@@ -67,9 +67,28 @@ end
       end
       %>
     """
-
     EEx.eval_string(source) #, module: module, function: function)
-    
+
+    # Or this    
+    defmacro foo do
+      operator = :~>
+      module = OkComputer.Monad.Value
+      function = :bind
+      source = """
+        defmodule #{__MODULE__}.Pipes do
+          defmacro lhs #{operator} rhs do
+            OkComputer.Pipe.monadic(lhs, rhs, #{module}, #{function})
+          end
+        end
+      """
+      Code.compile_string(source)
+      quote do
+        require EEx
+        EEx.function_from_string(:def, :bar, unquote(source), [])
+        __MODULE__.bar()
+      end
+    end
+  
 ```
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can

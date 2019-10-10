@@ -82,4 +82,31 @@ defmodule OkComputer.Pipe do
         end
     end
   end
+
+  defmacro foo do
+    operator = :~>
+    module = OkComputer.Pipe.Value
+    function = :bind
+    source = """
+      defmodule #{__CALLER__.module}.Pipes do
+        defmacro lhs #{operator} rhs do
+          quote do
+            #{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
+           end
+        end
+      end
+    """
+    Code.compile_string(source)
+
+    quote do
+      import __MODULE__.Pipes
+    end
+  end
 end
+
+defmodule Foo do
+  import OkComputer.Pipe
+
+  foo
+end
+
