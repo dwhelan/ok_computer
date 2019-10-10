@@ -88,12 +88,7 @@ defmodule OkComputer.Pipe do
     pipe_macros =
       pipes
       |> List.wrap()
-      |> Enum.map(fn
-        {:__aliases__, _, _} = alias -> pipe_macro(:~>, alias, :fmap, __CALLER__) <> pipe_macro(:~>>, alias, :bind, __CALLER__)
-        {:~>, alias} -> pipe_macro(:~>, alias, :fmap, __CALLER__)
-        {:~>>, alias} -> pipe_macro(:~>>, alias, :bind, __CALLER__)
-        x -> raise inspect x
-      end)
+      |> Enum.map(fn foo -> pipe_macro(foo, __CALLER__) end)
       |> Enum.join()
 
     Code.compile_string("""
@@ -105,6 +100,18 @@ defmodule OkComputer.Pipe do
     quote do
       import __MODULE__.Pipes
     end
+  end
+
+  defp pipe_macro({:__aliases__, _, _} = alias, env) do
+    pipe_macro(:~>, alias, :fmap, env) <> pipe_macro(:~>>, alias, :bind, env)
+  end
+
+  defp pipe_macro({:~>, alias}, env) do
+    pipe_macro(:~>, alias, :fmap, env)
+  end
+
+  defp pipe_macro({:~>>, alias}, env) do
+    pipe_macro(:~>>, alias, :bind, env)
   end
 
   defp pipe_macro(operator, alias, function, env) do
