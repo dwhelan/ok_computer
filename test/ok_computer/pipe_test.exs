@@ -2,7 +2,7 @@ defmodule OkComputer.PipeDefaultTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Pipe.Value
+  pipe(OkComputer.Pipe.Value)
 
   test :~> do
     assert :a ~> to_string() == "a"
@@ -28,7 +28,7 @@ defmodule OkComputer.PipeFmapOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Pipe.Value, fmap: :~>
+  foo ~>: OkComputer.Pipe.Value
 
   test :~> do
     assert :a ~> to_string() == "a"

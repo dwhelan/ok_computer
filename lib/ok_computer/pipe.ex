@@ -42,6 +42,7 @@ defmodule OkComputer.Pipe do
 
   @spec pipe(module, keyword(atom)) :: Macro.t()
   defmacro pipe(module, operators \\ [fmap: :~>, bind: :~>>])
+
   defmacro pipe(_module, []) do
     raise ArgumentError, "must provide at least one function to pipe"
   end
@@ -83,41 +84,43 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  defp pipe_macro_source(module, function, operator) do
-  """
-    defmacro lhs #{operator} rhs do
-      quote do
-        #{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
-       end
-    end
-  """
-  end
-
-  defmacro foo do
-    operator = :~>
-    module = OkComputer.Pipe.Value
-    function = :bind
-    source = """
-      defmodule #{__CALLER__.module}.Pipes do
-        #{pipe_macro_source module, function, operator}
-        defmacro lhs #{operator} rhs do
-          quote do
-            #{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
-           end
-        end
+  defp create_pipe(module, function, operator) do
+    """
+      defmacro lhs #{operator} rhs do
+        quote do
+          #{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
+         end
       end
     """
-    Code.compile_string(source)
+  end
+
+  defmacro foo(module, function, operator) do
+    Code.compile_string("""
+      defmodule #{__CALLER__.module}.Pipes do
+        #{create_pipe(Macro.expand(module, __CALLER__), function, operator)}
+      end
+    """)
+
+    quote do
+      import __MODULE__.Pipes
+    end
+  end
+
+  defmacro foo(operators) do
+    pipes =
+      operators
+      |> Enum.map(fn {operator, module} ->
+        create_pipe(Macro.expand(module, __CALLER__), :fmap, operator)
+      end)
+
+    Code.compile_string("""
+      defmodule #{__CALLER__.module}.Pipes do
+        #{Enum.join(pipes)}
+      end
+    """)
 
     quote do
       import __MODULE__.Pipes
     end
   end
 end
-
-defmodule Foo do
-  import OkComputer.Pipe
-
-  foo
-end
-
