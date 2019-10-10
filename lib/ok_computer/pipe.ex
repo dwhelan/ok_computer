@@ -84,26 +84,28 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  defp create_pipe(operator, module, function) do
+  defp pipe_macro(operator, module, function, env) do
     """
       defmacro lhs #{operator} rhs do
         quote do
-          #{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
+          #{Macro.expand(module, env)}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
          end
       end
     """
   end
 
-  defmacro foo(operators) do
-    pipes =
-      operators
-      |> Enum.map(fn {operator, module} ->
-        create_pipe(operator, Macro.expand(module, __CALLER__), :fmap)
+  defmacro foo(pipes) do
+    pipe_macros =
+      pipes
+      |> Enum.map(fn
+        {:~>, module} -> pipe_macro(:~>, module, :fmap, __CALLER__)
+        {:~>>, module} -> pipe_macro(:~>>, module, :bind, __CALLER__)
       end)
+      |> Enum.join()
 
     Code.compile_string("""
       defmodule #{__CALLER__.module}.Pipes do
-        #{Enum.join(pipes)}
+        #{pipe_macros}
       end
     """)
 

@@ -17,10 +17,10 @@ defmodule OkComputer.PipeBindOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Pipe.Value, bind: :~>>
+  foo(~>>: OkComputer.Monad.Ok)
 
   test :~>> do
-    assert :a ~>> to_string() == "a"
+    assert {:ok, :a} ~>> (fn a -> {:ok, to_string(a)} end).() == {:ok, "a"}
   end
 end
 
@@ -28,10 +28,10 @@ defmodule OkComputer.PipeFmapOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  foo ~>: OkComputer.Pipe.Value
+  foo(~>: OkComputer.Monad.Ok)
 
   test :~> do
-    assert :a ~> to_string() == "a"
+    assert {:ok, :a} ~> to_string() == {:ok, "a"}
   end
 end
 
