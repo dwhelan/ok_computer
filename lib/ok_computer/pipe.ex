@@ -84,7 +84,7 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  defp create_pipe(module, function, operator) do
+  defp create_pipe(operator, module, function) do
     """
       defmacro lhs #{operator} rhs do
         quote do
@@ -94,23 +94,11 @@ defmodule OkComputer.Pipe do
     """
   end
 
-  defmacro foo(module, function, operator) do
-    Code.compile_string("""
-      defmodule #{__CALLER__.module}.Pipes do
-        #{create_pipe(Macro.expand(module, __CALLER__), function, operator)}
-      end
-    """)
-
-    quote do
-      import __MODULE__.Pipes
-    end
-  end
-
   defmacro foo(operators) do
     pipes =
       operators
       |> Enum.map(fn {operator, module} ->
-        create_pipe(Macro.expand(module, __CALLER__), :fmap, operator)
+        create_pipe(operator, Macro.expand(module, __CALLER__), :fmap)
       end)
 
     Code.compile_string("""
