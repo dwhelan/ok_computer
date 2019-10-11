@@ -62,7 +62,8 @@ defmodule Monad.Laws do
           f = fn a -> "f(#{inspect(a)})" end
           g = fn a -> "g(#{inspect(a)})" end
 
-          assert @monad.fmap(@m, fn a -> a |> g.() |> f.() end) == @monad.fmap(@m, g) |> @monad.fmap(f)
+          assert @monad.fmap(@m, fn a -> a |> g.() |> f.() end) ==
+                   @monad.fmap(@m, g) |> @monad.fmap(f)
         end
       end
     end
