@@ -35,6 +35,18 @@ defmodule OkComputer.Pipe do
     raise ArgumentError, "must provide at least one pipe"
   end
 
+#  defmacro pipe({:__aliases__, _, _} = right) do
+  defmacro pipe(right) do
+    create_pipe_module(
+      [right_pipe_macros(right, __CALLER__)],
+      __CALLER__
+    )
+
+    quote do
+      import __MODULE__.Pipes
+    end
+  end
+
   defmacro pipe(left, right) do
     create_pipe_module(
       [left_pipe_macros(left, __CALLER__), right_pipe_macros(right, __CALLER__)],
@@ -47,9 +59,6 @@ defmodule OkComputer.Pipe do
   end
 
   defmacro pipe(pipes) do
-    # [{module, fmap_pipe, bind_pipe}, ...]
-    # [{Monad.Ok, :~>, :~>>}]
-    # [{Monad.Error, :<~, :<<~}]
     create_pipe_sub_module(pipes, __CALLER__)
 
     quote do
@@ -88,12 +97,12 @@ defmodule OkComputer.Pipe do
 
   defp left_pipe_macros(alias, env) do
     pipe_macro(:<~, alias, :fmap, env)
-    pipe_macro(:<<~, alias, :bind, env)
+    <> pipe_macro(:<<~, alias, :bind, env)
   end
 
   defp right_pipe_macros(alias, env) do
     pipe_macro(:~>, alias, :fmap, env)
-    pipe_macro(:~>>, alias, :bind, env)
+    <> pipe_macro(:~>>, alias, :bind, env)
   end
 
   defp pipe_macro({:~>, alias}, env) do
