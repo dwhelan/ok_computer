@@ -1,8 +1,6 @@
 defmodule OkComputer.Pipe.TrueTest do
-  alias OkComputer.Pipe.True
-
   use ExUnit.Case
-  import True
+  import OkComputer.Pipe.True
 
   test "bind" do
     assert bind(nil, &to_string/1) == nil

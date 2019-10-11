@@ -1,8 +1,6 @@
 defmodule OkComputer.Pipe.NilTest do
   use ExUnit.Case
-  alias OkComputer.Pipe.Nil
-  import Monad.Laws
-  import Nil
+  import OkComputer.Pipe.Nil
 
   test "bind" do
     assert bind(nil, &to_string/1) == ""

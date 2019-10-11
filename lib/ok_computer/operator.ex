@@ -1,7 +1,7 @@
 defmodule OkComputer.Operator do
   @moduledoc false
 
-  def create_module(macro_sources, module) do
+  def create_module(module, macro_sources) do
     Code.compile_string("""
       defmodule #{module} do
         #{Enum.join(macro_sources)}
@@ -9,11 +9,11 @@ defmodule OkComputer.Operator do
     """)
   end
 
-  def macro_source(operator, alias, function, env) do
+  def macro_source(operator, source) do
     """
       defmacro lhs #{operator} rhs do
         quote do
-          #{Macro.expand(alias, env)}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)
+          #{source}
          end
       end
     """

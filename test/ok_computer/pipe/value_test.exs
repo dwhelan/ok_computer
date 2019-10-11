@@ -1,8 +1,6 @@
 defmodule OkComputer.Pipe.ValueTest do
-  alias OkComputer.Pipe.Value
-
   use ExUnit.Case
-  import Value
+  import OkComputer.Pipe.Value
 
   test "bind" do
     assert bind(nil, &to_string/1) == nil
