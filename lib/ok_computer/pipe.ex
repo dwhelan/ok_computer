@@ -2,20 +2,15 @@ defmodule OkComputer.Pipe do
   @moduledoc """
   Builds monadic pipes.
 
-  Pipe operators are limited to binary operators that associate left to right:
-  - `.`, `*`, `/`, `+`, `-`, `^^^`, `in`, `not in`,
-  - `|>`, `<<<`, `>>>`, `<<~`, `~>>`, `<~`, `~>`, `<->`, `<|>`
-  - `<`, `>`, `<=`, `>=`, `==`, `!=`, `=~`, `===`, `!==`, `&&`, `&&&`, `and`, `||`, `|||`, `or`, ``
-  - `<-`, `\\`
   """
 
-  @type t :: any
+  @type t :: term
 
   @doc "bind"
-  @callback bind(t, (any -> t)) :: t
+  @callback bind(t, (term -> t)) :: t
 
   @doc "fmap"
-  @callback fmap(t, (any -> any)) :: t
+  @callback fmap(t, (term -> term)) :: t
 
   defmacro __using__(_) do
     quote do

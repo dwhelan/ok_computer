@@ -2,16 +2,16 @@ defmodule OkComputer.Monad do
   @moduledoc """
   Describes monadic behaviour.
   """
-  @type t :: any
+  @type t :: term
 
   @doc "return"
-  @callback return(any) :: t
+  @callback return(term) :: t
 
   @doc "bind"
-  @callback bind(t, (any -> t)) :: t
+  @callback bind(t, (term -> t)) :: t
 
   @doc "fmap"
-  @callback fmap(t, (any -> any)) :: t
+  @callback fmap(t, (term -> term)) :: t
 
   def name(monad) do
     monad
