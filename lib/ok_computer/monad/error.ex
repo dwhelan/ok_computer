@@ -4,9 +4,9 @@ defmodule OkComputer.Monad.Error do
   use Monad
 
   @impl Monad
-  def return(value), do: {:error, value}
+  def return(reason), do: {:error, reason}
 
   @impl Monad
-  def bind({:error, value}, f), do: f.(value)
-  def bind(value, _f), do: value
+  def bind({:error, reason}, f), do: f.(reason)
+  def bind(anything_else, _f), do: anything_else
 end

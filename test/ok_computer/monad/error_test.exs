@@ -10,14 +10,14 @@ defmodule OkComputer.Monad.ErrorTest do
   end
 
   test "bind" do
-    f = fn reason -> {:error, "#{reason}"} end
+    f = fn :reason -> {:error, "reason"} end
 
     assert bind({:error, :reason}, f) == {:error, "reason"}
     assert bind(:anything_else, f) == :anything_else
   end
 
   test "fmap" do
-    f = fn reason -> "#{reason}" end
+    f = fn :reason -> "reason" end
 
     assert fmap({:error, :reason}, f) == {:error, "reason"}
     assert fmap(:anything_else, f) == :anything_else

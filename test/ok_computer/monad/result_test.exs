@@ -10,14 +10,14 @@ defmodule OkComputer.Monad.ResultTest do
   end
 
   test "bind" do
-    f = fn value -> {:ok, "#{value}"} end
+    f = fn :value -> {:ok, "value"} end
 
     assert bind({:ok, :value}, f) == {:ok, "value"}
     assert bind(:anything_else, f) == :anything_else
   end
 
   test "fmap" do
-    f = fn value -> "#{value}" end
+    f = fn :value -> "value" end
 
     assert fmap({:ok, :value}, f) == {:ok, "value"}
     assert fmap(:anything_else, f) == :anything_else

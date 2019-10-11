@@ -8,5 +8,5 @@ defmodule OkComputer.Monad.Result do
 
   @impl Monad
   def bind({:ok, value}, f), do: f.(value)
-  def bind(value, _f), do: value
+  def bind(anything_else, _f), do: anything_else
 end
