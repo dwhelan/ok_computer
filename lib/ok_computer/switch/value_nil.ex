@@ -4,5 +4,5 @@ defmodule OkComputer.Switch.ValueNil do
   import OkComputer.Pipe
 
   pipe(Value)
-  pipe Nil, fmap: :<~, bind: :<<~
+  #  pipe Nil, fmap: :<~, bind: :<<~
 end

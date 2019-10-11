@@ -5,6 +5,6 @@ defmodule OkComputer.Switch.Result do
   alias OkComputer.Monad.{Ok, Error}
   import OkComputer.Pipe
 
-  pipe(Ok)
-  pipe Error, fmap: :<~, bind: :<<~
+  #  pipe(Ok, Error)
+  #  pipe Ok, Error, fmap: :<~, bind: :<<~
 end

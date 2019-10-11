@@ -31,79 +31,69 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  @doc """
-  Creates ast for `monad.bind(m, fn a -> a |> f)`.
-  """
-  def monadic(lhs, rhs, module, function) do
-    quote do
-      unquote(module).unquote(function)(unquote(lhs), fn a -> a |> unquote(rhs) end)
-    end
+  defmacro pipe([]) do
+    raise ArgumentError, "must provide at least one pipe"
   end
 
-  @spec pipe(module, keyword(atom)) :: Macro.t()
-  defmacro pipe(module, operators \\ [fmap: :~>, bind: :~>>])
-
-  defmacro pipe(_module, []) do
-    raise ArgumentError, "must provide at least one function to pipe"
-  end
-
-  defmacro pipe(module, operators) do
-    operators
-    |> Enum.map(fn {function, operator} -> _pipe(module, function, operator) end)
-  end
-
-  defp _pipe(module, function, operator) do
-    case operator do
-      :~> ->
-        quote do
-          defmacro lhs ~> rhs do
-            OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
-          end
-        end
-
-      :~>> ->
-        quote do
-          defmacro lhs ~>> rhs do
-            OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
-          end
-        end
-
-      :<~ ->
-        quote do
-          defmacro lhs <~ rhs do
-            OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
-          end
-        end
-
-      :<<~ ->
-        quote do
-          defmacro lhs <<~ rhs do
-            OkComputer.Pipe.monadic(lhs, rhs, unquote(module), unquote(function))
-          end
-        end
-    end
-  end
-
-  defmacro foo(pipes) do
-    pipe_macros =
-      pipes
-      |> List.wrap()
-      |> Enum.map(fn foo -> pipe_macro(foo, __CALLER__) end)
-      |> Enum.join()
-
-    Code.compile_string("""
-      defmodule #{__CALLER__.module}.Pipes do
-        #{pipe_macros}
-      end
-    """)
+  defmacro pipe(left, right) do
+    create_pipe_module(
+      [left_pipe_macros(left, __CALLER__), right_pipe_macros(right, __CALLER__)],
+      __CALLER__
+    )
 
     quote do
       import __MODULE__.Pipes
     end
   end
 
+  defmacro pipe(pipes) do
+    # [{module, fmap_pipe, bind_pipe}, ...]
+    # [{Monad.Ok, :~>, :~>>}]
+    # [{Monad.Error, :<~, :<<~}]
+    create_pipe_sub_module(pipes, __CALLER__)
+
+    quote do
+      import __MODULE__.Pipes
+    end
+  end
+
+  defp create_pipe_module(pipe_macros, env) do
+    Code.compile_string("""
+      defmodule #{env.module}.Pipes do
+        #{Enum.join(pipe_macros)}
+      end
+    """)
+  end
+
+  defp create_pipe_sub_module(pipes, env) do
+    pipe_macros =
+      pipes
+      |> List.wrap()
+      |> Enum.map(fn pipe -> pipe_macro(pipe, env) end)
+      |> Enum.join()
+
+    Code.compile_string("""
+      defmodule #{env.module}.Pipes do
+        #{pipe_macros}
+      end
+    """)
+  end
+
   defp pipe_macro({:__aliases__, _, _} = alias, env) do
-    pipe_macro(:~>, alias, :fmap, env) <> pipe_macro(:~>>, alias, :bind, env)
+    pipe_macro({:~>, alias}, env) <>
+      pipe_macro({:~>>, alias}, env) <>
+      pipe_macro({:<~, alias}, env) <>
+      pipe_macro({:<<~, alias}, env)
+  end
+
+  defp left_pipe_macros(alias, env) do
+    pipe_macro(:<~, alias, :fmap, env)
+    pipe_macro(:<<~, alias, :bind, env)
+  end
+
+  defp right_pipe_macros(alias, env) do
+    pipe_macro(:~>, alias, :fmap, env)
+    pipe_macro(:~>>, alias, :bind, env)
   end
 
   defp pipe_macro({:~>, alias}, env) do
@@ -112,6 +102,14 @@ defmodule OkComputer.Pipe do
 
   defp pipe_macro({:~>>, alias}, env) do
     pipe_macro(:~>>, alias, :bind, env)
+  end
+
+  defp pipe_macro({:<~, alias}, env) do
+    pipe_macro(:<~, alias, :fmap, env)
+  end
+
+  defp pipe_macro({:<<~, alias}, env) do
+    pipe_macro(:<<~, alias, :bind, env)
   end
 
   defp pipe_macro(operator, alias, function, env) do

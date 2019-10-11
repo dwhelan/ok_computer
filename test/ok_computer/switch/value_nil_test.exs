@@ -7,23 +7,23 @@ defmodule OkComputer.Switch.ValueNilTest do
 
   doctest ValueNil
 
-  test "~>" do
-    assert :a ~> to_string() == "a"
-    assert nil ~> to_string() == nil
-  end
-
-  test "~>>" do
-    assert :a ~>> to_string() == "a"
-    assert nil ~>> to_string() == nil
-  end
-
-  test "<~" do
-    assert :a <~ to_string() == :a
-    assert nil <~ to_string() == ""
-  end
-
-  test "<<~" do
-    assert :a <~ to_string() == :a
-    assert nil <~ to_string() == ""
-  end
+  #  test "~>" do
+  #    assert :a ~> to_string() == "a"
+  #    assert nil ~> to_string() == nil
+  #  end
+  #
+  #  test "~>>" do
+  #    assert :a ~>> to_string() == "a"
+  #    assert nil ~>> to_string() == nil
+  #  end
+  #
+  #  test "<~" do
+  #    assert :a <~ to_string() == :a
+  #    assert nil <~ to_string() == ""
+  #  end
+  #
+  #  test "<<~" do
+  #    assert :a <~ to_string() == :a
+  #    assert nil <~ to_string() == ""
+  #  end
 end

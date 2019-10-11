@@ -4,5 +4,5 @@ defmodule OkComputer.Switch.TrueFalse do
   import OkComputer.Pipe
 
   pipe(True)
-  pipe False, fmap: :<~, bind: :<<~
+  #  pipe False, fmap: :<~, bind: :<<~
 end

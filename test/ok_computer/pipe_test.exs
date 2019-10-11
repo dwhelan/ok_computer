@@ -2,14 +2,14 @@ defmodule OkComputer.PipeDefaultTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  foo OkComputer.Pipe.Value
+  pipe(OkComputer.Monad.Ok)
 
-  test :~> do
-    assert :a ~> to_string() == "a"
+  test ":~> should fmap" do
+    assert {:ok, :a} ~> to_string() == {:ok, "a"}
   end
 
-  test :~>> do
-    assert :a ~>> to_string() == "a"
+  test ":~>> should bind" do
+    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
   end
 end
 
@@ -17,10 +17,10 @@ defmodule OkComputer.PipeBindOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  foo(~>>: OkComputer.Monad.Ok)
+  pipe(~>>: OkComputer.Monad.Ok)
 
   test :~>> do
-    assert {:ok, :a} ~>> (fn a -> {:ok, to_string(a)} end).() == {:ok, "a"}
+    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
   end
 end
 
@@ -28,7 +28,7 @@ defmodule OkComputer.PipeFmapOnlyTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  foo(~>: OkComputer.Monad.Ok)
+  pipe(~>: OkComputer.Monad.Ok)
 
   test :~> do
     assert {:ok, :a} ~> to_string() == {:ok, "a"}
@@ -38,11 +38,11 @@ end
 defmodule OkComputer.PipeTest do
   use ExUnit.Case
 
-  test "must provide at least one function to pipe" do
+  test "must provide at least one pipe" do
     source = """
       defmodule EmptySwitch do
         import OkComputer.Pipe
-        pipe OkComputer.Pipe.Value, []
+        pipe []
       end
     """
 
