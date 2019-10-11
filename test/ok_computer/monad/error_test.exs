@@ -6,17 +6,23 @@ defmodule OkComputer.Monad.ErrorTest do
   import Error
 
   test "return" do
-    assert return(:value) == {:error, :value}
+    assert return(:reason) == {:error, :reason}
   end
 
   test "bind" do
-    f = fn value -> {:error, to_string(value)} end
+    f = fn reason -> {:error, "#{reason}"} end
 
-    assert bind({:error, :value}, f) == {:error, "value"}
-    assert bind(nil, f) == nil
-    assert bind({:ok, :value}, f) == {:ok, :value}
+    assert bind({:error, :reason}, f) == {:error, "reason"}
+    assert bind(:anything_else, f) == :anything_else
   end
 
-  test_monad(Error, :value)
+  test "fmap" do
+    f = fn reason -> "#{reason}" end
+
+    assert fmap({:error, :reason}, f) == {:error, "reason"}
+    assert fmap(:anything_else, f) == :anything_else
+  end
+
+  test_monad(Error, :reason)
   test_monad(Error, nil)
 end
