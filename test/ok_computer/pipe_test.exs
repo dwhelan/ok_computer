@@ -36,28 +36,6 @@ defmodule OkComputer.PipeLeftRightTest do
   end
 end
 
-defmodule OkComputer.PipeFmapOnlyTest do
-  use ExUnit.Case
-  import OkComputer.Pipe
-
-#  pipe(~>: OkComputer.Monad.Ok)
-#
-#  test :~> do
-#    assert {:ok, :a} ~> to_string() == {:ok, "a"}
-#  end
-end
-
-defmodule OkComputer.PipeBindOnlyTest do
-  use ExUnit.Case
-  import OkComputer.Pipe
-
-#  pipe(~>>: OkComputer.Monad.Ok)
-#
-#  test :~>> do
-#    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
-#  end
-end
-
 defmodule OkComputer.PipeTest do
   use ExUnit.Case
 

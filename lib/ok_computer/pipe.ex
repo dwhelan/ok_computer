@@ -35,35 +35,18 @@ defmodule OkComputer.Pipe do
     raise ArgumentError, "must provide at least one pipe"
   end
 
-#  defmacro pipe({:__aliases__, _, _} = right) do
-  defmacro pipe(right) do
+  defmacro pipe({:__aliases__, _, _} = right) do
     create_pipe_module(
       [right_pipe_macros(right, __CALLER__)],
       __CALLER__
     )
-
-    quote do
-      import __MODULE__.Pipes
-    end
   end
 
-  defmacro pipe(left, right) do
+  defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
     create_pipe_module(
       [left_pipe_macros(left, __CALLER__), right_pipe_macros(right, __CALLER__)],
       __CALLER__
     )
-
-    quote do
-      import __MODULE__.Pipes
-    end
-  end
-
-  defmacro pipe(pipes) do
-    create_pipe_sub_module(pipes, __CALLER__)
-
-    quote do
-      import __MODULE__.Pipes
-    end
   end
 
   defp create_pipe_module(pipe_macros, env) do
@@ -72,53 +55,18 @@ defmodule OkComputer.Pipe do
         #{Enum.join(pipe_macros)}
       end
     """)
-  end
 
-  defp create_pipe_sub_module(pipes, env) do
-    pipe_macros =
-      pipes
-      |> List.wrap()
-      |> Enum.map(fn pipe -> pipe_macro(pipe, env) end)
-      |> Enum.join()
-
-    Code.compile_string("""
-      defmodule #{env.module}.Pipes do
-        #{pipe_macros}
-      end
-    """)
-  end
-
-  defp pipe_macro({:__aliases__, _, _} = alias, env) do
-    pipe_macro({:~>, alias}, env) <>
-      pipe_macro({:~>>, alias}, env) <>
-      pipe_macro({:<~, alias}, env) <>
-      pipe_macro({:<<~, alias}, env)
+    quote do
+      import __MODULE__.Pipes
+    end
   end
 
   defp left_pipe_macros(alias, env) do
-    pipe_macro(:<~, alias, :fmap, env)
-    <> pipe_macro(:<<~, alias, :bind, env)
+    pipe_macro(:<~, alias, :fmap, env) <> pipe_macro(:<<~, alias, :bind, env)
   end
 
   defp right_pipe_macros(alias, env) do
-    pipe_macro(:~>, alias, :fmap, env)
-    <> pipe_macro(:~>>, alias, :bind, env)
-  end
-
-  defp pipe_macro({:~>, alias}, env) do
-    pipe_macro(:~>, alias, :fmap, env)
-  end
-
-  defp pipe_macro({:~>>, alias}, env) do
-    pipe_macro(:~>>, alias, :bind, env)
-  end
-
-  defp pipe_macro({:<~, alias}, env) do
-    pipe_macro(:<~, alias, :fmap, env)
-  end
-
-  defp pipe_macro({:<<~, alias}, env) do
-    pipe_macro(:<<~, alias, :bind, env)
+    pipe_macro(:~>, alias, :fmap, env) <> pipe_macro(:~>>, alias, :bind, env)
   end
 
   defp pipe_macro(operator, alias, function, env) do
