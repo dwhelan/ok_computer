@@ -13,13 +13,6 @@ defmodule OkComputer.Monad do
   @doc "fmap"
   @callback fmap(t, (term -> term)) :: t
 
-  def name(monad) do
-    monad
-    |> Module.split()
-    |> List.last()
-    |> String.downcase()
-  end
-
   defmacro __using__(_) do
     quote do
       alias OkComputer.Monad

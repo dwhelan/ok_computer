@@ -4,5 +4,5 @@ defmodule OkComputer.Pipe.Value do
 
   @impl Pipe
   def bind(nil, _f), do: nil
-  def bind(a, f), do: f.(a)
+  def bind(anything_else, f), do: f.(anything_else)
 end

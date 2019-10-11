@@ -1,6 +1,5 @@
 defmodule OkComputer.Monad.Result do
   alias OkComputer.Monad
-
   use Monad
 
   @impl Monad

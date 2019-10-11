@@ -1,6 +1,5 @@
 defmodule OkComputer.Monad.Error do
   alias OkComputer.Monad
-
   use Monad
 
   @impl Monad
