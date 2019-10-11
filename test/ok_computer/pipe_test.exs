@@ -2,7 +2,7 @@ defmodule OkComputer.PipeRightTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Monad.Ok
+  pipe OkComputer.Monad.Result
 
   test ":~> should fmap" do
     assert {:ok, :a} ~> to_string() == {:ok, "a"}
@@ -17,15 +17,7 @@ defmodule OkComputer.PipeLeftRightTest do
   use ExUnit.Case
   import OkComputer.Pipe
 
-  pipe OkComputer.Monad.Error, OkComputer.Monad.Ok
-
-  test "~> should fmap right" do
-    assert {:ok, :a} ~> to_string() == {:ok, "a"}
-  end
-
-  test "~>> should bind right" do
-    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
-  end
+  pipe OkComputer.Monad.Error, OkComputer.Monad.Result
 
   test "<~ should fmap left" do
     assert {:error, :a} <~ to_string() == {:error, "a"}
@@ -34,6 +26,14 @@ defmodule OkComputer.PipeLeftRightTest do
   test "<<~ should bind left" do
     assert {:error, :a} <<~ (fn a -> {:error, "#{a}"} end).() == {:error, "a"}
   end
+
+  test "~> should fmap right" do
+    assert {:ok, :a} ~> to_string() == {:ok, "a"}
+  end
+
+  test "~>> should bind right" do
+    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
+  end
 end
 
 defmodule OkComputer.PipeTest do
@@ -41,7 +41,7 @@ defmodule OkComputer.PipeTest do
 
   test "must provide at least one pipe" do
     source = """
-      defmodule EmptySwitch do
+      defmodule BadPipe do
         import OkComputer.Pipe
         pipe []
       end

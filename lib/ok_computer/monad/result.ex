@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad.Ok do
+defmodule OkComputer.Monad.Result do
   alias OkComputer.Monad
 
   use Monad

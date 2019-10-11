@@ -1,9 +1,9 @@
-defmodule OkComputer.Monad.OkTest do
-  alias OkComputer.Monad.Ok
+defmodule OkComputer.Monad.ResultTest do
+  alias OkComputer.Monad.Result
 
   use ExUnit.Case
   import Monad.Laws
-  import Ok
+  import Result
 
   test "return" do
     assert return(:value) == {:ok, :value}
@@ -25,6 +25,6 @@ defmodule OkComputer.Monad.OkTest do
     assert fmap(nil, f) == nil
   end
 
-  test_monad(Ok, {:ok, :value})
-  test_monad(Ok, :value)
+  test_monad(Result, {:ok, :value})
+  test_monad(Result, :value)
 end
