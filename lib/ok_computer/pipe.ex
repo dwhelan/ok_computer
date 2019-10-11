@@ -34,15 +34,18 @@ defmodule OkComputer.Pipe do
 
   # opionated
   defmacro pipe({:__aliases__, _, _} = right) do
-    create_module(
-      [macro_source(:~>, right, :fmap, __CALLER__), macro_source(:~>>, right, :bind, __CALLER__)],
+    create_pipes_module(
+      [
+        macro_source(:~>, right, :fmap, __CALLER__),
+        macro_source(:~>>, right, :bind, __CALLER__)
+      ],
       __CALLER__
     )
   end
 
   # opionated
   defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    create_module(
+    create_pipes_module(
       [
         macro_source(:<~, left, :fmap, __CALLER__),
         macro_source(:<<~, left, :bind, __CALLER__),
@@ -51,5 +54,14 @@ defmodule OkComputer.Pipe do
       ],
       __CALLER__
     )
+  end
+
+  defp create_pipes_module(macro_sources, env) do
+    pipes_module = Module.concat(env.module, Pipes)
+    create_module(macro_sources, pipes_module)
+
+    quote do
+      import unquote(pipes_module)
+    end
   end
 end
