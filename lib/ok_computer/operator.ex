@@ -9,11 +9,11 @@ defmodule OkComputer.Operator do
     """)
   end
 
-  def macro_source(operator, source) do
+  def defoperator(operator, f) do
     """
       defmacro lhs #{operator} rhs do
         quote do
-          #{source}
+          #{f.("lhs", "rhs")}
          end
       end
     """
