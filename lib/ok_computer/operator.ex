@@ -13,7 +13,7 @@ defmodule OkComputer.Operator do
     """
       defmacro lhs #{operator} rhs do
         quote do
-          #{f.("lhs", "rhs")}
+          #{f.("unquote(lhs)", "unquote(rhs)")}
          end
       end
     """

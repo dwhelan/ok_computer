@@ -67,7 +67,7 @@ defmodule OkComputer.Pipe do
   defp pipe_source(operator, alias, function, env) do
     defoperator(operator,
       fn lhs, rhs ->
-        "#{Macro.expand(alias, env)}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
+        "#{Macro.expand(alias, env)}.#{function}(#{lhs}, fn a -> a |> #{rhs} end)"
       end
     )
   end
