@@ -1,9 +1,12 @@
 defmodule OkComputer.OperatorTest do
   use ExUnit.Case
   import OkComputer.Operator
+  import Kernel, except: [+: 2]
 
-  test "custom operator" do
-    defoperators [<|>: "unquote(lhs) <> unquote(rhs)"]
-    assert "a" <|> "b" == "ab"
+  doctest OkComputer.Operator
+
+  test "custom operator for wrong math" do
+    defoperators(+: "unquote(lhs) - unquote(rhs)")
+    assert 1 + 2 == -1
   end
 end
