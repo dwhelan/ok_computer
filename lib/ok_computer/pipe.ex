@@ -31,44 +31,30 @@ defmodule OkComputer.Pipe do
     raise ArgumentError, "must provide at least one pipe"
   end
 
-  # opionated
   defmacro pipe({:__aliases__, _, _} = right) do
-    import_pipe_module(
-      [
-        pipe_source(:~>, right, :fmap, __CALLER__),
-        pipe_source(:~>>, right, :bind, __CALLER__)
-      ],
-      __CALLER__
+    right = Macro.expand(right, __CALLER__)
+    module = Module.concat(__CALLER__.module, Pipes)
+
+    defoperators(module,
+      ~>: _pipe(right, :fmap),
+      ~>>: _pipe(right, :bind)
     )
   end
 
-  # opionated
   defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    import_pipe_module(
-      [
-        pipe_source(:~>, right, :fmap, __CALLER__),
-        pipe_source(:~>>, right, :bind, __CALLER__),
-        pipe_source(:<~, left, :fmap, __CALLER__),
-        pipe_source(:<<~, left, :bind, __CALLER__)
-      ],
-      __CALLER__
+    left = Macro.expand(left, __CALLER__)
+    right = Macro.expand(right, __CALLER__)
+    module = Module.concat(__CALLER__.module, Pipes)
+
+    defoperators(module,
+      ~>: _pipe(right, :fmap),
+      ~>>: _pipe(right, :bind),
+      <~: _pipe(left, :fmap),
+      <<~: _pipe(left, :bind)
     )
   end
 
-  defp import_pipe_module(macro_sources, env) do
-    pipe_module = Module.concat(env.module, Pipe)
-    create_module(pipe_module, macro_sources)
-
-    quote do
-      import unquote(pipe_module)
-    end
-  end
-
-  defp pipe_source(operator, alias, function, env) do
-    defoperator(operator,
-      fn lhs, rhs ->
-        "#{Macro.expand(alias, env)}.#{function}(#{lhs}, fn a -> a |> #{rhs} end)"
-      end
-    )
+  defp _pipe(module, function) do
+    "#{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
   end
 end

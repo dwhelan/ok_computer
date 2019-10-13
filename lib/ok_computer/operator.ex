@@ -1,19 +1,40 @@
 defmodule OkComputer.Operator do
-  @moduledoc false
+  @moduledoc """
+  Creates operators dynamically.
+  """
 
-  def create_module(module, macro_sources) do
-    Code.compile_string("""
-      defmodule #{module} do
-        #{Enum.join(macro_sources)}
-      end
-    """)
+  @doc """
+  Creates operators dynamically.
+
+  ## Examples
+
+      iex>alias OkComputer.Operator
+      ...>defoperators
+      
+  """
+  defmacro defoperators(operators) do
+    __CALLER__.module
+    |> Module.concat(Operators)
+    |> defoperators(operators)
   end
 
-  def defoperator(operator, f) do
+  def defoperators(module, operators) do
+    Code.compile_string("""
+      defmodule #{module} do
+        #{Enum.map(operators, &defoperator/1)}
+      end
+    """)
+
+    quote do
+      import unquote(module)
+    end
+  end
+
+  defp defoperator({operator, source}) do
     """
       defmacro lhs #{operator} rhs do
         quote do
-          #{f.("unquote(lhs)", "unquote(rhs)")}
+          #{source}
          end
       end
     """
