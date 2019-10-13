@@ -5,11 +5,11 @@ defmodule OkComputer.Pipe do
 
   @type t :: term
 
-  @doc "bind"
-  @callback bind(t, (term -> t)) :: t
+  @doc "pipe_bind"
+  @callback pipe_bind(t, (term -> t)) :: t
 
   @doc "fmap"
-  @callback fmap(t, (term -> term)) :: t
+  @callback pipe_fmap(t, (term -> term)) :: t
 
   import OkComputer.Operator
 
@@ -21,9 +21,9 @@ defmodule OkComputer.Pipe do
       @behaviour Pipe
 
       @impl Pipe
-      def fmap(a, f), do: bind(a, f)
+      def pipe_fmap(a, f), do: pipe_bind(a, f)
 
-      defoverridable fmap: 2
+      defoverridable pipe_fmap: 2
     end
   end
 

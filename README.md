@@ -1,10 +1,9 @@
 # OkComputer
+Builds multi-branch pipelines.  
 
-because Radiohead
+Elixir pipes made monadic.  
 
-Allows you to pipe values through functions with filtering automatically applied.
-
-For example:
+About the name `OkComputer` ... Radiohead.
 
 ```elixir
 case result do
@@ -16,7 +15,6 @@ end
 ```elixir
 import OkComputer.Monad.Result
 result ~> to_string()
-
 ``` 
 
 ## Installation
@@ -33,12 +31,13 @@ end
 ```
 
 ## Principles
-- minimilistic
-- composable
-- clear abstractions expressed as `@behaviours`: Switch, Pipe, Operation, Monad 
-- should have properties for each `@behaviour` (<- property based testing)
-- developer friendly: e.g. provide functions that validate Switch, Pipe, Operation, Monad properties
+- leverage properties/laws
+- retain Elixir pipe behaviour on the right hand side of the pie
 
 ## To do
+- pipe wrappers for other monads (protocol?)
+- implement applicatives
+- other monads: reader, writer, state ...
+- build a 'do' or `for` that has `when` behaviour with monadic values
 - better error handling
   - check for duplicate pipe operators

@@ -2,15 +2,15 @@ defmodule OkComputer.Pipe.FalseTest do
   use ExUnit.Case
   import OkComputer.Pipe.False
 
-  test "bind" do
-    assert bind(nil, &to_string/1) == ""
-    assert bind(false, &to_string/1) == "false"
-    assert bind(:anything_else, &to_string/1) == :anything_else
+  test "pipe_bind" do
+    assert pipe_bind(nil, &to_string/1) == ""
+    assert pipe_bind(false, &to_string/1) == "false"
+    assert pipe_bind(:anything_else, &to_string/1) == :anything_else
   end
 
   test "fmap" do
-    assert fmap(nil, &to_string/1) == ""
-    assert fmap(false, &to_string/1) == "false"
-    assert fmap(:anything_else, &to_string/1) == :anything_else
+    assert pipe_fmap(nil, &to_string/1) == ""
+    assert pipe_fmap(false, &to_string/1) == "false"
+    assert pipe_fmap(:anything_else, &to_string/1) == :anything_else
   end
 end

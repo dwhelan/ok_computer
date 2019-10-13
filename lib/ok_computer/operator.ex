@@ -39,11 +39,7 @@ defmodule OkComputer.Operator do
   """
 
   @doc """
-  Creates dynamic operators.
-
-  You provide a keyword list of operator and their source and this macro will
-  build the operators in a module and import the module. The name of the module
-  will be the calling module appended with `.Operators`.
+  Imports pipe operators.
   """
   @spec defoperators(keyword(binary)) :: Macro.t()
   defmacro defoperators(operators) do
@@ -53,10 +49,7 @@ defmodule OkComputer.Operator do
   end
 
   @doc """
-  Creates dynamic operators.
-
-  You provide a module and a keyword list of operator and their source and this macro will
-  build the operators in the module.
+  Builds a module with pipe operators and returns the ast to import it.
   """
   @spec defoperators(module, keyword(binary)) :: Macro.t()
   def defoperators(module, operators) do

@@ -3,7 +3,7 @@ defmodule OkComputer.Pipe.False do
   use Pipe
 
   @impl Pipe
-  def bind(nil, f), do: f.(nil)
-  def bind(false, f), do: f.(false)
-  def bind(anything_else, _f), do: anything_else
+  def pipe_bind(nil, f), do: f.(nil)
+  def pipe_bind(false, f), do: f.(false)
+  def pipe_bind(anything_else, _f), do: anything_else
 end
