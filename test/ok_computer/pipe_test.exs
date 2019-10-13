@@ -16,6 +16,24 @@ defmodule OkComputer.PipeRightTest do
   end
 end
 
+defmodule OkComputer.PipeCustomRightTest do
+  use ExUnit.Case
+  import OkComputer.Pipe
+  alias OkComputer.Pipe.True
+
+  pipe True, :>>>, :<~>
+
+  test "should pipe_fmap right" do
+    assert true >>> to_string() == "true"
+    assert false >>> to_string() == false
+  end
+
+  test "~>> should pipe_bind right" do
+    assert true <~> to_string() == "true"
+    assert false <~> to_string() == false
+  end
+end
+
 defmodule OkComputer.PipeLeftRightTest do
   use ExUnit.Case
   import OkComputer.Pipe

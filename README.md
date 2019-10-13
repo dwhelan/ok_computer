@@ -35,6 +35,8 @@ end
 - retain Elixir pipe behaviour on the right hand side of the pie
 
 ## To do
+- implement tri/multi channel
+- should not import over-ridden Kernel operators 
 - pipe wrappers for other monads (protocol?)
 - implement applicatives
 - other monads: reader, writer, state ...
