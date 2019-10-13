@@ -1,7 +1,6 @@
 defmodule OkComputer.Monad.ResultTest do
-  alias OkComputer.Monad.Result
-
   use ExUnit.Case
+  alias OkComputer.Monad.Result
   import Monad.Laws
   import Result
 

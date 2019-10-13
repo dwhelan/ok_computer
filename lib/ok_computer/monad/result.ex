@@ -10,9 +10,9 @@ defmodule OkComputer.Monad.Result do
 
   @impl Pipe
   def pipe_bind({:ok, value}, f), do: f.(value)
-  def pipe_bind(anything_else, _f), do: anything_else
+  def pipe_bind(a, _f), do: a
 
   @impl Pipe
-  def pipe_fmap({:ok, value}, f), do: f.(value)
-  def pipe_fmap(anything_else, _f), do: anything_else
+  def pipe_fmap({:ok, value}, f), do: {:ok, f.(value)}
+  def pipe_fmap(a, _f), do: a
 end
