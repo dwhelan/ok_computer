@@ -34,14 +34,25 @@ defmodule OkComputer.Pipe do
     raise ArgumentError, "must provide at least one pipe"
   end
 
+  @doc """
+  Builds a single channel pipe with default operators.
+  """
   defmacro pipe({:__aliases__, _, _} = alias) do
     build_pipes([{alias, @default_right}], __CALLER__)
   end
 
+  @doc """
+  Builds a single channel pipe with custom operators.
+  """
+  @spec pipe({:__aliases__, term, term}, list) :: Macro.t()
   defmacro pipe({:__aliases__, _, _} = alias, pipes) when is_list(pipes) do
     build_pipes([{alias, pipes}], __CALLER__)
   end
 
+  @doc """
+  Builds a dual channel pipe with default operators.
+  """
+  @spec pipe({:__aliases__, term, term}, {:__aliases__, term, term}) :: Macro.t()
   defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
     build_pipes([{right, @default_right}, {left, @default_left}], __CALLER__)
   end
