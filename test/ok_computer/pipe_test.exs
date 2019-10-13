@@ -21,7 +21,7 @@ defmodule OkComputer.PipeCustomRightTest do
   import OkComputer.Pipe
   alias OkComputer.Pipe.True
 
-  pipe True, :>>>, :<~>
+  pipe True, >>>: :pipe_fmap, <~>: :pipe_bind
 
   test "should pipe_fmap right" do
     assert true >>> to_string() == "true"

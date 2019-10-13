@@ -11,6 +11,9 @@ defmodule OkComputer.Pipe do
   @doc "pipe_fmap"
   @callback pipe_fmap(t, (term -> term)) :: t
 
+  @default_right [~>: :pipe_fmap, ~>>: :pipe_bind]
+  @default_left [<~: :pipe_fmap, <<~: :pipe_bind]
+
   import OkComputer.Operator
 
   defmacro __using__(_) do
@@ -31,42 +34,36 @@ defmodule OkComputer.Pipe do
     raise ArgumentError, "must provide at least one pipe"
   end
 
-  defmacro pipe({:__aliases__, _, _} = right) do
-    right = Macro.expand(right, __CALLER__)
-
-    _pipes(__CALLER__,
-      ~>: _pipe(right, :pipe_fmap),
-      ~>>: _pipe(right, :pipe_bind)
-    )
+  defmacro pipe({:__aliases__, _, _} = alias) do
+    build_pipes([{alias, @default_right}], __CALLER__)
   end
 
-  defmacro pipe({:__aliases__, _, _} = right, fmap, bind) do
-    right = Macro.expand(right, __CALLER__)
-
-    _pipes(
-      __CALLER__,
-      [{fmap, _pipe(right, :pipe_fmap)}, {bind, _pipe(right, :pipe_bind)}]
-    )
+  defmacro pipe({:__aliases__, _, _} = alias, pipes) when is_list(pipes) do
+    build_pipes([{alias, pipes}], __CALLER__)
   end
 
   defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    left = Macro.expand(left, __CALLER__)
-    right = Macro.expand(right, __CALLER__)
-
-    _pipes(__CALLER__, [
-      ~>: _pipe(right, :pipe_fmap),
-      ~>>: _pipe(right, :pipe_bind),
-      <~: _pipe(left, :pipe_fmap),
-      <<~: _pipe(left, :pipe_bind)
-    ])
+    build_pipes([{right, @default_right}, {left, @default_left}], __CALLER__)
   end
 
-  defp _pipes(env, pipes) do
+  defp build_pipes(alias_pipes, env) do
+    pipes =
+      alias_pipes
+      |> Enum.flat_map(fn {alias, pipes} ->
+        module_sources(Macro.expand(alias, env), pipes)
+      end)
+
     module = Module.concat(env.module, Pipes)
-    defoperators(module,pipes)
+    defoperators(module, pipes)
   end
 
-  defp _pipe(module, function) do
+  @spec module_sources(module, keyword(function_name :: atom)) :: binary
+  defp module_sources(module, pipes) do
+    Enum.map(pipes, fn {operator, function_name} -> {operator, pipe_source(module, function_name)} end)
+  end
+
+  @spec pipe_source(module, function_name :: atom) :: binary
+  defp pipe_source(module, function) do
     "#{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
   end
 end
