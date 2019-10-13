@@ -47,19 +47,18 @@ defmodule OkComputer.Pipe do
   end
 
   defp build_pipes(alias_pipes, env) do
-    pipes =
-      alias_pipes
-      |> Enum.flat_map(fn {alias, pipes} ->
-        module_sources(Macro.expand(alias, env), pipes)
-      end)
-
-    module = Module.concat(env.module, Pipes)
-    defoperators(module, pipes)
+    alias_pipes
+    |> Enum.flat_map(fn {alias, pipes} ->
+      module_sources(Macro.expand(alias, env), pipes)
+    end)
+    |> defoperators(Module.concat(env.module, Pipes))
   end
 
   @spec module_sources(module, keyword(function_name :: atom)) :: binary
   defp module_sources(module, pipes) do
-    Enum.map(pipes, fn {operator, function_name} -> {operator, pipe_source(module, function_name)} end)
+    Enum.map(pipes, fn {operator, function_name} ->
+      {operator, pipe_source(module, function_name)}
+    end)
   end
 
   @spec pipe_source(module, function_name :: atom) :: binary

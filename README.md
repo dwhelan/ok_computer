@@ -42,4 +42,5 @@ end
 - other monads: reader, writer, state ...
 - build a 'do' or `for` that has `when` behaviour with monadic values
 - better error handling
-  - check for duplicate pipe operators
+  - check for unique pipe operators
+  - check for invalid functions (arity 2)

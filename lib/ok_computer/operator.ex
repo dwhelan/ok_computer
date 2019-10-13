@@ -43,16 +43,14 @@ defmodule OkComputer.Operator do
   """
   @spec defoperators(keyword(binary)) :: Macro.t()
   defmacro defoperators(operators) do
-    __CALLER__.module
-    |> Module.concat(Operators)
-    |> defoperators(operators)
+    defoperators(operators, Module.concat(__CALLER__.module, Operators))
   end
 
   @doc """
   Builds a module with pipe operators and returns the ast to import it.
   """
-  @spec defoperators(module, keyword(binary)) :: Macro.t()
-  def defoperators(module, operators) do
+  @spec defoperators(keyword(binary), module) :: Macro.t()
+  def defoperators(operators, module) do
     Code.compile_string("""
       defmodule #{module} do
         #{Enum.map(operators, &defoperator/1)}

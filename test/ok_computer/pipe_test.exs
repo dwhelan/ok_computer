@@ -5,12 +5,12 @@ defmodule OkComputer.PipeRightTest do
 
   pipe True
 
-  test "~> should pipe_fmap right" do
+  test "~> should apply True.pipe_fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
   end
 
-  test "~>> should pipe_bind right" do
+  test "~>> should apply True.pipe_bind" do
     assert true ~> to_string() == "true"
     assert false ~>> to_string() == false
   end
@@ -23,12 +23,12 @@ defmodule OkComputer.PipeCustomRightTest do
 
   pipe True, >>>: :pipe_fmap, <~>: :pipe_bind
 
-  test "should pipe_fmap right" do
+  test ">>> should apply True.pipe_fmap" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
 
-  test "~>> should pipe_bind right" do
+  test "<~> should apply True.pipe_bind" do
     assert true <~> to_string() == "true"
     assert false <~> to_string() == false
   end
@@ -37,26 +37,26 @@ end
 defmodule OkComputer.PipeLeftRightTest do
   use ExUnit.Case
   import OkComputer.Pipe
-  alias OkComputer.Pipe.{True, False}
+  alias OkComputer.Pipe.{False, True}
 
   pipe False, True
 
-  test "~> should pipe_fmap right" do
+  test "~> should apply True.pipe_fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
   end
 
-  test "~>> should pipe_bind right" do
+  test "~>> should apply True.pipe_bind" do
     assert true ~> to_string() == "true"
     assert false ~>> to_string() == false
   end
 
-  test "<~ should pipe_fmap left" do
+  test "<~ should apply False.pipe_fmap" do
     assert false <~ to_string() == "false"
     assert true <~ to_string() == true
   end
 
-  test "<<~ should pipe_bind left" do
+  test "<<~ should apply False. pipe_bind" do
     assert false <~ to_string() == "false"
     assert true <<~ to_string() == true
   end
