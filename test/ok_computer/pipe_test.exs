@@ -1,38 +1,46 @@
 defmodule OkComputer.PipeRightTest do
   use ExUnit.Case
   import OkComputer.Pipe
+  alias OkComputer.Pipe.True
 
-  pipe OkComputer.Monad.Result
+  pipe True
 
-  test ":~> should fmap" do
-    assert {:ok, :a} ~> to_string() == {:ok, "a"}
+  test "~> should pipe_fmap right" do
+    assert true ~> to_string() == "true"
+    assert false ~> to_string() == false
   end
 
-  test ":~>> should bind" do
-    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
+  test "~>> should pipe_bind right" do
+    assert true ~> to_string() == "true"
+    assert false ~>> to_string() == false
   end
 end
 
 defmodule OkComputer.PipeLeftRightTest do
   use ExUnit.Case
   import OkComputer.Pipe
+  alias OkComputer.Pipe.{True, False}
 
-  pipe OkComputer.Monad.Error, OkComputer.Monad.Result
+  pipe False, True
 
-  test "<~ should fmap left" do
-    assert {:error, :a} <~ to_string() == {:error, "a"}
+  test "~> should pipe_fmap right" do
+    assert true ~> to_string() == "true"
+    assert false ~> to_string() == false
   end
 
-  test "<<~ should bind left" do
-    assert {:error, :a} <<~ (fn a -> {:error, "#{a}"} end).() == {:error, "a"}
+  test "~>> should pipe_bind right" do
+    assert true ~> to_string() == "true"
+    assert false ~>> to_string() == false
   end
 
-  test "~> should fmap right" do
-    assert {:ok, :a} ~> to_string() == {:ok, "a"}
+  test "<~ should pipe_fmap left" do
+    assert false <~ to_string() == "false"
+    assert true <~ to_string() == true
   end
 
-  test "~>> should bind right" do
-    assert {:ok, :a} ~>> (fn a -> {:ok, "#{a}"} end).() == {:ok, "a"}
+  test "<<~ should pipe_bind left" do
+    assert false <~ to_string() == "false"
+    assert true <<~ to_string() == true
   end
 end
 

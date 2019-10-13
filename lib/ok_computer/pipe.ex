@@ -36,8 +36,8 @@ defmodule OkComputer.Pipe do
     module = Module.concat(__CALLER__.module, Pipes)
 
     defoperators(module,
-      ~>: _pipe(right, :fmap),
-      ~>>: _pipe(right, :bind)
+      ~>: _pipe(right, :pipe_fmap),
+      ~>>: _pipe(right, :pipe_bind)
     )
   end
 
@@ -47,10 +47,10 @@ defmodule OkComputer.Pipe do
     module = Module.concat(__CALLER__.module, Pipes)
 
     defoperators(module,
-      ~>: _pipe(right, :fmap),
-      ~>>: _pipe(right, :bind),
-      <~: _pipe(left, :fmap),
-      <<~: _pipe(left, :bind)
+      ~>: _pipe(right, :pipe_fmap),
+      ~>>: _pipe(right, :pipe_bind),
+      <~: _pipe(left, :pipe_fmap),
+      <<~: _pipe(left, :pipe_bind)
     )
   end
 

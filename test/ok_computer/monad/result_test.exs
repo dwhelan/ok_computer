@@ -13,16 +13,27 @@ defmodule OkComputer.Monad.ResultTest do
     f = fn :value -> {:ok, "value"} end
 
     assert bind({:ok, :value}, f) == {:ok, "value"}
-    assert bind(:anything_else, f) == :anything_else
   end
 
   test "fmap" do
     f = fn :value -> "value" end
 
     assert fmap({:ok, :value}, f) == {:ok, "value"}
-    assert fmap(:anything_else, f) == :anything_else
   end
 
   test_monad(Result, {:ok, :value})
-  test_monad(Result, :anything_else)
+
+  test "pipe_bind" do
+    f = fn :value -> {:ok, "value"} end
+
+    assert pipe_bind({:ok, :value}, f) == {:ok, "value"}
+    assert pipe_bind(:anything_else, f) == :anything_else
+  end
+
+  test "pipe_fmap" do
+    f = fn :value -> "value" end
+
+    assert pipe_fmap({:ok, :value}, f) == {:ok, "value"}
+    assert pipe_fmap(:anything_else, f) == :anything_else
+  end
 end

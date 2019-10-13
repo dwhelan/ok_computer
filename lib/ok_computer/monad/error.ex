@@ -1,5 +1,5 @@
 defmodule OkComputer.Monad.Error do
-  alias OkComputer.Monad
+  alias OkComputer.{Monad, Pipe}
   use Monad
 
   @impl Monad
@@ -7,5 +7,8 @@ defmodule OkComputer.Monad.Error do
 
   @impl Monad
   def bind({:error, reason}, f), do: f.(reason)
-  def bind(anything_else, _f), do: anything_else
+
+  @impl Pipe
+  def pipe_bind(anything_else, _f), do: anything_else
+  def pipe_fmap(anything_else, _f), do: anything_else
 end
