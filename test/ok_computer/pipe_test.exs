@@ -1,4 +1,4 @@
-defmodule OkComputer.PipeRightTest do
+defmodule OkComputer.PipeSingleTest do
   use ExUnit.Case
   import OkComputer.Pipe
   alias OkComputer.Pipe.True
@@ -16,7 +16,7 @@ defmodule OkComputer.PipeRightTest do
   end
 end
 
-defmodule OkComputer.PipeCustomRightTest do
+defmodule OkComputer.PipeCustomSingleTest do
   use ExUnit.Case
   import OkComputer.Pipe
   alias OkComputer.Pipe.True
@@ -34,7 +34,7 @@ defmodule OkComputer.PipeCustomRightTest do
   end
 end
 
-defmodule OkComputer.PipeLeftRightTest do
+defmodule OkComputer.PipeDualTest do
   use ExUnit.Case
   import OkComputer.Pipe
   alias OkComputer.Pipe.{False, True}

@@ -52,7 +52,7 @@ defmodule OkComputer.Pipe do
   @doc """
   Builds a dual channel pipe with default operators.
   """
-  @spec pipe({:__aliases__, term, term}, {:__aliases__, term, term}) :: Macro.t()
+  @spec dual_pipe({:__aliases__, term, term}, {:__aliases__, term, term}) :: Macro.t()
   defmacro dual_pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
     build_pipes([{right, @default_right}, {left, @default_left}], __CALLER__)
   end
@@ -73,6 +73,9 @@ defmodule OkComputer.Pipe do
 
   @spec pipe_source(module, function_name :: atom) :: binary
   defp pipe_source(module, function) do
+#    source = quote do
+#      fn a -> a |> rhs end
+#    end
     "#{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
   end
 end

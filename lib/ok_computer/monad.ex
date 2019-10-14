@@ -1,6 +1,6 @@
 defmodule OkComputer.Monad do
   @moduledoc """
-  Describes monadic behaviour.
+  Monadic pipes.
   """
   @type t :: term
 
@@ -10,23 +10,16 @@ defmodule OkComputer.Monad do
   @doc "bind"
   @callback bind(t, (term -> t)) :: t
 
-  @doc "fmap"
-  @callback fmap(t, (term -> term)) :: t
-
   defmacro __using__(_) do
     quote do
-      alias OkComputer.Monad
-      import Monad
+      alias OkComputer.{Pipe, Monad, Functor}
 
+      @behaviour Pipe
       @behaviour Monad
+      @behaviour Functor
 
-      @impl Monad
-      def return(a), do: a
-
-      @impl Monad
+      @impl Functor
       def fmap(a, f), do: bind(a, fn a -> f.(a) |> return() end)
-
-      defoverridable return: 1
     end
   end
 end
