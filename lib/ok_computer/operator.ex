@@ -20,26 +20,44 @@ defmodule OkComputer.Operator do
   end
   ```
 
-  The `Operator` module enables you to create operators dynamically. It does this
-  by building Elixir source and compiling into a new module. You supply the source
-  for the operator as a binary. The AST for the left hand side of the operator is available
+  The `Operator` creatse operators dynamically. It does this
+  by embedding source code for each operator definition into an overall module definition and compiling this source into a new module.
+
+  The source code is simply a binary. You will need to access the AST of
+  what is on the left of the operator and what is on the right of the operator.
+  The AST for the left hand side of the operator is available as
   as `lhs` and the AST for the right hand side is available as `rhs`.
 
   We can now create a dynamic pipe:
 
   ```
   defmodule WrongMath do
-    # Let's make math wrong by changing the meaning of +:
+    import OkComputer.Operator
+
+    defoperators +: "unquote(lhs) - unquote(rhs)"
+  end
+  ```
+
+  This is equivalent to:
+
+  ```
+  defmodule WrongMath do
     import OkComputer.Operator
     import Kernel, except: [+: 2]
 
-    defoperators(+: "unquote(lhs) - unquote(rhs)")
+    defmacro lhs + rhs do
+      quote do
+        unquote(lhs) - unquote(rhs)
+      end
+    end
   end
   ```
   """
 
   @doc """
-  Imports pipe operators.
+  Builds a module with operators and imports it.
+
+  The name of the module will be the caller's module followed by `.Operators`.
   """
   @spec defoperators(keyword(binary)) :: Macro.t()
   defmacro defoperators(operators) do
@@ -47,7 +65,9 @@ defmodule OkComputer.Operator do
   end
 
   @doc """
-  Builds a module with pipe operators and returns the ast to import it.
+  Builds a module with operators and returns the ast to import it.
+
+  A new module `module` will be built with the operators. provided.
   """
   @spec defoperators(keyword(binary), module) :: Macro.t()
   def defoperators(operators, module) do

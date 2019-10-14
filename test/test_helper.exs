@@ -51,7 +51,7 @@ defmodule Monad.Laws do
           g = fn a -> @monad.return("g(#{inspect(a)})") end
 
           assert @m |> @monad.bind(f) |> @monad.bind(g) ==
-                   @m |> @monad.bind(fn y -> f.(y) |> @monad.bind(g) end)
+                   @m |> @monad.bind(fn a -> f.(a) |> @monad.bind(g) end)
         end
 
         test "functor identity" do

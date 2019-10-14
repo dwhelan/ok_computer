@@ -32,7 +32,7 @@ end
 
 ## Principles
 - leverage properties/laws
-- retain Elixir pipe behaviour on the right hand side of the pie
+- retain Elixir pipe behaviour
 
 ## To do
 - implement tri/multi channel
@@ -40,7 +40,21 @@ end
 - pipe wrappers for other monads (protocol?)
 - implement applicatives
 - other monads: reader, writer, state ...
+- move laws to lib folder rather than test folder
 - build a 'do' or `for` that has `when` behaviour with monadic values
-- better error handling
+- create pipe laws assuming for P
+  - `~> === P.pipe_fmap`
+  - `~>> === P.pipe_bind`  
+  - `<~> === P.pipe_return`
+  - left identity
+    `a |> P.pipe_return |> P.pipe_bind(f) == f.(a)` ?
+    `~~~ a ~>> f' == f'(a)` ?
+  - right identity
+    `a |> P.pipe_bind(&P.pipe_return/1) == a` ?
+    `~~~ a == a` ?
+  - associativity
+    `a |> P.pipe_bind(f) |> P.pipe_bind(g) == a|> P.pipe_bind()  `
+- operators
   - check for unique pipe operators
   - check for invalid functions (arity 2)
+  - support unary operators (perhaps return_pipe?)

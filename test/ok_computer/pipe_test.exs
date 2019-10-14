@@ -39,7 +39,7 @@ defmodule OkComputer.PipeLeftRightTest do
   import OkComputer.Pipe
   alias OkComputer.Pipe.{False, True}
 
-  pipe False, True
+  dual_pipe(False, True)
 
   test "~> should apply True.pipe_fmap" do
     assert true ~> to_string() == "true"
