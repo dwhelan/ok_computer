@@ -92,8 +92,18 @@ defmodule OkComputer.Pipe do
   Builds a dual channel pipe with default pipe operators.
   """
   @spec pipe(alias, alias) :: Macro.t()
-  defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    build_channels([right, {left, [{@alternate_pipe_fmap_operator, :pipe_fmap}, {@alternate_pipe_bind_operator, :pipe_bind}]}], __CALLER__)
+  defmacro pipe({:__aliases__, _, _} = alternate, {:__aliases__, _, _} = default) do
+    build_channels(
+      [
+        default,
+        {alternate,
+         [
+           {@alternate_pipe_fmap_operator, :pipe_fmap},
+           {@alternate_pipe_bind_operator, :pipe_bind}
+         ]}
+      ],
+      __CALLER__
+    )
   end
 
   @spec build_channels(list(channel), Macro.Env.t()) :: Macro.t()
@@ -105,7 +115,11 @@ defmodule OkComputer.Pipe do
 
   @spec build_channel(channel, Macro.Env.t()) :: Macro.t()
   defp build_channel({:__aliases__, _, _} = alias, env) do
-    pipe_sources(alias, [{@default_pipe_fmap_operator, :pipe_fmap}, {@default_pipe_bind_operator, :pipe_bind}], env)
+    pipe_sources(
+      alias,
+      [{@default_pipe_fmap_operator, :pipe_fmap}, {@default_pipe_bind_operator, :pipe_bind}],
+      env
+    )
   end
 
   defp build_channel({alias, operator}, env) when is_atom(operator) do
