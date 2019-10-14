@@ -61,7 +61,10 @@ defmodule OkComputer.Pipe do
   """
   @spec pipe({:__aliases__, term, term}, {:__aliases__, term, term}) :: Macro.t()
   defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    build_pipe_operators([{right, @default_operators}, {left, @default_left_operators}], __CALLER__)
+    build_pipe_operators(
+      [{right, @default_operators}, {left, @default_left_operators}],
+      __CALLER__
+    )
   end
 
   @doc """

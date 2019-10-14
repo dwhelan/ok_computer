@@ -39,7 +39,7 @@ defmodule OkComputer.PipeDualChannelTest do
   import OkComputer.Pipe
   alias OkComputer.Pipe.{False, True}
 
-  pipe(False, True)
+  pipe False, True
 
   test "~> should use True.pipe_fmap" do
     assert true ~> to_string() == "true"
@@ -59,6 +59,36 @@ defmodule OkComputer.PipeDualChannelTest do
   test "<<~ should use False. pipe_bind" do
     assert false <~ to_string() == "false"
     assert true <<~ to_string() == true
+  end
+end
+
+defmodule OkComputer.PipeMultiChannelTest do
+  use ExUnit.Case
+  import OkComputer.Pipe
+  alias OkComputer.Pipe.{Nil, False, True}
+
+  pipe [
+    {True, [~>: :pipe_fmap]},
+    {False, [~>>: :pipe_fmap]},
+    {Nil, [>>>: :pipe_fmap]}
+  ]
+
+  test "~> should use True.pipe_fmap" do
+    assert true ~> to_string() == "true"
+    assert false ~> to_string() == false
+    assert nil ~> to_string() == nil
+  end
+
+  test "~>> should use False.pipe_fmap" do
+    assert true ~>> to_string() == true
+    assert false ~>> to_string() == "false"
+    assert nil ~>> to_string() == ""
+  end
+
+  test ">>> should use Nil.pipe_fmap" do
+    assert true >>> to_string() == true
+    assert false >>> to_string() == false
+    assert nil >>> to_string() == ""
   end
 end
 
