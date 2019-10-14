@@ -96,9 +96,29 @@ end
 defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
   use ExUnit.Case
   import OkComputer.Pipe
-  alias OkComputer.Pipe.{Nil, False, True}
+  alias OkComputer.Pipe.{False, True}
 
   pipe [{True, :~>}, {False, :<~}]
+
+  test "~> should use True.pipe_fmap" do
+    assert true ~> to_string() == "true"
+    assert false ~> to_string() == false
+    assert nil ~> to_string() == nil
+  end
+
+  test "<~ should use False.pipe_fmap" do
+    assert true <~ to_string() == true
+    assert false <~ to_string() == "false"
+    assert nil <~ to_string() == ""
+  end
+end
+
+defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
+  use ExUnit.Case
+  import OkComputer.Pipe
+  alias OkComputer.Pipe.{Nil, False, True}
+
+  pipe [{True, :~>, :~>>}, {False, :<~, :<<~}]
 
   test "~> should use True.pipe_fmap" do
     assert true ~> to_string() == "true"
