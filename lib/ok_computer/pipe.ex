@@ -98,17 +98,23 @@ defmodule OkComputer.Pipe do
   @spec build_channels(list(channel), Macro.Env.t) :: Macro.t()
   defp build_channels(channels, env) do
     channels
-    |> Enum.flat_map(fn
-      {alias, operator} when is_atom(operator) ->
-        pipe_sources(Macro.expand(alias, env), [{operator, :pipe_fmap}])
-
-      {:{}, _, [alias, fmap_operator, bind_operator]} when is_atom(fmap_operator) and is_atom(bind_operator)->
-        pipe_sources(Macro.expand(alias, env), [{fmap_operator, :pipe_fmap}, {bind_operator, :pipe_bind}])
-
-      {alias, operators} ->
-        pipe_sources(Macro.expand(alias, env), operators)
-    end)
+    |> Enum.flat_map(fn channel -> build_channel(channel, env) end)
     |> defoperators(Module.concat(env.module, Pipes))
+  end
+
+  @spec build_channel(channel, Macro.Env.t) :: Macro.t()
+  defp build_channel({alias, operator}, env) when is_atom(operator) do
+    pipe_sources(Macro.expand(alias, env), [{operator, :pipe_fmap}])
+  end
+
+  @spec build_channel(channel, Macro.Env.t) :: Macro.t()
+  defp build_channel({:{}, _, [alias, fmap_operator, bind_operator]}, env) when is_atom(fmap_operator) and is_atom(bind_operator) do
+    pipe_sources(Macro.expand(alias, env), [{fmap_operator, :pipe_fmap}, {bind_operator, :pipe_bind}])
+  end
+
+  @spec build_channel(channel, Macro.Env.t) :: Macro.t()
+  defp build_channel({alias, operators}, env) when is_list(operators) do
+    pipe_sources(Macro.expand(alias, env), operators)
   end
 
   @spec pipe_sources(module, operators) :: list(binary)
