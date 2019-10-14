@@ -95,6 +95,7 @@ defmodule OkComputer.Pipe do
     build_channels(channels, __CALLER__)
   end
 
+  @spec build_channels(list(channel), Macro.Env.t) :: Macro.t()
   defp build_channels(channels, env) do
     channels
     |> Enum.flat_map(fn
