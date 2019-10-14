@@ -58,5 +58,5 @@ end
     `a |> P.pipe_bind(f) |> P.pipe_bind(g) == a|> P.pipe_bind()  `
 - operators
   - check for unique pipe operators
-  - check for invalid functions (arity 2)
+  - check for invalid functions (pipe_bind/2 pipe_fmap/2)
   - support unary operators (perhaps return_pipe?)

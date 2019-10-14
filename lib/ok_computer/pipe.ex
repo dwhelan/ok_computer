@@ -1,16 +1,21 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  Builds single, dual or multi-channel pipes.
+  Builds pipes.
   """
+
+  @type alias :: {:__aliases__, term, term}
 
   @typedoc """
   A set of pipe operators bound to a module with `Pipe` behaviour.
   """
-  @type alias :: {:__aliases__, term, term}
-  @type channel :: alias | {alias, fmap_operator :: atom}| {alias, fmap_operator :: atom, bind_operator :: atom} | {alias, operators}
+  @type channel ::
+          alias
+          | {alias, fmap_operator :: atom}
+          | {:{}, term, list}
+          | {alias, operators}
 
   @typedoc """
-  A keyword list that maps operators to `Pipe` function names: `pipe_fmap` or `pipe_bind`.
+  A keyword list that maps pipe operators to `Pipe` function names: `pipe_fmap` or `pipe_bind` such as `[~>: :pipe_fmap]`.
   """
   @type operators :: [{operator :: atom, function_name :: atom}]
 
@@ -20,8 +25,10 @@ defmodule OkComputer.Pipe do
   @doc "pipe_bind"
   @callback pipe_bind(t :: term, (term -> t :: term)) :: t :: term
 
-  @default_operators [~>: :pipe_fmap, ~>>: :pipe_bind]
-  @default_left_operators [<~: :pipe_fmap, <<~: :pipe_bind]
+  @default_pipe_fmap_operator :~>
+  @default_pipe_bind_operator :~>>
+  @alternate_pipe_fmap_operator :<~
+  @alternate_pipe_bind_operator :<<~
 
   import OkComputer.Operator
 
@@ -46,27 +53,31 @@ defmodule OkComputer.Pipe do
   Builds a single channel pipe with default pipe operators.
   """
   defmacro pipe({:__aliases__, _, _} = alias) do
-    build_channels([{alias, @default_operators}], __CALLER__)
+    build_channels([alias], __CALLER__)
   end
 
   @doc """
-  Builds a single channel pipe with a `pipe_fmap` operator.
+  Builds a multi channel pipe with custom pipe operators.
   """
-  @spec pipe(alias, fmap_operator :: atom) :: Macro.t()
-  defmacro pipe({:__aliases__, _, _} = alias, fmap_operator)
-           when is_atom(fmap_operator) do
-    build_channels([{alias, [{fmap_operator, :pipe_fmap}]}], __CALLER__)
+  @spec pipe(list(channel)) :: Macro.t()
+  defmacro pipe(channels) do
+    build_channels(channels, __CALLER__)
   end
 
   @doc """
   Builds a single channel pipe with `pipe_fmap` and `pipe_bind` operators.
   """
   @spec pipe(alias, fmap_operator :: atom, bind_operator :: atom) :: Macro.t()
-  defmacro pipe({:__aliases__, _, _} = alias, fmap_operator, bind_operator) do
-    build_channels(
-      [{alias, [{fmap_operator, :pipe_fmap}, {bind_operator, :pipe_bind}]}],
-      __CALLER__
-    )
+  defmacro pipe({:__aliases__, line, _} = alias, fmap_operator, bind_operator) do
+    build_channels([{:{}, line, [alias, fmap_operator, bind_operator]}], __CALLER__)
+  end
+
+  @doc """
+  Builds a single channel pipe with a `pipe_fmap` operator.
+  """
+  @spec pipe(alias, fmap_operator :: atom) :: Macro.t()
+  defmacro pipe({:__aliases__, _, _} = alias, fmap_operator) when is_atom(fmap_operator) do
+    build_channels([{alias, fmap_operator}], __CALLER__)
   end
 
   @doc """
@@ -82,37 +93,27 @@ defmodule OkComputer.Pipe do
   """
   @spec pipe(alias, alias) :: Macro.t()
   defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    build_channels(
-      [{right, @default_operators}, {left, @default_left_operators}],
-      __CALLER__
-    )
+    build_channels([right, {left, [{@alternate_pipe_fmap_operator, :pipe_fmap}, {@alternate_pipe_bind_operator, :pipe_bind}]}], __CALLER__)
   end
 
-  @doc """
-  Builds a multi channel pipe with custom pipe operators.
-  """
-  @spec pipe(list(channel)) :: Macro.t()
-  defmacro pipe(channels) do
-    build_channels(channels, __CALLER__)
-  end
-
-  @spec build_channels(list(channel), Macro.Env.t) :: Macro.t()
+  @spec build_channels(list(channel), Macro.Env.t()) :: Macro.t()
   defp build_channels(channels, env) do
     channels
     |> Enum.flat_map(fn channel -> build_channel(channel, env) end)
     |> defoperators(Module.concat(env.module, Pipes))
   end
 
-  @spec build_channel(channel, Macro.Env.t) :: Macro.t()
+  @spec build_channel(channel, Macro.Env.t()) :: Macro.t()
+  defp build_channel({:__aliases__, _, _} = alias, env) do
+    pipe_sources(alias, [{@default_pipe_fmap_operator, :pipe_fmap}, {@default_pipe_bind_operator, :pipe_bind}], env)
+  end
+
   defp build_channel({alias, operator}, env) when is_atom(operator) do
     pipe_sources(alias, [{operator, :pipe_fmap}], env)
   end
 
-  defp build_channel({:__aliases__, _, _} = alias, env) do
-    pipe_sources(alias, [~>: :pipe_fmap, ~>>: :pipe_bind], env)
-  end
-
-  defp build_channel({:{}, _, [{:__aliases__, _, _} = alias, fmap_operator, bind_operator]}, env) when is_atom(fmap_operator) and is_atom(bind_operator) do
+  defp build_channel({:{}, _, [{:__aliases__, _, _} = alias, fmap_operator, bind_operator]}, env)
+       when is_atom(fmap_operator) and is_atom(bind_operator) do
     pipe_sources(alias, [{fmap_operator, :pipe_fmap}, {bind_operator, :pipe_bind}], env)
   end
 
@@ -120,7 +121,7 @@ defmodule OkComputer.Pipe do
     pipe_sources(alias, operators, env)
   end
 
-  @spec pipe_sources(alias, operators, Macro.Env.t) :: list(binary)
+  @spec pipe_sources(alias, operators, Macro.Env.t()) :: list(binary)
   defp pipe_sources(alias, operators, env) do
     Enum.map(operators, fn {operator, function_name} ->
       {operator, pipe_source(Macro.expand(alias, env), function_name)}
