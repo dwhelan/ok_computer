@@ -16,7 +16,20 @@ defmodule OkComputer.PipeSingleChannelTest do
   end
 end
 
-defmodule OkComputer.PipeSingleCustomChannelTest do
+defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
+  use ExUnit.Case
+  import OkComputer.Pipe
+  alias OkComputer.Pipe.True
+
+  pipe True, :>>>
+
+  test ">>> should use True.pipe_fmap" do
+    assert true >>> to_string() == "true"
+    assert false >>> to_string() == false
+  end
+end
+
+defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
   use ExUnit.Case
   import OkComputer.Pipe
   alias OkComputer.Pipe.True

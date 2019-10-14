@@ -49,6 +49,14 @@ defmodule OkComputer.Pipe do
   end
 
   @doc """
+  Builds a single channel pipe with a `pipe_fmap` operator.
+  """
+  @spec pipe({:__aliases__, term, term}, operator :: atom) :: Macro.t()
+  defmacro pipe({:__aliases__, _, _} = alias, operator) when is_atom(operator) do
+    build_pipe_operators([{alias, [{operator, :pipe_fmap}]}], __CALLER__)
+  end
+
+  @doc """
   Builds a single channel pipe with custom pipe operators.
   """
   @spec pipe({:__aliases__, term, term}, operators) :: Macro.t()

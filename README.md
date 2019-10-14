@@ -35,7 +35,10 @@ end
 - retain Elixir pipe behaviour
 
 ## To do
-- should not import over-ridden Kernel operators 
+- provide Module
+- should not import over-ridden Kernel operators
+- validate source provided to Operator
+  - currently it silently fails if incorrect
 - pipe wrappers for other monads (protocol?)
 - implement applicatives
 - other monads: reader, writer, state ...
