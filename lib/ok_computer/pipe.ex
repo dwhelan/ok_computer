@@ -1,25 +1,32 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  Builds multi-channel pipes.
+  Builds single, dual or multi-channel pipes.
   """
 
-  @type t :: term
+  @typedoc """
+  A set of pipe operators bound to a module with `Pipe` behaviour.
+  """
+  @type channel :: {module, operators}
 
-  @doc "pipe_bind"
-  @callback pipe_bind(t, (term -> t)) :: t
+  @typedoc """
+  A keyword list that maps operators to `Pipe` function names: `pipe_fmap` or `pipe_bind`.
+  """
+  @type operators :: [{operator :: atom, function_name :: atom}]
 
   @doc "pipe_fmap"
-  @callback pipe_fmap(t, (term -> term)) :: t
+  @callback pipe_fmap(t :: term, (term -> term)) :: t :: term
 
-  @default_right [~>: :pipe_fmap, ~>>: :pipe_bind]
-  @default_left [<~: :pipe_fmap, <<~: :pipe_bind]
+  @doc "pipe_bind"
+  @callback pipe_bind(t :: term, (term -> t :: term)) :: t :: term
+
+  @default_operators [~>: :pipe_fmap, ~>>: :pipe_bind]
+  @default_left_operators [<~: :pipe_fmap, <<~: :pipe_bind]
 
   import OkComputer.Operator
 
   defmacro __using__(_) do
     quote do
       alias OkComputer.Pipe
-      import Pipe
 
       @behaviour Pipe
 
@@ -35,47 +42,53 @@ defmodule OkComputer.Pipe do
   end
 
   @doc """
-  Builds a single channel pipe with default operators.
+  Builds a single channel pipe with default pipe operators.
   """
   defmacro pipe({:__aliases__, _, _} = alias) do
-    build_pipes([{alias, @default_right}], __CALLER__)
+    build_pipe_operators([{alias, @default_operators}], __CALLER__)
   end
 
   @doc """
-  Builds a single channel pipe with custom operators.
+  Builds a single channel pipe with custom pipe operators.
   """
-  @spec pipe({:__aliases__, term, term}, list) :: Macro.t()
+  @spec pipe({:__aliases__, term, term}, operators) :: Macro.t()
   defmacro pipe({:__aliases__, _, _} = alias, operators) when is_list(operators) do
-    build_pipes([{alias, operators}], __CALLER__)
+    build_pipe_operators([{alias, operators}], __CALLER__)
   end
 
   @doc """
-  Builds a dual channel pipe with default operators.
+  Builds a dual channel pipe with default pipe operators.
   """
-  @spec dual_pipe({:__aliases__, term, term}, {:__aliases__, term, term}) :: Macro.t()
-  defmacro dual_pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
-    build_pipes([{right, @default_right}, {left, @default_left}], __CALLER__)
+  @spec pipe({:__aliases__, term, term}, {:__aliases__, term, term}) :: Macro.t()
+  defmacro pipe({:__aliases__, _, _} = left, {:__aliases__, _, _} = right) do
+    build_pipe_operators([{right, @default_operators}, {left, @default_left_operators}], __CALLER__)
   end
 
-  defp build_pipes(alias_operators, env) do
-    alias_operators
+  @doc """
+  Builds a multi channel pipe with custom pipe operators.
+  """
+  @spec pipe(list(channel)) :: Macro.t()
+  defmacro pipe(channels) do
+    build_pipe_operators(channels, __CALLER__)
+  end
+
+  defp build_pipe_operators(channels, env) do
+    channels
     |> Enum.flat_map(fn {alias, operators} ->
-      module_sources(Macro.expand(alias, env), operators)
+      pipe_sources(Macro.expand(alias, env), operators)
     end)
     |> defoperators(Module.concat(env.module, Pipes))
   end
 
-  @spec module_sources(module, keyword(function_name :: atom)) :: list(binary)
-  defp module_sources(module, operators) do
-    operators
-    |> Enum.map(fn {operator, function_name} -> {operator, pipe_source(module, function_name)} end)
+  @spec pipe_sources(module, operators) :: list(binary)
+  defp pipe_sources(module, operators) do
+    Enum.map(operators, fn {operator, function_name} ->
+      {operator, pipe_source(module, function_name)}
+    end)
   end
 
   @spec pipe_source(module, function_name :: atom) :: binary
-  defp pipe_source(module, function) do
-#    source = quote do
-#      fn a -> a |> rhs end
-#    end
-    "#{module}.#{function}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
+  defp pipe_source(module, function_name) do
+    "#{module}.#{function_name}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
   end
 end
