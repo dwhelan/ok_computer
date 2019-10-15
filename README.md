@@ -54,8 +54,8 @@ We can use the standard pipe operator `|>` to connect steps into a pipeline:
     :anything_else
 
 One downside of this approach is that we have duplicated the `case` expression in each step.
+
 Let's see how we could remove that duplication.
-We could use a function like:
  
 ```elixir
 defmodule Steps do
