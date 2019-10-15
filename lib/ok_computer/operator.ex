@@ -40,9 +40,6 @@ defmodule OkComputer.Operator do
 
   ```
   defmodule WrongMath do
-    import OkComputer.Operator
-    import Kernel, except: [+: 2]
-
     defmacro left + right do
       quote do
         unquote(left) - unquote(right)
@@ -55,7 +52,7 @@ defmodule OkComputer.Operator do
   @doc """
   Builds a module with operators and imports it.
 
-  The name of the module will be the caller's module followed by `.Operators`.
+  The name of the module will be the caller's module concatenated with `Operators`.
   """
   @spec defoperators(keyword(binary)) :: Macro.t()
   defmacro defoperators(operators) do
@@ -63,9 +60,7 @@ defmodule OkComputer.Operator do
   end
 
   @doc """
-  Builds a module with operators and returns the ast to import it.
-
-  A new module `module` will be built with the operators. provided.
+  Builds a module with operators and returns the AST to import it.
   """
   @spec defoperators(keyword(binary), module) :: Macro.t()
   def defoperators(operators, module) do

@@ -12,14 +12,18 @@ defmodule OkComputer.Monad do
 
   defmacro __using__(_) do
     quote do
-      alias OkComputer.{Pipe, Monad, Functor}
+      alias OkComputer.{Pipe, Monad, Functor, Applicative}
 
       @behaviour Pipe
       @behaviour Monad
       @behaviour Functor
+      @behaviour Applicative
 
       @impl Functor
       def fmap(a, f), do: bind(a, fn a -> f.(a) |> return() end)
+
+      @impl Applicative
+      def apply(a, f), do: bind(f, &fmap(a, &1))
     end
   end
 end
