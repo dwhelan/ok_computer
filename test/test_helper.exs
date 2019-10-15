@@ -31,39 +31,39 @@ defmodule DecodeTest do
 end
 
 defmodule Monad.Laws do
-  defmacro test_monad(monad, m) do
+  defmacro test_monad(monad, a) do
     quote do
       @monad unquote(monad)
-      @m unquote(m)
+      @a unquote(a)
 
-      describe "#{inspect(@m)}" do
+      describe "#{inspect(@a)}" do
         test "monad left identity" do
           f = fn a -> @monad.return("f(#{inspect(a)})") end
-          assert @m |> @monad.return() |> @monad.bind(f) == f.(@m)
+          assert @a |> @monad.return() |> @monad.bind(f) == f.(@a)
         end
 
         test "monad right identity" do
-          assert @m |> @monad.bind(&@monad.return/1) == @m
+          assert @a |> @monad.bind(&@monad.return/1) == @a
         end
 
         test "monad associativity" do
           f = fn a -> @monad.return("f(#{inspect(a)})") end
           g = fn a -> @monad.return("g(#{inspect(a)})") end
 
-          assert @m |> @monad.bind(f) |> @monad.bind(g) ==
-                   @m |> @monad.bind(fn a -> f.(a) |> @monad.bind(g) end)
+          assert @a |> @monad.bind(f) |> @monad.bind(g) ==
+                   @a |> @monad.bind(fn a -> f.(a) |> @monad.bind(g) end)
         end
 
         test "functor identity" do
-          assert @m |> @monad.fmap(fn a -> a end) == @m
+          assert @a |> @monad.fmap(fn a -> a end) == @a
         end
 
         test "functor composition" do
           f = fn a -> "f(#{inspect(a)})" end
           g = fn a -> "g(#{inspect(a)})" end
 
-          assert @monad.fmap(@m, fn a -> a |> g.() |> f.() end) ==
-                   @monad.fmap(@m, g) |> @monad.fmap(f)
+          assert @monad.fmap(@a, fn a -> a |> g.() |> f.() end) ==
+                   @monad.fmap(@a, g) |> @monad.fmap(f)
         end
       end
     end
