@@ -15,7 +15,7 @@ defmodule OkComputer.Pipe do
           | {alias, operators}
 
   @typedoc """
-  A keyword list that maps pipe operators to `Pipe` function names: `pipe_fmap` or `pipe_bind` such as `[~>: :pipe_fmap]`.
+  A keyword list that maps pipe operators to `Pipe` function names: `:pipe_fmap` or `:pipe_bind` such as `[~>: :pipe_fmap]`.
   """
   @type operators :: [{operator :: atom, function_name :: atom}]
 
