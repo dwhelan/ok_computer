@@ -6,12 +6,4 @@ defmodule OkComputer.Functor do
 
   @doc "fmap"
   @callback fmap(t, (term -> term)) :: t
-
-  defmacro __using__(_) do
-    quote do
-      alias OkComputer.Functor
-
-      @behaviour Functor
-    end
-  end
 end

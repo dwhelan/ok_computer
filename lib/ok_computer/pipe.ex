@@ -25,10 +25,19 @@ defmodule OkComputer.Pipe do
   @doc "pipe_bind"
   @callback pipe_bind(t :: term, (term -> t :: term)) :: t :: term
 
-  @default_pipe_fmap_operator :~>
-  @default_pipe_bind_operator :~>>
-  @alternate_pipe_fmap_operator :<~
-  @alternate_pipe_bind_operator :<<~
+  @fmap_operator :~>
+  @bind_operator :~>>
+  @alternate_fmap_operator :<~
+  @alternate_bind_operator :<<~
+
+  @operators [
+    {@fmap_operator, :pipe_fmap},
+    {@bind_operator, :pipe_bind}
+  ]
+  @alternate_operators [
+    {@alternate_fmap_operator, :pipe_fmap},
+    {@alternate_bind_operator, :pipe_bind}
+  ]
 
   import OkComputer.Operator
 
@@ -96,11 +105,7 @@ defmodule OkComputer.Pipe do
     build_channels(
       [
         default,
-        {alternate,
-         [
-           {@alternate_pipe_fmap_operator, :pipe_fmap},
-           {@alternate_pipe_bind_operator, :pipe_bind}
-         ]}
+        {alternate, @alternate_operators}
       ],
       __CALLER__
     )
@@ -117,7 +122,7 @@ defmodule OkComputer.Pipe do
   defp build_channel({:__aliases__, _, _} = alias, env) do
     pipe_sources(
       alias,
-      [{@default_pipe_fmap_operator, :pipe_fmap}, {@default_pipe_bind_operator, :pipe_bind}],
+      @operators,
       env
     )
   end
