@@ -144,6 +144,6 @@ defmodule OkComputer.Pipe do
 
   @spec pipe_source(module, function_name :: atom) :: binary
   defp pipe_source(module, function_name) do
-    "#{module}.#{function_name}(unquote(lhs), fn a -> a |> unquote(rhs) end)"
+    "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
   end
 end

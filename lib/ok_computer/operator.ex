@@ -16,17 +16,15 @@ defmodule OkComputer.Operator do
   ```elixir
   # This won't compile:
   op = :+
-  def a unquote(op) b, do: a - b
+  def a op b, do: a - b
   end
   ```
 
-  The `Operator` creatse operators dynamically. It does this
-  by embedding source code for each operator definition into an overall module definition and compiling this source into a new module.
+  Operators are creating by embedding source code for each operator definition into a module, compiling the module and importing it.
 
-  The source code is simply a binary. You will need to access the AST of
-  what is on the left of the operator and what is on the right of the operator.
+  The source code is simply a string version of what you would provide for a macro.
   The AST for the left hand side of the operator is available as
-  as `lhs` and the AST for the right hand side is available as `rhs`.
+  as `left` and the AST for the right hand side is available as `right`.
 
   We can now create a dynamic pipe:
 
@@ -34,7 +32,7 @@ defmodule OkComputer.Operator do
   defmodule WrongMath do
     import OkComputer.Operator
 
-    defoperators +: "unquote(lhs) - unquote(rhs)"
+    defoperators +: "unquote(left) - unquote(right)"
   end
   ```
 
@@ -45,9 +43,9 @@ defmodule OkComputer.Operator do
     import OkComputer.Operator
     import Kernel, except: [+: 2]
 
-    defmacro lhs + rhs do
+    defmacro left + right do
       quote do
-        unquote(lhs) - unquote(rhs)
+        unquote(left) - unquote(right)
       end
     end
   end
@@ -84,7 +82,7 @@ defmodule OkComputer.Operator do
 
   defp defoperator({operator, source}) do
     """
-      defmacro lhs #{operator} rhs do
+      defmacro left #{operator} right do
         quote do
           #{source}
          end
