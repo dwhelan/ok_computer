@@ -86,7 +86,7 @@ The pipe operator calls `process` with an input and a function.
 
 Now the pipeline looks like:
 
-    iex> import OkComputer.Pipe
+    iex> import OkComputer.Builder
 
     iex> pipe Steps, ~>: :process
      

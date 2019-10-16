@@ -1,6 +1,6 @@
-defmodule OkComputer.PipeSingleChannelTest do
+defmodule OkComputer.Builder.SingleChannelTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.True
 
   pipe True
@@ -18,7 +18,7 @@ end
 
 defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.True
 
   pipe True, :>>>
@@ -31,7 +31,7 @@ end
 
 defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.True
 
   pipe True, :>>>, :<~>
@@ -49,7 +49,7 @@ end
 
 defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.True
 
   pipe True, >>>: :fmap, <~>: :bind
@@ -67,7 +67,7 @@ end
 
 defmodule OkComputer.PipeDualChannelTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.{False, True}
 
   pipe False, True
@@ -95,7 +95,7 @@ end
 
 defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.{False, True}
 
   pipe [{True, :~>}, {False, :<~}]
@@ -115,7 +115,7 @@ end
 
 defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.{Nil, False, True}
 
   pipe [{True, :~>, :~>>}, {False, :<~, :<<~}]
@@ -135,7 +135,7 @@ end
 
 defmodule OkComputer.PipeMultiChannelTest do
   use ExUnit.Case
-  import OkComputer.Pipe
+  import OkComputer.Builder
   alias OkComputer.Pipe.{Nil, False, True}
 
   pipe [
@@ -169,7 +169,7 @@ defmodule OkComputer.PipeTest do
   test "must provide at least one pipe" do
     source = """
       defmodule BadPipe do
-        import OkComputer.Pipe
+        import OkComputer.Builder
         pipe []
       end
     """
