@@ -8,6 +8,6 @@ defmodule OkComputer.Pipe.Value do
   def bind(a, f), do: f.(a)
 
   @impl Pipe
-  def fmap(nil, _f), do: nil
-  def fmap(a, f), do: f.(a)
+  def map(nil, _f), do: nil
+  def map(a, f), do: f.(a)
 end

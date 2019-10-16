@@ -8,9 +8,9 @@ defmodule OkComputer.Pipe.TrueTest do
     assert bind(:a, &to_string/1) == "a"
   end
 
-  test "fmap" do
-    assert fmap(nil, &to_string/1) == nil
-    assert fmap(false, &to_string/1) == false
-    assert fmap(:a, &to_string/1) == "a"
+  test "map" do
+    assert map(nil, &to_string/1) == nil
+    assert map(false, &to_string/1) == false
+    assert map(:a, &to_string/1) == "a"
   end
 end

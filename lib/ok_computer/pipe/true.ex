@@ -9,7 +9,7 @@ defmodule OkComputer.Pipe.True do
   def bind(a, f), do: f.(a)
 
   @impl Pipe
-  def fmap(nil, _f), do: nil
-  def fmap(false, _f), do: false
-  def fmap(a, f), do: f.(a)
+  def map(nil, _f), do: nil
+  def map(false, _f), do: false
+  def map(a, f), do: f.(a)
 end

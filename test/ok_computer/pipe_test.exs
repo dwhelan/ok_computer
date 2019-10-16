@@ -5,7 +5,7 @@ defmodule OkComputer.Builder.SingleChannelTest do
 
   pipe True
 
-  test "~> should use True.fmap" do
+  test "~> should use True.map" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
   end
@@ -23,7 +23,7 @@ defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
 
   pipe True, :>>>
 
-  test ">>> should use True.fmap" do
+  test ">>> should use True.map" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
@@ -36,7 +36,7 @@ defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
 
   pipe True, :>>>, :<~>
 
-  test ">>> should use True.fmap" do
+  test ">>> should use True.map" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
@@ -52,9 +52,9 @@ defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
   import OkComputer.Builder
   alias OkComputer.Pipe.True
 
-  pipe True, >>>: :fmap, <~>: :bind
+  pipe True, >>>: :map, <~>: :bind
 
-  test ">>> should use True.fmap" do
+  test ">>> should use True.map" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
@@ -72,7 +72,7 @@ defmodule OkComputer.PipeDualChannelTest do
 
   pipe False, True
 
-  test "~> should use True.fmap" do
+  test "~> should use True.map" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
   end
@@ -82,7 +82,7 @@ defmodule OkComputer.PipeDualChannelTest do
     assert false ~>> to_string() == false
   end
 
-  test "<~ should use False.fmap" do
+  test "<~ should use False.map" do
     assert false <~ to_string() == "false"
     assert true <~ to_string() == true
   end
@@ -100,13 +100,13 @@ defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
 
   pipe [{True, :~>}, {False, :<~}]
 
-  test "~> should use True.fmap" do
+  test "~> should use True.map" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
     assert nil ~> to_string() == nil
   end
 
-  test "<~ should use False.fmap" do
+  test "<~ should use False.map" do
     assert true <~ to_string() == true
     assert false <~ to_string() == "false"
     assert nil <~ to_string() == ""
@@ -120,13 +120,13 @@ defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
 
   pipe [{True, :~>, :~>>}, {False, :<~, :<<~}]
 
-  test "~> should use True.fmap" do
+  test "~> should use True.map" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
     assert nil ~> to_string() == nil
   end
 
-  test "<~ should use False.fmap" do
+  test "<~ should use False.map" do
     assert true <~ to_string() == true
     assert false <~ to_string() == "false"
     assert nil <~ to_string() == ""
@@ -139,24 +139,24 @@ defmodule OkComputer.PipeMultiChannelTest do
   alias OkComputer.Pipe.{Nil, False, True}
 
   pipe [
-    {True, [~>: :fmap]},
-    {False, [~>>: :fmap]},
-    {Nil, [>>>: :fmap]}
+    {True, [~>: :map]},
+    {False, [~>>: :map]},
+    {Nil, [>>>: :map]}
   ]
 
-  test "~> should use True.fmap" do
+  test "~> should use True.map" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
     assert nil ~> to_string() == nil
   end
 
-  test "~>> should use False.fmap" do
+  test "~>> should use False.map" do
     assert true ~>> to_string() == true
     assert false ~>> to_string() == "false"
     assert nil ~>> to_string() == ""
   end
 
-  test ">>> should use Nil.fmap" do
+  test ">>> should use Nil.map" do
     assert true >>> to_string() == true
     assert false >>> to_string() == false
     assert nil >>> to_string() == ""

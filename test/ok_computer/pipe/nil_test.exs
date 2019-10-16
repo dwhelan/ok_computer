@@ -7,8 +7,8 @@ defmodule OkComputer.Pipe.NilTest do
     assert bind(:a, &to_string/1) == :a
   end
 
-  test "fmap" do
-    assert fmap(nil, &to_string/1) == ""
-    assert fmap(:a, &to_string/1) == :a
+  test "map" do
+    assert map(nil, &to_string/1) == ""
+    assert map(:a, &to_string/1) == :a
   end
 end

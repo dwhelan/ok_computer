@@ -55,15 +55,15 @@ defmodule Monad.Laws do
         end
 
         test "functor identity" do
-          assert @a |> @monad.fmap(fn a -> a end) == @a
+          assert @a |> @monad.map(fn a -> a end) == @a
         end
 
         test "functor composition" do
           f = fn a -> "f(#{inspect(a)})" end
           g = fn a -> "g(#{inspect(a)})" end
 
-          assert @monad.fmap(@a, fn a -> a |> g.() |> f.() end) ==
-                   @monad.fmap(@a, g) |> @monad.fmap(f)
+          assert @monad.map(@a, fn a -> a |> g.() |> f.() end) ==
+                   @monad.map(@a, g) |> @monad.map(f)
         end
       end
     end

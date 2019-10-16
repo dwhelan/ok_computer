@@ -138,7 +138,7 @@ end
 - move laws to lib folder rather than test folder
 - build a 'do' or `for` that has `when` behaviour with monadic values
 - create pipe laws assuming for P
-  - `~> === P.fmap`
+  - `~> === P.map`
   - `~>> === P.bind`  
   - `<~> === P.pipe_return`
   - left identity
@@ -151,5 +151,5 @@ end
     `a |> P.bind(f) |> P.bind(g) == a|> P.bind()  `
 - operators
   - check for unique pipe operators
-  - check for invalid functions (bind/2 fmap/2)
+  - check for invalid functions (bind/2 map/2)
   - support unary operators (perhaps return_pipe?)

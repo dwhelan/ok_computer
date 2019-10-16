@@ -4,6 +4,6 @@ defmodule OkComputer.Functor do
   """
   @type t :: term
 
-  @doc "fmap"
-  @callback fmap(t, (term -> term)) :: t
+  @doc "map"
+  @callback map(t, (term -> term)) :: t
 end

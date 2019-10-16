@@ -14,10 +14,10 @@ defmodule OkComputer.Monad.ResultTest do
     assert bind({:ok, :value}, f) == {:ok, "value"}
   end
 
-  test "fmap" do
+  test "map" do
     f = fn :value -> "value" end
 
-    assert fmap({:ok, :value}, f) == {:ok, "value"}
+    assert map({:ok, :value}, f) == {:ok, "value"}
   end
 
   test_monad(Result, {:ok, :value})
@@ -32,7 +32,7 @@ defmodule OkComputer.Monad.ResultTest do
   test "pipe_fmap" do
     f = fn :value -> "value" end
 
-    assert fmap({:ok, :value}, f) == {:ok, "value"}
-    assert fmap(:a, f) == :a
+    assert map({:ok, :value}, f) == {:ok, "value"}
+    assert map(:a, f) == :a
   end
 end
