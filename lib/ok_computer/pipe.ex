@@ -23,17 +23,4 @@ defmodule OkComputer.Pipe do
 
   """
   @callback bind(monad, f :: (a -> monad)) :: monad
-
-  defmacro __using__(_) do
-    quote do
-      alias OkComputer.Pipe
-
-      @behaviour Pipe
-
-      @impl Pipe
-      def fmap(a, f), do: bind(a, f)
-
-      defoverridable fmap: 2
-    end
-  end
 end
