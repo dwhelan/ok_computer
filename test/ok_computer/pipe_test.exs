@@ -5,12 +5,12 @@ defmodule OkComputer.PipeSingleChannelTest do
 
   pipe True
 
-  test "~> should use True.pipe_fmap" do
+  test "~> should use True.fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
   end
 
-  test "~>> should use True.pipe_bind" do
+  test "~>> should use True.bind" do
     assert true ~>> to_string() == "true"
     assert false ~>> to_string() == false
   end
@@ -23,7 +23,7 @@ defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
 
   pipe True, :>>>
 
-  test ">>> should use True.pipe_fmap" do
+  test ">>> should use True.fmap" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
@@ -36,12 +36,12 @@ defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
 
   pipe True, :>>>, :<~>
 
-  test ">>> should use True.pipe_fmap" do
+  test ">>> should use True.fmap" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
 
-  test "<~> should use True.pipe_bind" do
+  test "<~> should use True.bind" do
     assert true <~> to_string() == "true"
     assert false <~> to_string() == false
   end
@@ -52,14 +52,14 @@ defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
   import OkComputer.Pipe
   alias OkComputer.Pipe.True
 
-  pipe True, >>>: :pipe_fmap, <~>: :pipe_bind
+  pipe True, >>>: :fmap, <~>: :bind
 
-  test ">>> should use True.pipe_fmap" do
+  test ">>> should use True.fmap" do
     assert true >>> to_string() == "true"
     assert false >>> to_string() == false
   end
 
-  test "<~> should use True.pipe_bind" do
+  test "<~> should use True.bind" do
     assert true <~> to_string() == "true"
     assert false <~> to_string() == false
   end
@@ -72,22 +72,22 @@ defmodule OkComputer.PipeDualChannelTest do
 
   pipe False, True
 
-  test "~> should use True.pipe_fmap" do
+  test "~> should use True.fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
   end
 
-  test "~>> should use True.pipe_bind" do
+  test "~>> should use True.bind" do
     assert true ~> to_string() == "true"
     assert false ~>> to_string() == false
   end
 
-  test "<~ should use False.pipe_fmap" do
+  test "<~ should use False.fmap" do
     assert false <~ to_string() == "false"
     assert true <~ to_string() == true
   end
 
-  test "<<~ should use False. pipe_bind" do
+  test "<<~ should use False. bind" do
     assert false <~ to_string() == "false"
     assert true <<~ to_string() == true
   end
@@ -100,13 +100,13 @@ defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
 
   pipe [{True, :~>}, {False, :<~}]
 
-  test "~> should use True.pipe_fmap" do
+  test "~> should use True.fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
     assert nil ~> to_string() == nil
   end
 
-  test "<~ should use False.pipe_fmap" do
+  test "<~ should use False.fmap" do
     assert true <~ to_string() == true
     assert false <~ to_string() == "false"
     assert nil <~ to_string() == ""
@@ -120,13 +120,13 @@ defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
 
   pipe [{True, :~>, :~>>}, {False, :<~, :<<~}]
 
-  test "~> should use True.pipe_fmap" do
+  test "~> should use True.fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
     assert nil ~> to_string() == nil
   end
 
-  test "<~ should use False.pipe_fmap" do
+  test "<~ should use False.fmap" do
     assert true <~ to_string() == true
     assert false <~ to_string() == "false"
     assert nil <~ to_string() == ""
@@ -139,24 +139,24 @@ defmodule OkComputer.PipeMultiChannelTest do
   alias OkComputer.Pipe.{Nil, False, True}
 
   pipe [
-    {True, [~>: :pipe_fmap]},
-    {False, [~>>: :pipe_fmap]},
-    {Nil, [>>>: :pipe_fmap]}
+    {True, [~>: :fmap]},
+    {False, [~>>: :fmap]},
+    {Nil, [>>>: :fmap]}
   ]
 
-  test "~> should use True.pipe_fmap" do
+  test "~> should use True.fmap" do
     assert true ~> to_string() == "true"
     assert false ~> to_string() == false
     assert nil ~> to_string() == nil
   end
 
-  test "~>> should use False.pipe_fmap" do
+  test "~>> should use False.fmap" do
     assert true ~>> to_string() == true
     assert false ~>> to_string() == "false"
     assert nil ~>> to_string() == ""
   end
 
-  test ">>> should use Nil.pipe_fmap" do
+  test ">>> should use Nil.fmap" do
     assert true >>> to_string() == true
     assert false >>> to_string() == false
     assert nil >>> to_string() == ""

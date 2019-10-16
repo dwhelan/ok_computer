@@ -25,14 +25,14 @@ defmodule OkComputer.Monad.ResultTest do
   test "pipe_bind" do
     f = fn :value -> {:ok, "value"} end
 
-    assert pipe_bind({:ok, :value}, f) == {:ok, "value"}
-    assert pipe_bind(:anything_else, f) == :anything_else
+    assert bind({:ok, :value}, f) == {:ok, "value"}
+    assert bind(:anything_else, f) == :anything_else
   end
 
   test "pipe_fmap" do
     f = fn :value -> "value" end
 
-    assert pipe_fmap({:ok, :value}, f) == {:ok, "value"}
-    assert pipe_fmap(:anything_else, f) == :anything_else
+    assert fmap({:ok, :value}, f) == {:ok, "value"}
+    assert fmap(:anything_else, f) == :anything_else
   end
 end

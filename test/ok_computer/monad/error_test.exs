@@ -26,14 +26,14 @@ defmodule OkComputer.Monad.ErrorTest do
   test "pipe_bind" do
     f = fn :value -> {:error, "value"} end
 
-    assert pipe_bind({:error, :value}, f) == {:error, "value"}
-    assert pipe_bind(:anything_else, f) == :anything_else
+    assert bind({:error, :value}, f) == {:error, "value"}
+    assert bind(:anything_else, f) == :anything_else
   end
 
   test "pipe_fmap" do
     f = fn :value -> "value" end
 
-    assert pipe_fmap({:error, :value}, f) == {:error, "value"}
-    assert pipe_fmap(:anything_else, f) == :anything_else
+    assert fmap({:error, :value}, f) == {:error, "value"}
+    assert fmap(:anything_else, f) == :anything_else
   end
 end

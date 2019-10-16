@@ -15,15 +15,15 @@ defmodule OkComputer.Pipe do
           | {alias, operators}
 
   @typedoc """
-  A keyword list that maps pipe operators to `Pipe` function names: `:pipe_fmap` or `:pipe_bind` such as `[~>: :pipe_fmap]`.
+  A keyword list that maps pipe operators to `Pipe` function names: `:fmap` or `:bind` such as `[~>: :fmap]`.
   """
   @type operators :: [{operator :: atom, function_name :: atom}]
 
-  @doc "pipe_fmap"
-  @callback pipe_fmap(t :: term, (term -> term)) :: t :: term
+  @doc "fmap"
+  @callback fmap(t :: term, (term -> term)) :: t :: term
 
-  @doc "pipe_bind"
-  @callback pipe_bind(t :: term, (term -> t :: term)) :: t :: term
+  @doc "bind"
+  @callback bind(t :: term, (term -> t :: term)) :: t :: term
 
   @fmap_operator :~>
   @bind_operator :~>>
@@ -31,12 +31,12 @@ defmodule OkComputer.Pipe do
   @alternate_bind_operator :<<~
 
   @operators [
-    {@fmap_operator, :pipe_fmap},
-    {@bind_operator, :pipe_bind}
+    {@fmap_operator, :fmap},
+    {@bind_operator, :bind}
   ]
   @alternate_operators [
-    {@alternate_fmap_operator, :pipe_fmap},
-    {@alternate_bind_operator, :pipe_bind}
+    {@alternate_fmap_operator, :fmap},
+    {@alternate_bind_operator, :bind}
   ]
 
   import OkComputer.Operator
@@ -48,9 +48,9 @@ defmodule OkComputer.Pipe do
       @behaviour Pipe
 
       @impl Pipe
-      def pipe_fmap(a, f), do: pipe_bind(a, f)
+      def fmap(a, f), do: bind(a, f)
 
-      defoverridable pipe_fmap: 2
+      defoverridable fmap: 2
     end
   end
 
@@ -74,7 +74,7 @@ defmodule OkComputer.Pipe do
   end
 
   @doc """
-  Builds a single channel pipe with `pipe_fmap` and `pipe_bind` operators.
+  Builds a single channel pipe with `fmap` and `bind` operators.
   """
   @spec pipe(alias, fmap_operator :: atom, bind_operator :: atom) :: Macro.t()
   defmacro pipe({:__aliases__, line, _} = alias, fmap_operator, bind_operator) do
@@ -82,7 +82,7 @@ defmodule OkComputer.Pipe do
   end
 
   @doc """
-  Builds a single channel pipe with a `pipe_fmap` operator.
+  Builds a single channel pipe with a `fmap` operator.
   """
   @spec pipe(alias, fmap_operator :: atom) :: Macro.t()
   defmacro pipe({:__aliases__, _, _} = alias, fmap_operator) when is_atom(fmap_operator) do
@@ -128,12 +128,12 @@ defmodule OkComputer.Pipe do
   end
 
   defp build_channel({alias, operator}, env) when is_atom(operator) do
-    pipe_sources(alias, [{operator, :pipe_fmap}], env)
+    pipe_sources(alias, [{operator, :fmap}], env)
   end
 
   defp build_channel({:{}, _, [{:__aliases__, _, _} = alias, fmap_operator, bind_operator]}, env)
        when is_atom(fmap_operator) and is_atom(bind_operator) do
-    pipe_sources(alias, [{fmap_operator, :pipe_fmap}, {bind_operator, :pipe_bind}], env)
+    pipe_sources(alias, [{fmap_operator, :fmap}, {bind_operator, :bind}], env)
   end
 
   defp build_channel({{:__aliases__, _, _} = alias, operators}, env) when is_list(operators) do

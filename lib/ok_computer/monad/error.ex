@@ -9,10 +9,10 @@ defmodule OkComputer.Monad.Error do
   def bind({:error, reason}, f), do: f.(reason)
 
   @impl Pipe
-  def pipe_bind({:error, reason}, f), do: f.(reason)
-  def pipe_bind(a, _f), do: a
+  def bind({:error, reason}, f), do: f.(reason)
+  def bind(a, _f), do: a
 
   @impl Pipe
-  def pipe_fmap({:error, reason}, f), do: {:error, f.(reason)}
-  def pipe_fmap(a, _f), do: a
+  def fmap({:error, reason}, f), do: {:error, f.(reason)}
+  def fmap(a, _f), do: a
 end
