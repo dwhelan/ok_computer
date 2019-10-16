@@ -128,12 +128,12 @@ end
 - retain Elixir pipe behaviour
 
 ## To do
-- provide Module
 - should not import over-ridden Kernel operators
 - validate source provided to Operator
   - currently it silently fails if incorrect
 - pipe wrappers for other monads (protocol?)
-- implement applicatives
+- test applicatives
+- add applicative pipe `>>>`, `<<<`?
 - other monads: reader, writer, state ...
 - move laws to lib folder rather than test folder
 - build a 'do' or `for` that has `when` behaviour with monadic values
