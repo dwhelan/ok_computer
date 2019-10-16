@@ -3,7 +3,6 @@ defmodule OkComputer.Monad do
   Monadic pipes.
   """
   @type monad(_any) :: any
-  @type f(a) :: (a -> monad(b))
   @type a :: any
   @type b :: any
 
@@ -11,7 +10,7 @@ defmodule OkComputer.Monad do
   @callback return(a) :: monad(a)
 
   @doc "bind"
-  @callback bind(monad(a), f(a)) :: monad(b)
+  @callback bind(monad(a), f :: (a -> monad(b))) :: monad(b)
 
   defmacro __using__(_) do
     quote do

@@ -3,9 +3,9 @@ defmodule OkComputer.Functor do
   Describes functor behaviour.
   """
   @type functor(_any) :: any
-  @type f(a) :: (a -> a)
   @type a :: any
+  @type b :: any
 
   @doc "map"
-  @callback map(functor(a), f(a)) :: functor(a)
+  @callback map(functor(a), f :: (a -> b)) :: functor(b)
 end
