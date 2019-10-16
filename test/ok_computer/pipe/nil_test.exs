@@ -4,11 +4,11 @@ defmodule OkComputer.Pipe.NilTest do
 
   test "bind" do
     assert bind(nil, &to_string/1) == ""
-    assert bind(:anything_else, &to_string/1) == :anything_else
+    assert bind(:a, &to_string/1) == :a
   end
 
   test "fmap" do
     assert fmap(nil, &to_string/1) == ""
-    assert fmap(:anything_else, &to_string/1) == :anything_else
+    assert fmap(:a, &to_string/1) == :a
   end
 end

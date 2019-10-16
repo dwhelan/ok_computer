@@ -18,7 +18,7 @@ defmodule OkComputer.Monad.ErrorTest do
     f = fn :reason -> "reason" end
 
     assert fmap({:error, :reason}, f) == {:error, "reason"}
-    #    assert fmap(:anything_else, f) == :anything_else
+    #    assert fmap(:a, f) == :a
   end
 
   test_monad(Error, {:error, :reason})
@@ -27,13 +27,13 @@ defmodule OkComputer.Monad.ErrorTest do
     f = fn :value -> {:error, "value"} end
 
     assert bind({:error, :value}, f) == {:error, "value"}
-    assert bind(:anything_else, f) == :anything_else
+    assert bind(:a, f) == :a
   end
 
   test "pipe_fmap" do
     f = fn :value -> "value" end
 
     assert fmap({:error, :value}, f) == {:error, "value"}
-    assert fmap(:anything_else, f) == :anything_else
+    assert fmap(:a, f) == :a
   end
 end

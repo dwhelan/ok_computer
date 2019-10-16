@@ -5,5 +5,5 @@ defmodule OkComputer.Pipe.False do
   @impl Pipe
   def bind(nil, f), do: f.(nil)
   def bind(false, f), do: f.(false)
-  def bind(anything_else, _f), do: anything_else
+  def bind(a, _f), do: a
 end
