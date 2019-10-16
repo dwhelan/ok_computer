@@ -11,7 +11,7 @@ defmodule OkComputer.PipeSingleChannelTest do
   end
 
   test "~>> should use True.pipe_bind" do
-    assert true ~> to_string() == "true"
+    assert true ~>> to_string() == "true"
     assert false ~>> to_string() == false
   end
 end
