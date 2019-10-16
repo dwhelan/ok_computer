@@ -12,9 +12,8 @@ defmodule OkComputer.Monad do
 
   defmacro __using__(_) do
     quote do
-      alias OkComputer.{Pipe, Monad, Functor, Applicative}
+      alias OkComputer.{Monad, Functor, Applicative}
 
-      @behaviour Pipe
       @behaviour Monad
       @behaviour Functor
       @behaviour Applicative
