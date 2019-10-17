@@ -100,10 +100,20 @@ defmodule OkComputer.Operator do
   end
 
   def create_macros(operators) do
-    Enum.map(operators, fn operator -> create_macro(operator) end)
+    Enum.map(operators, &create_macro/1)
   end
 
-  def create_macro({atom, ast}) do
+  def create_macro({atom, source}) when is_binary(source) do
+    ~s(
+        defmacro left #{atom} right do
+          quote do
+            #{source}
+          end
+        end
+      )
+  end
+
+  def create_macro({atom, {_, _, _} = ast}) do
     ~s(
         defmacro left #{atom} right do
           #{Macro.to_string(ast)}
