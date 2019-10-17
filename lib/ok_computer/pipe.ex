@@ -9,18 +9,15 @@ defmodule OkComputer.Pipe do
 
   This lets you pipe functions that operate in different monadic contexts together.
   """
-  @type monad :: any
-  @type a :: any
+  @type t :: any
 
   @doc """
   Calls
-
-  A default implementation simply calls `bind/2`
   """
-  @callback map(monad, f :: (a -> a)) :: monad
+  @callback map(t, f :: (any -> any)) :: t
 
   @doc """
 
   """
-  @callback bind(monad, f :: (a -> monad)) :: monad
+  @callback bind(t, f :: (any -> t)) :: t
 end

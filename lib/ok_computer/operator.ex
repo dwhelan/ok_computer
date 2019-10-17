@@ -84,4 +84,30 @@ defmodule OkComputer.Operator do
       end
     """
   end
+
+  defmacro operators(operators, name \\ Operators) do
+    module = Module.concat(__CALLER__.module, name)
+
+    Code.compile_string(~s(
+      defmodule #{module} do
+        #{create_macros(operators)}
+      end
+    ))
+
+    quote do
+      import unquote(module)
+    end
+  end
+
+  def create_macros(operators) do
+    Enum.map(operators, fn operator -> create_macro(operator) end)
+  end
+
+  def create_macro({atom, ast}) do
+    ~s(
+        defmacro left #{atom} right do
+          #{Macro.to_string(ast)}
+        end
+      )
+  end
 end

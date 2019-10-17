@@ -131,25 +131,18 @@ end
 - should not import over-ridden Kernel operators
 - validate source provided to Operator
   - currently it silently fails if incorrect
-- pipe wrappers for other monads (protocol?)
+- pipe wrappers for other monads (Witchcraft, MonadEx, OK ... protocol?)
 - test applicatives
-- add applicative pipe `>>>`, `<<<`?
+- add applicative pipes `>>>`, `<<<`?
 - other monads: reader, writer, state ...
 - move laws to lib folder rather than test folder
 - build a 'do' or `for` that has `when` behaviour with monadic values
-- create pipe laws assuming for P
-  - `~> === P.map`
-  - `~>> === P.bind`  
-  - `<~> === P.pipe_return`
-  - left identity
-    `a |> P.pipe_return |> P.bind(f) == f.(a)` ?
-    `~~~ a ~>> f' == f'(a)` ?
-  - right identity
-    `a |> P.bind(&P.pipe_return/1) == a` ?
-    `~~~ a == a` ?
-  - associativity
-    `a |> P.bind(f) |> P.bind(g) == a|> P.bind()  `
+- create pipe laws
+  - map/2 exists
+  - bind/2 exists
+  - apply/2 exists?
 - operators
   - check for unique pipe operators
-  - check for invalid functions (bind/2 map/2)
-  - support unary operators (perhaps return_pipe?)
+  - check for valid pipe operators (binary and left-to-right)
+  - check for valid functions (arity == 2)
+  - support unary operators (perhaps return/1?)

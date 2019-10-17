@@ -2,15 +2,13 @@ defmodule OkComputer.Monad do
   @moduledoc """
   Monadic pipes.
   """
-  @type monad(_any) :: any
-  @type a :: any
-  @type b :: any
+  @type t :: any
 
   @doc "return"
-  @callback return(a) :: monad(a)
+  @callback return(any) :: t
 
   @doc "bind"
-  @callback bind(monad(a), f :: (a -> monad(b))) :: monad(b)
+  @callback bind(t, f :: (any -> t)) :: t
 
   defmacro __using__(_) do
     quote do

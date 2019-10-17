@@ -2,10 +2,8 @@ defmodule OkComputer.Functor do
   @moduledoc """
   Describes functor behaviour.
   """
-  @type functor(_any) :: any
-  @type a :: any
-  @type b :: any
+  @type t :: any
 
   @doc "map"
-  @callback map(functor(a), f :: (a -> b)) :: functor(b)
+  @callback map(t, f :: (any -> any)) :: t
 end
