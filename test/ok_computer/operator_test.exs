@@ -22,7 +22,7 @@ defmodule OkComputer.OperatorTest do
 #    assert 1 + 2 == -1
 #  end
 
-  test "from string" do
+  test "from source" do
     assert 1 + 2 == 3
   end
 
