@@ -103,6 +103,20 @@ defmodule OkComputer.Operator do
     Enum.map(operators, &create_operator/1)
   end
 
+  def create_operator(
+        {atom,
+         {:&, _,
+          [
+            {:/, _,
+             [
+               {{:., _, [{:__aliases__, _, _} = alias, function_name]}, _, []},
+               arity
+             ]}
+          ]}}
+      ) do
+    create_operator(atom, alias, function_name, 2)
+  end
+
   def create_operator({atom, source}) when is_binary(source) do
     ~s[
       defmacro left #{atom} right do
@@ -113,51 +127,22 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def create_operator({atom, {{:__aliases__, _, _} = alias, function_name} = capture}) do
+  defp create_operator(atom, alias, function_name, 2) do
     module = Macro.expand(alias, __ENV__)
-    ~s[
-      def left #{atom} right do
-        #{module}.#{function_name}(left, right)
-      end
-    ]
+
+    cond do
+      {function_name, 2} in module.__info__(:functions) ->
+        create_operator(:def, atom, module, function_name)
+
+      {function_name, 2} in module.__info__(:macros) ->
+        create_operator(:defmacro, atom, module, function_name)
+    end
   end
 
-  def create_operator({atom, {:{}, _, [{:__aliases__, _, _} = alias, function_name, :macro]}}) do
-    module = Macro.expand(alias, __ENV__)
-    ~s[
-      defmacro left #{atom} right do
-        require #{module}
-        #{module}.#{function_name}(left, right)
-      end
-    ]
-  end
-
-  def create_operator({atom, {:&, _, _} = f}) do
-    ~s[
-        def left #{atom} right do
-          (#{Macro.to_string(f)}).(left, right)
-        end
-    ]
-  end
-
-  def create_operator(
-        {atom,
-         [
-           macro:
-             {:&, _,
-              [
-                {:/, _,
-                 [
-                   {{:., _, [{:__aliases__, _, _} = alias, function_name]}, _, []},
-                   2
-                 ]}
-              ]}
-         ]}
-      ) do
-    module = Macro.expand(alias, __ENV__)
+  defp create_operator(def, atom, module, function_name) do
     ~s[
         require #{module}
-        defmacro left #{atom} right do
+        #{def} left #{atom} right do
           #{module}.#{function_name}(left, right)
         end
     ]
