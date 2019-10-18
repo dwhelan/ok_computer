@@ -125,6 +125,17 @@ defmodule OkComputer.Operator do
     """
   end
 
+  def create_macro({atom, {:{}, _,  [{:__aliases__, _, _} = alias, function_name, :macro]} = capture}) do
+    module = Macro.expand(alias, __ENV__)
+
+    """
+        defmacro left #{atom} right do
+          require #{module}
+          #{module}.#{function_name}(left, right)
+        end
+    """
+  end
+
   def create_macro({atom, {:&, _, _} = capture}) do
     ~s(
         defmacro left #{atom} right do
