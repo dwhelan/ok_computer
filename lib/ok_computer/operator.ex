@@ -139,4 +139,27 @@ defmodule OkComputer.Operator do
         end
     ]
   end
+
+  def create_operator(
+        {atom,
+         [
+           macro:
+             {:&, _,
+              [
+                {:/, _,
+                 [
+                   {{:., _, [{:__aliases__, _, _} = alias, function_name]}, _, []},
+                   2
+                 ]}
+              ]}
+         ]}
+      ) do
+    module = Macro.expand(alias, __ENV__)
+    ~s[
+        require #{module}
+        defmacro left #{atom} right do
+          #{module}.#{function_name}(left, right)
+        end
+    ]
+  end
 end
