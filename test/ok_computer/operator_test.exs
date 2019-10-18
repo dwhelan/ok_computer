@@ -24,11 +24,6 @@ defmodule OkComputer.OperatorTest do
     *: {Operators, :multiply, :macro}
   )
 
-  #  test "custom operator for wrong math" do
-  #    defoperators(+: "unquote(left) - unquote(right)")
-  #    assert 1 + 2 == -1
-  #  end
-
   test "from source" do
     assert 1 + 2 == 3
   end
@@ -40,16 +35,4 @@ defmodule OkComputer.OperatorTest do
   test "from macro" do
     assert 2 * 3 == 6
   end
-
-  #  test "ast" do
-  #    left = Macro.var(:left, nil)
-  #    right = Macro.var(:right, nil)
-  #
-  #    ast =
-  #      quote do
-  #        unquote(left) + unquote(right)
-  #      end
-  #
-  #    IO.inspect(ast: ast, s: Macro.to_string(ast))
-  #  end
 end
