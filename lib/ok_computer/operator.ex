@@ -113,10 +113,23 @@ defmodule OkComputer.Operator do
       )
   end
 
-  def create_macro({atom, {_, _, _} = ast}) do
+  def create_macro({atom, {{:__aliases__, _, _} = alias, function_name} = capture}) do
+    module = Macro.expand(alias, __ENV__)
+
+    """
+        defmacro left #{atom} right do
+          quote do
+            #{module}.#{function_name}(unquote(left), unquote(right))
+          end
+        end
+    """
+  end
+
+  def create_macro({atom, {:&, _, _} = capture}) do
     ~s(
         defmacro left #{atom} right do
-          #{Macro.to_string(ast)}
+          quote do
+          end
         end
       )
   end
