@@ -21,12 +21,16 @@ defmodule OkComputer.OperatorTest do
   operators(
     +: {Operators, :f},
     -: {Operators, :f_macro, :macro},
-
+    *: &Operators.f/2,
     &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
   test "from named external function" do
     assert :a + :b == "f(a, b)"
+  end
+
+  test "from external function" do
+    assert :a * :b == "f(a, b)"
   end
 
   test "from macro" do

@@ -88,11 +88,11 @@ defmodule OkComputer.Operator do
   defmacro operators(operators, name \\ Operators) do
     module = Module.concat(__CALLER__.module, name)
 
-    Code.compile_string(~s(
+    Code.compile_string(~s[
       defmodule #{module} do
         #{create_operators(operators)}
       end
-    ))
+    ])
 
     quote do
       import unquote(module)
@@ -104,40 +104,39 @@ defmodule OkComputer.Operator do
   end
 
   def create_operator({atom, source}) when is_binary(source) do
-    ~s/
+    ~s[
       defmacro left #{atom} right do
         quote do
           #{source}
         end
       end
-    /
+    ]
   end
 
   def create_operator({atom, {{:__aliases__, _, _} = alias, function_name} = capture}) do
     module = Macro.expand(alias, __ENV__)
-    ~s/
+    ~s[
       def left #{atom} right do
         #{module}.#{function_name}(left, right)
       end
-    /
+    ]
   end
 
-  def create_operator({atom, {:{}, _,  [{:__aliases__, _, _} = alias, function_name, :macro]} = capture}) do
+  def create_operator({atom, {:{}, _, [{:__aliases__, _, _} = alias, function_name, :macro]}}) do
     module = Macro.expand(alias, __ENV__)
-    ~s/
+    ~s[
       defmacro left #{atom} right do
         require #{module}
         #{module}.#{function_name}(left, right)
       end
-    /
+    ]
   end
 
-  def create_operator({atom, {:&, _, _} = capture}) do
-    ~s/
-        defmacro left #{atom} right do
-          quote do
-          end
+  def create_operator({atom, {:&, _, _} = f}) do
+    ~s[
+        def left #{atom} right do
+          (#{Macro.to_string(f)}).(left, right)
         end
-      /
+    ]
   end
 end
