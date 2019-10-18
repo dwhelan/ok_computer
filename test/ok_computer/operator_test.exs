@@ -1,11 +1,11 @@
 defmodule Operators do
-  def subtract(left, right) do
-    left - right
+  def f(a, b) do
+    "f(#{a}, #{b})"
   end
 
-  defmacro multiply(left, right) do
-    quote do
-      unquote(left) * unquote(right)
+  defmacro f_macro(a, b) do
+    quote bind_quoted: [a: a, b: b] do
+      "f_macro(#{a}, #{b})"
     end
   end
 end
@@ -19,20 +19,21 @@ defmodule OkComputer.OperatorTest do
   doctest OkComputer.Operator
 
   operators(
-    +: "unquote(left) + unquote(right)",
-    -: {Operators, :subtract},
-    *: {Operators, :multiply, :macro}
+    +: {Operators, :f},
+    -: {Operators, :f_macro, :macro},
+
+    &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
-  test "from source" do
-    assert 1 + 2 == 3
-  end
-
-  test "from external function" do
-    assert 1 - 2 == -1
+  test "from named external function" do
+    assert :a + :b == "f(a, b)"
   end
 
   test "from macro" do
-    assert 2 * 3 == 6
+    assert :a - :b == "f_macro(a, b)"
+  end
+
+  test "from source" do
+    assert :a &&& :b == "f_source(unquote(left), unquote(right))"
   end
 end

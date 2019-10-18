@@ -90,7 +90,7 @@ defmodule OkComputer.Operator do
 
     Code.compile_string(~s(
       defmodule #{module} do
-        #{create_macros(operators)}
+        #{create_operators(operators)}
       end
     ))
 
@@ -99,49 +99,45 @@ defmodule OkComputer.Operator do
     end
   end
 
-  def create_macros(operators) do
-    Enum.map(operators, &create_macro/1)
+  def create_operators(operators) do
+    Enum.map(operators, &create_operator/1)
   end
 
-  def create_macro({atom, source}) when is_binary(source) do
-    ~s(
-        defmacro left #{atom} right do
-          quote do
-            #{source}
-          end
+  def create_operator({atom, source}) when is_binary(source) do
+    ~s/
+      defmacro left #{atom} right do
+        quote do
+          #{source}
         end
-      )
+      end
+    /
   end
 
-  def create_macro({atom, {{:__aliases__, _, _} = alias, function_name} = capture}) do
+  def create_operator({atom, {{:__aliases__, _, _} = alias, function_name} = capture}) do
     module = Macro.expand(alias, __ENV__)
-
-    """
-        defmacro left #{atom} right do
-          quote do
-            #{module}.#{function_name}(unquote(left), unquote(right))
-          end
-        end
-    """
+    ~s/
+      def left #{atom} right do
+        #{module}.#{function_name}(left, right)
+      end
+    /
   end
 
-  def create_macro({atom, {:{}, _,  [{:__aliases__, _, _} = alias, function_name, :macro]} = capture}) do
+  def create_operator({atom, {:{}, _,  [{:__aliases__, _, _} = alias, function_name, :macro]} = capture}) do
     module = Macro.expand(alias, __ENV__)
-
-    """
-        defmacro left #{atom} right do
-          require #{module}
-          #{module}.#{function_name}(left, right)
-        end
-    """
+    ~s/
+      defmacro left #{atom} right do
+        require #{module}
+        #{module}.#{function_name}(left, right)
+      end
+    /
   end
 
-  def create_macro({atom, {:&, _, _} = capture}) do
-    ~s(
+  def create_operator({atom, {:&, _, _} = capture}) do
+    ~s/
         defmacro left #{atom} right do
           quote do
           end
         end
-      )
+      /
   end
 end
