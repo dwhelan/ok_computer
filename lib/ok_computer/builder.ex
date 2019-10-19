@@ -132,4 +132,11 @@ defmodule OkComputer.Builder do
   defp pipe_source(module, function_name) do
     "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
   end
+
+  defp pipe_source(module, function_name) do
+    fn left, right ->
+
+    end
+    "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
+  end
 end
