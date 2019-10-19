@@ -109,12 +109,28 @@ defmodule OkComputer.Operator do
           [
             {:/, _,
              [
-               {{:., _, [{:__aliases__, _, _} = alias, function_name]}, _, []},
+               {{:., _, [alias, function_name]}, _, []},
                arity
              ]}
           ]}}
       ) do
-    create_operator(atom, alias, function_name, 2)
+    create_operator(atom, alias, function_name, arity)
+  end
+
+  def create_operator({atom, {:fn, _, _} = f}) do
+    ~s[
+      def left #{atom} right do
+        #{Macro.to_string(f)}.(left, right)
+      end
+    ]
+  end
+
+  def create_operator({atom, {:&, _, _} = f}) do
+    ~s[
+      def left #{atom} right do
+        (#{Macro.to_string(f)}).(left, right)
+      end
+    ]
   end
 
   def create_operator({atom, source}) when is_binary(source) do
@@ -142,6 +158,7 @@ defmodule OkComputer.Operator do
   defp create_operator(def, atom, module, function_name) do
     ~s[
         require #{module}
+
         #{def} left #{atom} right do
           #{module}.#{function_name}(left, right)
         end
