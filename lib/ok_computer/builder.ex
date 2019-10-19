@@ -82,7 +82,7 @@ defmodule OkComputer.Builder do
   Builds a dual channel pipe with default pipe operators.
   """
   @spec pipe(alias, alias) :: Macro.t()
-  defmacro pipe({:__aliases__, _, _} = alternate, {:__aliases__, _, _} = default) do
+  defmacro pipe({:__aliases__, _, _} = default, {:__aliases__, _, _} = alternate) do
     build_channels(
       [
         default,
@@ -135,8 +135,9 @@ defmodule OkComputer.Builder do
 
   defp pipe_source(module, function_name) do
     fn left, right ->
-
+      nil
     end
+
     "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
   end
 end

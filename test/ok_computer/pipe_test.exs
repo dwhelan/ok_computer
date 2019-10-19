@@ -1,166 +1,142 @@
+defmodule OkComputer.BuilderTests do
+  defmacro assert_Result_bind() do
+    quote do
+      test "~>> should be Result.bind" do
+        f = fn :value -> {:ok, "value"} end
+
+        assert {:ok, :value} ~>> f.() == {:ok, "value"}
+        assert :anything_else ~>> f.() == :anything_else
+      end
+    end
+  end
+
+  defmacro assert_Result_map() do
+    quote do
+      test "~> should be Result.map" do
+        f = fn :value -> "value" end
+
+        assert {:ok, :value} ~> f.() == {:ok, "value"}
+        assert :anything_else ~> f.() == :anything_else
+      end
+    end
+  end
+
+  defmacro assert_Error_bind() do
+    quote do
+      test "<<~ should be Error.bind" do
+        f = fn :reason -> {:error, "reason"} end
+
+        assert {:error, :reason} <<~ f.() == {:error, "reason"}
+        assert :anything_else <<~ f.() == :anything_else
+      end
+    end
+  end
+
+  defmacro assert_Error_map() do
+    quote do
+      test "<~ should be Error.map" do
+        f = fn :reason -> "reason" end
+
+        assert {:error, :reason} <~ f.() == {:error, "reason"}
+        assert :anything_else <~ f.() == :anything_else
+      end
+    end
+  end
+
+  defmacro __using__(_) do
+    quote do
+      use ExUnit.Case
+      import OkComputer.BuilderTests
+      import OkComputer.Builder
+      alias OkComputer.Monad.Result
+    end
+  end
+end
+
 defmodule OkComputer.Builder.SingleChannelTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.True
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.Result
 
-  pipe True
+  pipe Result
 
-  test "~> should use True.map" do
-    assert true ~> to_string() == "true"
-    assert false ~> to_string() == false
-  end
-
-  test "~>> should use True.bind" do
-    assert true ~>> to_string() == "true"
-    assert false ~>> to_string() == false
-  end
+  assert_Result_bind
+  assert_Result_map
 end
 
 defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.True
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.Result
 
-  pipe True, :>>>
+  pipe Result, :~>
 
-  test ">>> should use True.map" do
-    assert true >>> to_string() == "true"
-    assert false >>> to_string() == false
-  end
+  assert_Result_map
 end
 
 defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.True
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.Result
 
-  pipe True, :>>>, :<~>
+  pipe Result, :~>, :~>>
 
-  test ">>> should use True.map" do
-    assert true >>> to_string() == "true"
-    assert false >>> to_string() == false
-  end
-
-  test "<~> should use True.bind" do
-    assert true <~> to_string() == "true"
-    assert false <~> to_string() == false
-  end
+  assert_Result_bind
+  assert_Result_map
 end
 
 defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.True
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.Result
 
-  pipe True, >>>: :map, <~>: :bind
+  pipe Result, ~>: :map, ~>>: :bind
 
-  test ">>> should use True.map" do
-    assert true >>> to_string() == "true"
-    assert false >>> to_string() == false
-  end
-
-  test "<~> should use True.bind" do
-    assert true <~> to_string() == "true"
-    assert false <~> to_string() == false
-  end
+  assert_Result_bind
+  assert_Result_map
 end
 
 defmodule OkComputer.PipeDualChannelTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.{False, True}
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.{Result, Error}
 
-  pipe False, True
+  pipe Result, Error
 
-  test "~> should use True.map" do
-    assert true ~> to_string() == "true"
-    assert false ~> to_string() == false
-  end
-
-  test "~>> should use True.bind" do
-    assert true ~> to_string() == "true"
-    assert false ~>> to_string() == false
-  end
-
-  test "<~ should use False.map" do
-    assert false <~ to_string() == "false"
-    assert true <~ to_string() == true
-  end
-
-  test "<<~ should use False. bind" do
-    assert false <~ to_string() == "false"
-    assert true <<~ to_string() == true
-  end
+  assert_Result_bind
+  assert_Result_map
+  assert_Error_bind
+  assert_Error_map
 end
 
 defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.{False, True}
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.{Result, Error}
 
-  pipe [{True, :~>}, {False, :<~}]
+  pipe [{Result, :~>}, {Error, :<~}]
 
-  test "~> should use True.map" do
-    assert true ~> to_string() == "true"
-    assert false ~> to_string() == false
-    assert nil ~> to_string() == nil
-  end
-
-  test "<~ should use False.map" do
-    assert true <~ to_string() == true
-    assert false <~ to_string() == "false"
-    assert nil <~ to_string() == ""
-  end
+  assert_Result_map
+  assert_Error_map
 end
 
 defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.{Nil, False, True}
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.{Result, Error}
 
-  pipe [{True, :~>, :~>>}, {False, :<~, :<<~}]
+  pipe [{Result, :~>, :~>>}, {Error, :<~, :<<~}]
 
-  test "~> should use True.map" do
-    assert true ~> to_string() == "true"
-    assert false ~> to_string() == false
-    assert nil ~> to_string() == nil
-  end
-
-  test "<~ should use False.map" do
-    assert true <~ to_string() == true
-    assert false <~ to_string() == "false"
-    assert nil <~ to_string() == ""
-  end
+  assert_Result_bind
+  assert_Result_map
+  assert_Error_bind
+  assert_Error_map
 end
 
 defmodule OkComputer.PipeMultiChannelTest do
-  use ExUnit.Case
-  import OkComputer.Builder
-  alias OkComputer.Pipe.{Nil, False, True}
+  use OkComputer.BuilderTests
+  alias OkComputer.Monad.{Result, Error}
 
   pipe [
-    {True, [~>: :map]},
-    {False, [~>>: :map]},
-    {Nil, [>>>: :map]}
+    {Result, [~>: :map]},
+    {Error, [<~: :map]}
   ]
 
-  test "~> should use True.map" do
-    assert true ~> to_string() == "true"
-    assert false ~> to_string() == false
-    assert nil ~> to_string() == nil
-  end
-
-  test "~>> should use False.map" do
-    assert true ~>> to_string() == true
-    assert false ~>> to_string() == "false"
-    assert nil ~>> to_string() == ""
-  end
-
-  test ">>> should use Nil.map" do
-    assert true >>> to_string() == true
-    assert false >>> to_string() == false
-    assert nil >>> to_string() == ""
-  end
+  assert_Result_map
+  assert_Error_map
 end
 
 defmodule OkComputer.PipeTest do

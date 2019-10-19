@@ -24,9 +24,8 @@ defmodule OkComputer.OperatorTest do
     +: &Operators.f/2,
     -: &Operators.g/2,
     *: fn a, b -> "h(#{a}, #{b})" end,
-    /: & "i(#{&1}, #{&2})",
+    /: &"i(#{&1}, #{&2})",
     <|>: {Operators, :f},
-
     &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
