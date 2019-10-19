@@ -143,6 +143,10 @@ defmodule OkComputer.Operator do
     ]
   end
 
+  def create_operator({atom, {{:__aliases__, _, _} = alias, function_name}}) do
+    create_operator(atom, alias, function_name, 2)
+  end
+
   defp create_operator(atom, alias, function_name, 2) do
     module = Macro.expand(alias, __ENV__)
 

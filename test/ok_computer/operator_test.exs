@@ -14,7 +14,7 @@ defmodule OkComputer.OperatorTest do
   use ExUnit.Case
   import OkComputer.Operator
 
-  import Kernel, except: [+: 2, -: 2, *: 2, /: 2]
+  import Kernel, except: [+: 2, -: 2, *: 2, /: 2, <|>: 2]
 
   doctest OkComputer.Operator
 
@@ -25,6 +25,8 @@ defmodule OkComputer.OperatorTest do
     -: &Operators.g/2,
     *: fn a, b -> "h(#{a}, #{b})" end,
     /: & "i(#{&1}, #{&2})",
+    <|>: {Operators, :f},
+
     &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
@@ -42,6 +44,10 @@ defmodule OkComputer.OperatorTest do
 
   test "local capture" do
     assert :a / :b == "i(a, b)"
+  end
+
+  test "module, function_name" do
+    assert :a <|> :b == "f(a, b)"
   end
 
   test "from source" do
