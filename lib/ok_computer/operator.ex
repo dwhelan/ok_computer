@@ -117,6 +117,16 @@ defmodule OkComputer.Operator do
     create_operator(atom, alias, function_name, 2)
   end
 
+  def create_operator({atom, {:fn, _, _} = f}) do
+        #{module}.#{function_name}(left, right)
+    IO.inspect f: f, x: Macro.to_string(f)
+    IO.inspect ~s[
+      def left #{atom} right do
+        #{Macro.to_string(f)}.(left, right)
+      end
+    ]
+  end
+
   def create_operator({atom, source}) when is_binary(source) do
     ~s[
       defmacro left #{atom} right do
