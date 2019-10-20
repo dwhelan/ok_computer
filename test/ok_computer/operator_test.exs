@@ -25,7 +25,6 @@ defmodule OkComputer.OperatorTest do
     -: &OperatorFunctions.g/2,
     *: fn a, b -> "h(#{a}, #{b})" end,
     /: &"i(#{&1}, #{&2})",
-#    <|>: {OperatorFunctions, :f},
     &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
@@ -46,10 +45,6 @@ defmodule OkComputer.OperatorTest do
   test "local capture" do
     assert :a / :b == "i(a, b)"
   end
-#
-#  test "module, function_name" do
-#    assert :a <|> :b == "f(a, b)"
-#  end
 
   test "from source" do
     assert :a &&& :b == "f_source(unquote(left), unquote(right))"
