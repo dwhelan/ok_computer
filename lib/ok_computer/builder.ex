@@ -135,9 +135,9 @@ defmodule OkComputer.Builder do
 
   defp pipe_source(module, function_name) do
     fn left, right ->
-      nil
+      quote do
+        unquote(module).unquote(function_name)(unquote(left), fn a -> a |> unquote(right) end)
+      end
     end
-
-    "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
   end
 end

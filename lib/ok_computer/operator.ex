@@ -85,22 +85,16 @@ defmodule OkComputer.Operator do
     """
   end
 
-  defmacro operators(operators, name \\ Operators) do
-    module = Module.concat(__CALLER__.module, name)
-
+  defmacro operators(bindings, module \\ Operators) do
     Code.compile_string(~s[
-      defmodule #{module} do
-        #{create_operators(operators)}
+      defmodule #{Macro.expand(module, __CALLER__)} do
+        #{create_operators(bindings)}
       end
     ])
-
-    quote do
-      import unquote(module)
-    end
   end
 
-  def create_operators(operators) do
-    Enum.map(operators, &create_operator/1)
+  def create_operators(bindings) do
+    Enum.map(bindings, &create_operator/1)
   end
 
   def create_operator(
@@ -119,7 +113,7 @@ defmodule OkComputer.Operator do
 
   def create_operator({atom, {:fn, _, _} = f}) do
     ~s[
-      def left #{atom} right do
+      defmacro left #{atom} right do
         #{Macro.to_string(f)}.(left, right)
       end
     ]
@@ -127,7 +121,7 @@ defmodule OkComputer.Operator do
 
   def create_operator({atom, {:&, _, _} = f}) do
     ~s[
-      def left #{atom} right do
+      defmacro left #{atom} right do
         (#{Macro.to_string(f)}).(left, right)
       end
     ]
