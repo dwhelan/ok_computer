@@ -97,36 +97,6 @@ defmodule OkComputer.Operator do
     Enum.map(bindings, &create_operator/1)
   end
 
-  def create_operator(
-        {atom,
-         {:&, _,
-          [
-            {:/, _,
-             [
-               {{:., _, [alias, function_name]}, _, []},
-               arity
-             ]}
-          ]}}
-      ) do
-    create_operator(atom, alias, function_name, arity)
-  end
-
-  def create_operator({atom, {:fn, _, _} = f}) do
-    ~s[
-      defmacro left #{atom} right do
-        #{Macro.to_string(f)}.(left, right)
-      end
-    ]
-  end
-
-  def create_operator({atom, {:&, _, _} = f}) do
-    ~s[
-      defmacro left #{atom} right do
-        (#{Macro.to_string(f)}).(left, right)
-      end
-    ]
-  end
-
   def create_operator({atom, source}) when is_binary(source) do
     ~s[
       defmacro left #{atom} right do
@@ -137,27 +107,12 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def create_operator({atom, {{:__aliases__, _, _} = alias, function_name}}) do
-    create_operator(atom, alias, function_name, 2)
-  end
-
-  defp create_operator(atom, alias, function_name, 2) do
+  def create_operator({atom, {{:__aliases__, _, _} = alias, function_name}}) when is_atom(function_name) do
     module = Macro.expand(alias, __ENV__)
-
-    cond do
-      {function_name, 2} in module.__info__(:functions) ->
-        create_operator(:def, atom, module, function_name)
-
-      {function_name, 2} in module.__info__(:macros) ->
-        create_operator(:defmacro, atom, module, function_name)
-    end
-  end
-
-  defp create_operator(def, atom, module, function_name) do
     ~s[
         require #{module}
 
-        #{def} left #{atom} right do
+        defmacro left #{atom} right do
           #{module}.#{function_name}(left, right)
         end
     ]

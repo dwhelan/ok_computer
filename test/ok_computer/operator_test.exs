@@ -1,11 +1,13 @@
 defmodule OperatorFunctions do
   def f(a, b) do
-    "f(#{a}, #{b})"
+    quote do
+      "f(#{unquote a}, #{unquote b})"
+    end
   end
 
-  defmacro g(a, b) do
-    quote bind_quoted: [a: a, b: b] do
-      "g(#{a}, #{b})"
+  def pipe(left, right) do
+    quote do
+      unquote(left) |> unquote(right)
     end
   end
 end
@@ -21,10 +23,8 @@ defmodule OkComputer.OperatorTest do
   import OperatorFunctions
 
   operators(
-    +: &OperatorFunctions.f/2,
-    -: &OperatorFunctions.g/2,
-    *: fn a, b -> "h(#{a}, #{b})" end,
-    /: &"i(#{&1}, #{&2})",
+    +: {OperatorFunctions, :f},
+    ~>: {OperatorFunctions, :pipe},
     &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
@@ -34,16 +34,8 @@ defmodule OkComputer.OperatorTest do
     assert :a + :b == "f(a, b)"
   end
 
-  test "macro" do
-    assert :a - :b == "g(a, b)"
-  end
-
-  test "local function" do
-    assert :a * :b == "h(a, b)"
-  end
-
-  test "local capture" do
-    assert :a / :b == "i(a, b)"
+  test "pipe" do
+    assert :a ~> to_string == "a"
   end
 
   test "from source" do
