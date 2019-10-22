@@ -1,7 +1,7 @@
-defmodule OperatorFunctions do
-  def f(a, b) do
+defmodule Functions do
+  def plus(a, b) do
     quote do
-      "f(#{unquote a}, #{unquote b})"
+      "plus(#{unquote(a)}, #{unquote(b)})"
     end
   end
 
@@ -16,22 +16,22 @@ defmodule OkComputer.OperatorTest do
   use ExUnit.Case
   import OkComputer.Operator
 
-  import Kernel, except: [+: 2, -: 2, *: 2, /: 2, <|>: 2]
+  import Kernel, except: [+: 2]
 
   doctest OkComputer.Operator
 
-  import OperatorFunctions
+  import Functions
 
   operators(
-    +: {OperatorFunctions, :f},
-    ~>: {OperatorFunctions, :pipe},
+    +: {Functions, :plus},
+    ~>: {Functions, :pipe},
     &&&: "~s/f_source(unquote(left), unquote(right))/"
   )
 
-  import Operators
+  import OkComputer.OperatorTest.Operators
 
-  test "external function" do
-    assert :a + :b == "f(a, b)"
+  test "math operator" do
+    assert :a + :b == "plus(a, b)"
   end
 
   test "pipe" do

@@ -1,3 +1,7 @@
+defprotocol OkComputer.PipeProtocol do
+
+end
+
 defmodule OkComputer.Pipe do
   @moduledoc """
   A monad that short circuits inputs it cannot handle.

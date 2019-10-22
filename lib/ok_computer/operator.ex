@@ -85,12 +85,20 @@ defmodule OkComputer.Operator do
     """
   end
 
-  defmacro operators(bindings, module \\ Operators) do
+  defmacro operators(bindings) do
+    operators(bindings, Module.concat(__CALLER__.module, Operators))
+  end
+
+  def operators(bindings, module) do
     Code.compile_string(~s[
-      defmodule #{Macro.expand(module, __CALLER__)} do
+      defmodule #{module} do
         #{create_operators(bindings)}
       end
     ])
+
+    quote do
+      import unquote(module)
+    end
   end
 
   def create_operators(bindings) do
@@ -107,7 +115,8 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def create_operator({atom, {{:__aliases__, _, _} = alias, function_name}}) when is_atom(function_name) do
+  def create_operator({atom, {alias, function_name}})
+      when is_atom(function_name) do
     module = Macro.expand(alias, __ENV__)
     ~s[
         require #{module}

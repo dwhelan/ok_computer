@@ -121,23 +121,56 @@ defmodule OkComputer.Builder do
     pipe_sources(alias, operators, env)
   end
 
+  defmacro build_pipe_function(pipe, pipe_function_name) do
+    quote do
+#      def unquote(pipe_function_name)(left, right) do
+#        unquote(pipe).unquote(pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
+#      end
+    end
+  end
+
   @spec pipe_sources(alias, operators, Macro.Env.t()) :: list(binary)
   defp pipe_sources(alias, operators, env) do
+    module = Module.concat(env.module, Macro.expand(alias, env))
+#    code = quote do
+#      Enum.map(unquote(operators), fn {operator, function_name} ->
+#        @pipe unquote(module)
+#        @pipe_function_name function_name
+#
+#        def unquote(pipe_function_name)(left, right) do
+#          quote do
+#            unquote(@pipe).unquote(@pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
+#          end
+#        end
+#      end)
+#    end
+#    Module.create(module, code, Macro.Env.location(__ENV__))
+
     Enum.map(operators, fn {operator, function_name} ->
-      {operator, pipe_source(Macro.expand(alias, env), function_name)}
+      {operator, {module, function_name}}
     end)
   end
 
   @spec pipe_source(module, function_name :: atom) :: binary
-  defp pipe_source(module, function_name) do
+  def pipe_source(module, function_name) do
     "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
   end
 
-  defp pipe_source(module, function_name) do
-    fn left, right ->
-      quote do
-        unquote(module).unquote(function_name)(unquote(left), fn a -> a |> unquote(right) end)
-      end
-    end
+  def pipe_source(pipe, pipe_function_name) do
+#    quote do
+#      @pipe unquote(pipe)
+#      @pipe_function_name unquote(pipe_function_name)
+#
+#      def unquote(pipe_function_name)(left, right) do
+#        quote do
+#          unquote(@pipe).unquote(@pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
+#        end
+#      end
+#    end
+#    fn left, right ->
+#      quote do
+#        unquote(module).unquote(function_name)(unquote(left), fn a -> a |> unquote(right) end)
+#      end
+#    end
   end
 end
