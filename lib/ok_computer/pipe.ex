@@ -1,5 +1,6 @@
 defprotocol OkComputer.PipeProtocol do
-
+  def pipe_bind(a, f)
+  def pipe_map(a, f)
 end
 
 defmodule OkComputer.Pipe do
