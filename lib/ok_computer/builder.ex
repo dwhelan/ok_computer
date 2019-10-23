@@ -123,28 +123,33 @@ defmodule OkComputer.Builder do
 
   defmacro build_pipe_function(pipe, pipe_function_name) do
     quote do
-#      def unquote(pipe_function_name)(left, right) do
-#        unquote(pipe).unquote(pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
-#      end
+      def unquote(pipe_function_name)(left, right) do
+        @pipe unquote(pipe)
+        @pipe_function_name pipe_function_name
+
+        quote do
+          unquote(@pipe).unquote(@pipe_function_name)(unquote(left), fn a ->
+            a |> unquote(right)
+          end)
+        end
+      end
     end
   end
 
   @spec pipe_sources(alias, operators, Macro.Env.t()) :: list(binary)
   defp pipe_sources(alias, operators, env) do
     module = Module.concat(env.module, Macro.expand(alias, env))
-#    code = quote do
-#      Enum.map(unquote(operators), fn {operator, function_name} ->
-#        @pipe unquote(module)
-#        @pipe_function_name function_name
-#
-#        def unquote(pipe_function_name)(left, right) do
-#          quote do
-#            unquote(@pipe).unquote(@pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
-#          end
-#        end
-#      end)
-#    end
-#    Module.create(module, code, Macro.Env.location(__ENV__))
+
+    code =
+      quote do
+        alias OkComputer.Pipe
+
+        Enum.map(unquote(operators), fn {operator, function_name} ->
+          Pipe.pipe unquote(module), function_name
+        end)
+      end
+
+    Module.create(module, code, Macro.Env.location(__ENV__))
 
     Enum.map(operators, fn {operator, function_name} ->
       {operator, {module, function_name}}
@@ -157,20 +162,20 @@ defmodule OkComputer.Builder do
   end
 
   def pipe_source(pipe, pipe_function_name) do
-#    quote do
-#      @pipe unquote(pipe)
-#      @pipe_function_name unquote(pipe_function_name)
-#
-#      def unquote(pipe_function_name)(left, right) do
-#        quote do
-#          unquote(@pipe).unquote(@pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
-#        end
-#      end
-#    end
-#    fn left, right ->
-#      quote do
-#        unquote(module).unquote(function_name)(unquote(left), fn a -> a |> unquote(right) end)
-#      end
-#    end
+    #    quote do
+    #      @pipe unquote(pipe)
+    #      @pipe_function_name unquote(pipe_function_name)
+    #
+    #      def unquote(pipe_function_name)(left, right) do
+    #        quote do
+    #          unquote(@pipe).unquote(@pipe_function_name)(unquote(left), fn a -> a |> unquote(right) end)
+    #        end
+    #      end
+    #    end
+    #    fn left, right ->
+    #      quote do
+    #        unquote(module).unquote(function_name)(unquote(left), fn a -> a |> unquote(right) end)
+    #      end
+    #    end
   end
 end
