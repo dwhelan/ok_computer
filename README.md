@@ -1,6 +1,11 @@
 # OkComputer
-Build multi-branch pipelines with custom operators, functions and even monads.  
+Creates monadic pipes.
 
+Operators and monadic functions have much in common. They both have an arity of two. They both take an input
+and a function of sorts. For a monad it is an anonymous function. For a pipe it is the AST for something that
+can be piped into.
+
+## Move to blog post
 The main property that we want with a pipeline is that each step should return a value.
 If a step recognizes its input then it should operate on the input and return the result.
 If a step does not recognize its input then it should simply return its input.

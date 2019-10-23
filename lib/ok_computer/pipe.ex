@@ -3,33 +3,26 @@ defmodule OkComputer.Pipe do
   """
 
   @doc """
+  Inserts an operator function that calls a monadic function.
 
-  Given a `module`, `function`and quoted `left` and quoted `right` will return the quoted
-  equivalent of:
+  The operator function generated for `:bind` and `Result` would be sort of like:
   ```
-    module.function(left, fn left -> left |> right)
-  ```
-  This allows `module.function/2` to decide whether to pipe to `right` or short-circuit
-  by returning its `left` input.
-
-  The `left` can be any quoted value.
-  The `right` can be anything quoted that you can pipe into with `|>`.
-  """
-  @spec pipe(module, atom, Macro.t(), Macro.t()) :: Macro.t()
-  def pipe(module, function_name, left, right) do
-    quote do
-      unquote(module).unquote(function_name).(unquote(left), fn left -> left |> unquote(right) end)
+    def bind(left, right) do
+      Result.bind(left, fn _ -> left |> right)
     end
-  end
+  ```
 
-  defmacro pipe(module, function_name) do
+  Effectively, it is bridge between binary operators and monads.
+  """
+  @spec pipe(atom, module) :: Macro.t()
+  defmacro pipe(name, module) do
     quote do
+      @name unquote(name)
       @module unquote(module)
-      @function_name unquote(function_name)
 
-      def unquote(function_name)(left, right) do
+      def unquote(name)(left, right) do
         quote do
-          unquote(@module).unquote(@function_name)(unquote(left), fn left -> left |> unquote(right) end)
+          unquote(@module).unquote(@name)(unquote(left), fn left -> left |> unquote(right) end)
         end
       end
     end
