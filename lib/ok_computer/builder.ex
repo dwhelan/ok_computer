@@ -36,7 +36,7 @@ defmodule OkComputer.Builder do
   import OkComputer.Operator
 
   defmacro pipe([]) do
-    raise ArgumentError, "must provide at least one channel"
+    raise ArgumentError, "expected at least one channel"
   end
 
   @doc """
@@ -96,7 +96,7 @@ defmodule OkComputer.Builder do
   defp build_channels(channels, env) do
     channels
     |> Enum.flat_map(fn channel -> build_channel(channel, env) end)
-    |> defoperators(Module.concat(env.module, Pipes))
+    |> operators(Module.concat(env.module, Pipes))
   end
 
   @spec build_channel(channel, Macro.Env.t()) :: Macro.t()
@@ -136,20 +136,24 @@ defmodule OkComputer.Builder do
     end
   end
 
+  alias OkComputer.Pipes
+
   @spec pipe_sources(alias, operators, Macro.Env.t()) :: list(binary)
   defp pipe_sources(alias, operators, env) do
     module = Module.concat(env.module, Macro.expand(alias, env))
 
-    code =
-      quote do
-        alias OkComputer.Pipe
-
-        Enum.map(unquote(operators), fn {operator, function_name} ->
-          Pipe.pipe unquote(module), function_name
-        end)
-      end
-
-    Module.create(module, code, Macro.Env.location(__ENV__))
+    pipes = Enum.map(operators, fn {operator, name} -> name end)
+    Pipes.create(module, pipes, Macro.Env.location(__ENV__))
+#    code =
+#      quote do
+#        alias OkComputer.Pipe
+#
+#        Enum.map(unquote(operators), fn {operator, function_name} ->
+#          Pipe.pipe(unquote(module), function_name)
+#        end)
+#      end
+#
+#    Module.create(module, code, Macro.Env.location(__ENV__))
 
     Enum.map(operators, fn {operator, function_name} ->
       {operator, {module, function_name}}
