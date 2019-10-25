@@ -24,11 +24,11 @@ defmodule OkComputer.Pipe do
     create_pipe_module(module, List.wrap(function_names), Module.concat(__CALLER__.module, module))
   end
 
-  def create_pipe_module(module, function_names, pipe) do
-    Module.create(pipe, create_pipe_operator_functions(module, List.wrap(function_names)), Macro.Env.location(__ENV__))
+  def create_pipe_module(module, function_names, pipe_module) do
+    Module.create(pipe_module, create_pipe_operator_functions(module, List.wrap(function_names)), Macro.Env.location(__ENV__))
 
     quote do
-      import unquote(pipe)
+      import unquote(pipe_module)
     end
   end
 
@@ -49,45 +49,5 @@ defmodule OkComputer.Pipe do
         end
       end
     end
-  end
-end
-
-defmodule OkComputer.Pipes do
-  @moduledoc """
-  A bridge between binary operators and monads.
-  """
-
-  @doc """
-  Creates a module of bridge functions.
-  """
-  @spec create(module, bindings :: keyword(module), Macro.Env.t() | keyword()) :: {:module, module(), binary(), term()}
-  def create(module, names, opts) do
-    require OkComputer.Pipe
-
-    IO.inspect names: names
-
-    code =
-      quote do
-        @module unquote(module)
-        @names unquote(names)
-
-        require unquote(module)
-
-        Enum.map(unquote(names), fn name ->
-          @name name
-
-          def unquote(@name)(left, right) do
-#            unquote(@module).unquote(@name)(left, fn left -> left |> unquote(right) end)
-          end
-        end)
-      end
-
-    IO.inspect source: Macro.to_string(code)
-    Module.create(module, code, opts)
-#    Module.create(module, Enum.map(bindings, &to_string/1), opts)
-  end
-
-  def pipe(module, name, left, right) do
-
   end
 end
