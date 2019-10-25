@@ -6,16 +6,16 @@ defmodule OkComputer.Pipe do
   @doc """
   Inserts an operator function that calls a monadic function.
 
-  The operator function generated for `:bind` and `Result` would be sort of like:
+  The operator function generated for `Result` and `:bind` would belike:
   ```
     def bind(left, right) do
       Result.bind(left, fn _ -> left |> right)
     end
   ```
   """
-  @spec pipe(module, atom) :: Macro.t()
-  defmacro pipe(module, names) do
-    create_pipe_operators(module, List.wrap(names))
+  @spec pipe(module, atom | list(atom)) :: Macro.t()
+  defmacro pipe(module, function_names) do
+    create_pipe_operators(module, List.wrap(function_names))
   end
 
   def create_pipe_operators(module, function_names) do
