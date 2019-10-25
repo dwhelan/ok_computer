@@ -1,7 +1,7 @@
 defmodule Functions do
   def plus(a, b) do
     quote do
-      "plus(#{unquote(a)}, #{unquote(b)})"
+      unquote(a) + unquote(b)
     end
   end
 
@@ -19,15 +19,12 @@ defmodule OkComputer.OperatorTest do
 
   doctest OkComputer.Operator
 
-  operators(
-    +: {Functions, :plus},
-    ~>: {Functions, :pipe}
-  )
+  operators(+: {Functions, :plus}, ~>: {Functions, :pipe})
 
   import OkComputer.OperatorTest.Operators
 
   test "math operator" do
-    assert :a + :b == "plus(a, b)"
+    assert 1 + 2 == 3
   end
 
   test "pipe" do

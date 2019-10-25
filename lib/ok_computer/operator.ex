@@ -1,48 +1,59 @@
 defmodule OkComputer.Operator do
   @moduledoc """
-  Creates operators dynamically.
+  Creates operator macros.
 
-  You can easily define operators if you know in advance the operator you want to use:
+  You can easily define operator functions or macros if you know in advance the operator you want to use:
 
   ```elixir
-  defmodule WrongMath do
-    # Let's make math wrong by changing the meaning of +:
-    def a + b, do: a - b
+  defmacro a + b do
+    quote do
+      unquote(a) + unquote(b)
+    end
   end
   ```
 
-  If you want to make the operator dynamic then things are a little harder:
+  If you want the operator to be variable things get tricky:
 
   ```elixir
-  # This won't compile:
   op = :+
-  def a op b, do: a - b
+
+  # This won't compile:
+  defmacro a op b do
+    quote do
+      unquote(a) + unquote(b)
+    end
   end
   ```
 
-  Operators are creating by embedding source code for each operator definition into a module, compiling the module and importing it.
+  `operators/1` solves this problem.
+  It takes an operator, a module and a function to call.
+  It creates an operator macro and calls the provided function with the left and right inputs to the operator.
 
-  The source code is simply a string version of what you would provide for a macro.
-  The AST for the left hand side of the operator is available as
-  as `left` and the AST for the right hand side is available as `right`.
-
-  We can now create a dynamic pipe:
-
+  For example:
   ```
-  defmodule WrongMath do
+  defmodule Math do
     import OkComputer.Operator
 
-    defoperators +: "unquote(left) - unquote(right)"
+    operators +: {Functions, :plus}
+  end
+
+  defmodule Functions do
+    def plus(a, b) do
+      quote do
+        unquote(a) + unquote(b)
+      end
+    end
   end
   ```
 
   This is equivalent to:
-
   ```
-  defmodule WrongMath do
+  defmodule Math do
+    import Kernel, except: [+: 2]
+
     defmacro left + right do
       quote do
-        unquote(left) - unquote(right)
+        unquote(left) + unquote(right)
       end
     end
   end
