@@ -2,7 +2,11 @@ defmodule OkComputer.PipeTest.PipeModule do
   import OkComputer.Pipe
   alias OkComputer.Monad.Result
 
-  pipe_module Result, [:map]
+  pipe_module Result, [:bind, :map]
+
+  defmacro left ~> right do
+    bind(left, right)
+  end
 
   defmacro left ~>> right do
     map(left, right)
@@ -16,9 +20,16 @@ defmodule OkComputer.PipeTest.PipeModuleTest do
 
   import PipeModule
 
+  def stringify(a), do: {:ok, to_string(a)}
+
   test "pipe module name" do
-    IO.inspect name = Module.concat(PipeModule, Result)
-    result = apply(name, :map, [:left, :right])
+    pipe_module_name = Module.concat(PipeModule, Result)
+    assert Code.ensure_loaded?(pipe_module_name)
+  end
+
+  test "pipe bind" do
+    assert {:ok, :a} ~> stringify() == {:ok, "a"}
+    assert :a ~> stringify() == :a
   end
 
   test "pipe map" do
