@@ -46,110 +46,110 @@ defmodule OkComputer.PipeOperatorTests do
   defmacro __using__(_) do
     quote do
       use ExUnit.Case
-      import OkComputer.BuilderTests
+      import OkComputer.PipeOperatorTests
       import OkComputer.PipeOperator
       alias OkComputer.Monad.Result
     end
   end
 end
 
-# defmodule OkComputer.PipeOperator.SingleChannelTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.Result
-#
-#  pipe Result
-#
-#  assert_Result_bind
-#  assert_Result_map
-# end
-#
-# defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.Result
-#
-#  pipe Result, :~>
-#
-#  assert_Result_map
-# end
-#
-# defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.Result
-#
-#  pipe Result, :~>, :~>>
-#
-#  assert_Result_bind
-#  assert_Result_map
-# end
-#
-# defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.Result
-#
-#  pipe Result, ~>: :map, ~>>: :bind
-#
-#  assert_Result_bind
-#  assert_Result_map
-# end
-#
-# defmodule OkComputer.PipeDualChannelTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.{Result, Error}
-#
-#  pipe Result, Error
-#
-#  assert_Result_bind
-#  assert_Result_map
-#  assert_Error_bind
-#  assert_Error_map
-# end
-#
-# defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.{Result, Error}
-#
-#  pipe [{Result, :~>}, {Error, :<~}]
-#
-#  assert_Result_map
-#  assert_Error_map
-# end
-#
-# defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.{Result, Error}
-#
-#  pipe [{Result, :~>, :~>>}, {Error, :<~, :<<~}]
-#
-#  assert_Result_bind
-#  assert_Result_map
-#  assert_Error_bind
-#  assert_Error_map
-# end
-#
-# defmodule OkComputer.PipeMultiChannelTest do
-#  use OkComputer.BuilderTests
-#  alias OkComputer.Monad.{Result, Error}
-#
-#  pipe [
-#    {Result, [~>: :map]},
-#    {Error, [<~: :map]}
-#  ]
-#
-#  assert_Result_map
-#  assert_Error_map
-# end
-#
-# defmodule OkComputer.PipeTest do
-#  use ExUnit.Case
-#
-#  test "must provide at least one pipe" do
-#    source = """
-#      defmodule BadPipe do
-#        import OkComputer.PipeOperator
-#        pipe []
-#      end
-#    """
-#
-#    assert_raise ArgumentError, fn -> Code.eval_string(source) end
-#  end
-# end
+ defmodule OkComputer.PipeOperator.SingleChannelTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.Result
+
+  pipe Result
+
+  assert_Result_bind
+  assert_Result_map
+ end
+
+ defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.Result
+
+  pipe Result, :~>
+
+  assert_Result_map
+ end
+
+ defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.Result
+
+  pipe Result, :~>, :~>>
+
+  assert_Result_bind
+  assert_Result_map
+ end
+
+ defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.Result
+
+  pipe Result, ~>: :map, ~>>: :bind
+
+  assert_Result_bind
+  assert_Result_map
+ end
+
+ defmodule OkComputer.PipeDualChannelTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.{Result, Error}
+
+  pipe Result, Error
+
+  assert_Result_bind
+  assert_Result_map
+  assert_Error_bind
+  assert_Error_map
+ end
+
+ defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.{Result, Error}
+
+  pipe [{Result, :~>}, {Error, :<~}]
+
+  assert_Result_map
+  assert_Error_map
+ end
+
+ defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.{Result, Error}
+
+  pipe [{Result, :~>, :~>>}, {Error, :<~, :<<~}]
+
+  assert_Result_bind
+  assert_Result_map
+  assert_Error_bind
+  assert_Error_map
+ end
+
+ defmodule OkComputer.PipeMultiChannelTest do
+  use OkComputer.PipeOperatorTests
+  alias OkComputer.Monad.{Result, Error}
+
+  pipe [
+    {Result, [~>: :map]},
+    {Error, [<~: :map]}
+  ]
+
+  assert_Result_map
+  assert_Error_map
+ end
+
+ defmodule OkComputer.PipeTest do
+  use ExUnit.Case
+
+  test "must provide at least one pipe" do
+    source = """
+      defmodule BadPipe do
+        import OkComputer.PipeOperator
+        pipe []
+      end
+    """
+
+    assert_raise ArgumentError, fn -> Code.eval_string(source) end
+  end
+ end
