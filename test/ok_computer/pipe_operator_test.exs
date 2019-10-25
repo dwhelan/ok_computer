@@ -1,4 +1,4 @@
-defmodule OkComputer.BuilderTests do
+defmodule OkComputer.PipeOperatorTests do
   defmacro assert_Result_bind() do
     quote do
       test "~>> should be Result.bind" do
@@ -47,13 +47,13 @@ defmodule OkComputer.BuilderTests do
     quote do
       use ExUnit.Case
       import OkComputer.BuilderTests
-      import OkComputer.Builder
+      import OkComputer.PipeOperator
       alias OkComputer.Monad.Result
     end
   end
 end
 
-# defmodule OkComputer.Builder.SingleChannelTest do
+# defmodule OkComputer.PipeOperator.SingleChannelTest do
 #  use OkComputer.BuilderTests
 #  alias OkComputer.Monad.Result
 #
@@ -145,7 +145,7 @@ end
 #  test "must provide at least one pipe" do
 #    source = """
 #      defmodule BadPipe do
-#        import OkComputer.Builder
+#        import OkComputer.PipeOperator
 #        pipe []
 #      end
 #    """

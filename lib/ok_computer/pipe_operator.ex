@@ -1,4 +1,4 @@
-defmodule OkComputer.Builder do
+defmodule OkComputer.PipeOperator do
   @moduledoc """
   Builds pipes.
   """
@@ -15,7 +15,7 @@ defmodule OkComputer.Builder do
           | {alias, operators}
 
   @typedoc """
-  A keyword list that maps pipe operators to `Pipe` function names: `:map` or `:bind` such as `[~>: :map]`.
+  A keyword list that maps pipe operators to function names.
   """
   @type operators :: [{operator :: atom, function_name :: atom}]
 
@@ -126,15 +126,12 @@ defmodule OkComputer.Builder do
     import OkComputer.Pipe
 
     module = Macro.expand(alias, env)
-    function_names = Enum.map(operators, fn {operator, name} -> name end)
+    function_names = Enum.map(operators, fn {operator, function_name} -> function_name end)
     pipe_module = Module.concat(env.module, module)
 
-#    create_pipe_module(module, function_names, pipe_module)
-#    Pipes.create(pipe_module, function_names, Macro.Env.location(__ENV__))
+    create_pipe_module(module, function_names, pipe_module)
 
-    Enum.map(operators, fn {operator, function_name} ->
-      {operator, {pipe_module, function_name}}
-    end)
+    Enum.map(operators, fn {operator, function_name} -> {operator, {pipe_module, function_name}} end)
   end
 
   @spec pipe_source(module, function_name :: atom) :: binary
