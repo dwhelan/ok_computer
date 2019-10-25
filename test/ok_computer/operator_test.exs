@@ -15,17 +15,13 @@ end
 defmodule OkComputer.OperatorTest do
   use ExUnit.Case
   import OkComputer.Operator
-
   import Kernel, except: [+: 2]
 
   doctest OkComputer.Operator
 
-  import Functions
-
   operators(
     +: {Functions, :plus},
-    ~>: {Functions, :pipe},
-    &&&: "~s/f_source(unquote(left), unquote(right))/"
+    ~>: {Functions, :pipe}
   )
 
   import OkComputer.OperatorTest.Operators
@@ -36,9 +32,5 @@ defmodule OkComputer.OperatorTest do
 
   test "pipe" do
     assert :a ~> to_string == "a"
-  end
-
-  test "from source" do
-    assert :a &&& :b == "f_source(unquote(left), unquote(right))"
   end
 end

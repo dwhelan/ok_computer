@@ -32,7 +32,7 @@ defmodule OkComputer.Pipe do
   def create_pipe_module(module, function_names, pipe_module) do
     Module.create(
       pipe_module,
-      create_pipe_operator_functions(module, List.wrap(function_names)),
+      create_operator_functions(module, List.wrap(function_names)),
       Macro.Env.location(__ENV__)
     )
 
@@ -41,13 +41,13 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  def create_pipe_operator_functions(module, function_names) do
+  defp create_operator_functions(module, function_names) do
     Enum.map(function_names, fn function_name ->
-      create_pipe_operator_function(module, function_name)
+      create_operator_function(module, function_name)
     end)
   end
 
-  def create_pipe_operator_function(module, function_name) do
+  defp create_operator_function(module, function_name) do
     quote do
       require unquote(module)
 

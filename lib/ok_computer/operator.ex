@@ -92,7 +92,7 @@ defmodule OkComputer.Operator do
   def operators(bindings, module) do
     Code.compile_string(~s[
       defmodule #{module} do
-        #{create_operators(bindings)}
+        #{create_operator_macros(bindings)}
       end
     ])
 
@@ -101,22 +101,11 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp create_operators(bindings) do
-    Enum.map(bindings, &create_operator/1)
+  defp create_operator_macros(bindings) do
+    Enum.map(bindings, &create_operator_macro/1)
   end
 
-  defp create_operator({atom, source}) when is_binary(source) do
-    ~s[
-      defmacro left #{atom} right do
-        quote do
-          #{source}
-        end
-      end
-    ]
-  end
-
-  defp create_operator({atom, {alias, function_name}})
-       when is_atom(function_name) do
+  defp create_operator_macro({atom, {alias, function_name}}) when is_atom(function_name) do
     module = Macro.expand(alias, __ENV__)
     ~s[
         require #{module}

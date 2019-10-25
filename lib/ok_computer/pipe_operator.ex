@@ -135,9 +135,4 @@ defmodule OkComputer.PipeOperator do
       {operator, {pipe_module, function_name}}
     end)
   end
-
-  @spec pipe_source(module, function_name :: atom) :: binary
-  def pipe_source(module, function_name) do
-    "#{module}.#{function_name}(unquote(left), fn a -> a |> unquote(right) end)"
-  end
 end
