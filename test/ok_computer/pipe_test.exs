@@ -38,13 +38,15 @@ defmodule OkComputer.PipeTest.MultipleTest do
   use ExUnit.Case
   import OkComputer.PipeTest.Multiple
 
+  def to_string_ok(a), do: {:ok, to_string(a)}
+
   test "pipe map" do
     assert {:ok, :a} ~> to_string() == {:ok, "a"}
     assert :a ~> to_string() == :a
   end
 
   test "pipe bind" do
-    assert {:ok, :a} ~>> fn a -> {:ok, to_string(a)} end.() == {:ok, "a"}
-    assert :a ~>> fn a -> {:ok, to_string(a)} end.() == :a
+    assert {:ok, :a} ~>> to_string_ok() == {:ok, "a"}
+    assert :a ~>> foo() == :a
   end
 end
