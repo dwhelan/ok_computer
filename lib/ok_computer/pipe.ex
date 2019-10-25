@@ -1,10 +1,15 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  A bridge between binary operators and monads.
+  Builds operator functions that operate as pipes.
+
+  A pipe operator function is an operator function that calls another function
+  with two arguments. The first argument is the left input to the binary operator. The second
+  argument is a function that pipes the left input into the right input.
+  The other function is specified with a `module` and a `function_name`.
   """
 
   @doc """
-  Inserts an operator function that calls a monadic function.
+  Inserts an operator function that that pipes the left hand side into the right hand side..
 
   The operator function generated for `Result` and `:bind` would belike:
   ```
@@ -14,20 +19,16 @@ defmodule OkComputer.Pipe do
   ```
   """
   @spec pipe(module, atom | list(atom)) :: Macro.t()
-  defmacro pipe(module, function_names) do
-    create_pipe_operator_functions(module, List.wrap(function_names))
-  end
-
-  defmacro pipe_module(alias, function_names) do
+  defmacro pipe(alias, function_names) do
     module = Macro.expand(alias, __CALLER__)
     create_pipe_module(module, List.wrap(function_names), Module.concat(__CALLER__.module, module))
   end
 
-  def create_pipe_module(module, function_names, pipe_module) do
-    Module.create(pipe_module, create_pipe_operator_functions(module, List.wrap(function_names)), Macro.Env.location(__ENV__))
+  def create_pipe_module(module, function_names, pipe) do
+    Module.create(pipe, create_pipe_operator_functions(module, List.wrap(function_names)), Macro.Env.location(__ENV__))
 
     quote do
-      import unquote(pipe_module)
+      import unquote(pipe)
     end
   end
 
