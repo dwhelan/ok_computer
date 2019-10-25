@@ -96,7 +96,7 @@ defmodule OkComputer.PipeOperator do
   defp build_channels(channels, env) do
     channels
     |> Enum.flat_map(fn channel -> build_channel(channel, env) end)
-    |> operators(Module.concat(env.module, Pipes))
+    |> create_operators_module(Module.concat(env.module, Pipes))
   end
 
   @spec build_channel(channel, Macro.Env.t()) :: Macro.t()

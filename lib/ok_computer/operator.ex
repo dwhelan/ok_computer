@@ -51,45 +51,15 @@ defmodule OkComputer.Operator do
 
   @doc """
   Builds a module with operators and imports it.
-
-  The name of the module will be the caller's module concatenated with `Operators`.
   """
-  @spec defoperators(keyword(binary)) :: Macro.t()
-  defmacro defoperators(operators) do
-    defoperators(operators, Module.concat(__CALLER__.module, Operators))
+  defmacro operators(bindings) do
+    create_operators_module(bindings, Module.concat(__CALLER__.module, Operators))
   end
 
   @doc """
-  Builds a module with operators and returns the AST to import it.
+  Builds an operators module returns the AST to import it.
   """
-  @spec defoperators(keyword(binary), module) :: Macro.t()
-  def defoperators(operators, module) do
-    Code.compile_string("""
-      defmodule #{module} do
-        #{Enum.map(operators, &defoperator/1)}
-      end
-    """)
-
-    quote do
-      import unquote(module)
-    end
-  end
-
-  defp defoperator({operator, source}) do
-    """
-      defmacro left #{operator} right do
-        quote do
-          #{source}
-         end
-      end
-    """
-  end
-
-  defmacro operators(bindings) do
-    operators(bindings, Module.concat(__CALLER__.module, Operators))
-  end
-
-  def operators(bindings, module) do
+  def create_operators_module(bindings, module) do
     Code.compile_string(~s[
       defmodule #{module} do
         #{create_operator_macros(bindings)}
