@@ -18,12 +18,27 @@ defmodule OkComputer.Pipe do
     create_pipe_operators(module, List.wrap(function_names))
   end
 
+  defmacro pipe_module(alias, function_names) do
+    module = Macro.expand(alias, __CALLER__)
+    create_pipe_module(module, List.wrap(function_names), Module.concat(__CALLER__.module, module))
+  end
+
+  def create_pipe_module(module, function_names, pipe_module) do
+    code = create_pipe_operators(module, List.wrap(function_names))
+    Module.create(pipe_module, code, Macro.Env.location(__ENV__))
+    quote do
+      import unquote(pipe_module)
+    end
+  end
+
   def create_pipe_operators(module, function_names) do
     Enum.map(function_names, fn function_name -> create_pipe_operator(module, function_name) end)
   end
 
   def create_pipe_operator(module, function_name) do
     quote do
+      require unquote(module)
+
       @name unquote(function_name)
       @module unquote(module)
 
