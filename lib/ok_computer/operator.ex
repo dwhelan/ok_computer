@@ -116,7 +116,7 @@ defmodule OkComputer.Operator do
   end
 
   defp create_operator({atom, {alias, function_name}})
-      when is_atom(function_name) do
+       when is_atom(function_name) do
     module = Macro.expand(alias, __ENV__)
     ~s[
         require #{module}

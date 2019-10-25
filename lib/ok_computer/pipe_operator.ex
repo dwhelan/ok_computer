@@ -131,7 +131,9 @@ defmodule OkComputer.PipeOperator do
 
     create_pipe_module(module, function_names, pipe_module)
 
-    Enum.map(operators, fn {operator, function_name} -> {operator, {pipe_module, function_name}} end)
+    Enum.map(operators, fn {operator, function_name} ->
+      {operator, {pipe_module, function_name}}
+    end)
   end
 
   @spec pipe_source(module, function_name :: atom) :: binary
