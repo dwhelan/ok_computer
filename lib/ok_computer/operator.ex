@@ -101,11 +101,11 @@ defmodule OkComputer.Operator do
     end
   end
 
-  def create_operators(bindings) do
+  defp create_operators(bindings) do
     Enum.map(bindings, &create_operator/1)
   end
 
-  def create_operator({atom, source}) when is_binary(source) do
+  defp create_operator({atom, source}) when is_binary(source) do
     ~s[
       defmacro left #{atom} right do
         quote do
@@ -115,7 +115,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def create_operator({atom, {alias, function_name}})
+  defp create_operator({atom, {alias, function_name}})
       when is_atom(function_name) do
     module = Macro.expand(alias, __ENV__)
     ~s[
