@@ -57,7 +57,7 @@ defmodule OkComputer.PipeOperator.SingleChannelTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
-  pipe Result
+  pipe(Result)
 
   assert_Result_bind()
   assert_Result_map()
@@ -67,7 +67,7 @@ defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
-  pipe Result, :~>
+  pipe(Result, :~>)
 
   assert_Result_map()
 end
@@ -76,7 +76,7 @@ defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
-  pipe Result, :~>, :~>>
+  pipe(Result, :~>, :~>>)
 
   assert_Result_bind()
   assert_Result_map()
@@ -86,7 +86,7 @@ defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
-  pipe Result, ~>: :map, ~>>: :bind
+  pipe(Result, ~>: :map, ~>>: :bind)
 
   assert_Result_bind()
   assert_Result_map()
@@ -96,7 +96,7 @@ defmodule OkComputer.PipeDualChannelTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.{Result, Error}
 
-  pipe Result, Error
+  pipe(Result, Error)
 
   assert_Result_bind()
   assert_Result_map()
@@ -108,7 +108,7 @@ defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.{Result, Error}
 
-  pipe [{Result, :~>}, {Error, :<~}]
+  pipe([{Result, :~>}, {Error, :<~}])
 
   assert_Result_map()
   assert_Error_map()
@@ -118,7 +118,7 @@ defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.{Result, Error}
 
-  pipe [{Result, :~>, :~>>}, {Error, :<~, :<<~}]
+  pipe([{Result, :~>, :~>>}, {Error, :<~, :<<~}])
 
   assert_Result_bind()
   assert_Result_map()
@@ -130,10 +130,10 @@ defmodule OkComputer.PipeMultiChannelTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.{Result, Error}
 
-  pipe [
+  pipe([
     {Result, [~>: :map]},
     {Error, [<~: :map]}
-  ]
+  ])
 
   assert_Result_map()
   assert_Error_map()

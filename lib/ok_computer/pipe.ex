@@ -1,11 +1,12 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  Builds operator functions that operate as pipes.
+  Builds pipe functions that can be used with operators.
 
-  A pipe operator function is an operator function that calls another function
-  with two arguments. The first argument is the left input to the binary operator. The second
-  argument is a function that pipes the left input into the right input.
-  The other function is specified with a `module` and a `function_name`.
+  A pipe function is an operator function that calls another function with two arguments.
+  The function is specified with a `module` and a `function_name`.
+  The first argument given is the left input to the binary operator.
+  The second argument given is a function that pipes the left input into the right input.
+  The pipe function will return the value returned by the function.
   """
 
   @doc """
@@ -18,41 +19,30 @@ defmodule OkComputer.Pipe do
     end
   ```
   """
-  @spec pipe(module, atom | list(atom)) :: Macro.t()
-  defmacro pipe(alias, function_names) do
+  @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
+  defmacro pipes(alias, function_names) do
     module = Macro.expand(alias, __CALLER__)
+    pipe_module = Module.concat(__CALLER__.module, module)
 
-    create_pipe_module(
-      module,
-      List.wrap(function_names),
-      Module.concat(__CALLER__.module, module)
-    )
+    create_pipe_module(module, List.wrap(function_names), pipe_module)
   end
 
   def create_pipe_module(module, function_names, pipe_module) do
-    Module.create(
-      pipe_module,
-      create_operator_functions(module, List.wrap(function_names)),
-      Macro.Env.location(__ENV__)
-    )
+    operator_functions = Enum.map(function_names, &create_operator_function(module, &1))
+
+    Module.create(pipe_module, operator_functions, Macro.Env.location(__ENV__))
 
     quote do
       import unquote(pipe_module)
     end
   end
 
-  defp create_operator_functions(module, function_names) do
-    Enum.map(function_names, fn function_name ->
-      create_operator_function(module, function_name)
-    end)
-  end
-
   defp create_operator_function(module, function_name) do
     quote do
       require unquote(module)
 
-      @name unquote(function_name)
       @module unquote(module)
+      @name unquote(function_name)
 
       def unquote(function_name)(left, right) do
         quote do

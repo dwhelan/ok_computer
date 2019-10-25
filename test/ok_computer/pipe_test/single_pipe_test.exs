@@ -2,7 +2,7 @@ defmodule OkComputer.PipeTest.SinglePipe do
   import OkComputer.Pipe
   alias OkComputer.Monad.Result
 
-  pipe Result, :map
+  pipes Result, :map
 
   defmacro left ~>> right do
     map(left, right)

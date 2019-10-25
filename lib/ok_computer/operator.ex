@@ -12,7 +12,7 @@ defmodule OkComputer.Operator do
   end
   ```
 
-  If you want the operator to be variable things get tricky:
+  If you want a variable operator things get tricky:
 
   ```elixir
   op = :+

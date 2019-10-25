@@ -126,7 +126,7 @@ defmodule OkComputer.PipeOperator do
     import OkComputer.Pipe
 
     module = Macro.expand(alias, env)
-    function_names = Enum.map(operators, fn {operator, function_name} -> function_name end)
+    function_names = Enum.map(operators, fn {_, function_name} -> function_name end)
     pipe_module = Module.concat(env.module, module)
 
     create_pipe_module(module, function_names, pipe_module)
