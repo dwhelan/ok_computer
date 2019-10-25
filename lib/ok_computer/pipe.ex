@@ -13,21 +13,21 @@ defmodule OkComputer.Pipe do
     end
   ```
   """
-  @spec defpipe(module, atom) :: Macro.t()
-  defmacro defpipe(module, name) do
-    create_pipe_operators(module, [name])
+  @spec pipe(module, atom) :: Macro.t()
+  defmacro pipe(module, names) do
+    create_pipe_operators(module, List.wrap(names))
   end
 
-  def create_pipe_operators(module, names) do
-    Enum.map(names, fn name -> create_pipe_operator(module, name) end)
+  def create_pipe_operators(module, function_names) do
+    Enum.map(function_names, fn function_name -> create_pipe_operator(module, function_name) end)
   end
 
-  def create_pipe_operator(module, name) do
+  def create_pipe_operator(module, function_name) do
     quote do
-      @name unquote(name)
+      @name unquote(function_name)
       @module unquote(module)
 
-      def unquote(name)(left, right) do
+      def unquote(function_name)(left, right) do
         quote do
           unquote(@module).unquote(@name)(unquote(left), fn left -> left |> unquote(right) end)
         end

@@ -1,19 +1,51 @@
-defmodule OkComputer.PipeTest.Functions do
+defmodule OkComputer.PipeTest.Single do
   import OkComputer.Pipe
   alias OkComputer.Monad.Result
 
-  defpipe Result, :map
+  pipe Result, :map
 
   defmacro left ~> right do
     map(left, right)
   end
 end
 
-defmodule OkComputer.PipeTest do
+defmodule OkComputer.PipeTest.SingleTest do
   use ExUnit.Case
-  import OkComputer.PipeTest.Functions
+  import OkComputer.PipeTest.Single
 
-  test "pipe" do
+  test "pipe map" do
     assert {:ok, :a} ~> to_string() == {:ok, "a"}
+    assert :a ~> to_string() == :a
   end
+end
+
+defmodule OkComputer.PipeTest.Multiple do
+  import OkComputer.Pipe
+  alias OkComputer.Monad.Result
+
+  pipe Result, :bind
+
+#  defmacro left ~> right do
+#    map(left, right)
+#  end
+
+  defmacro left ~>> right do
+    bind(left, right)
+  end
+end
+
+defmodule OkComputer.PipeTest.MultipleTest do
+  use ExUnit.Case
+  import OkComputer.PipeTest.Multiple
+
+#  test "pipe map" do
+#    assert {:ok, :a} ~> to_string() == {:ok, "a"}
+#    assert :a ~> to_string() == :a
+#  end
+#
+  test "pipe bind" do
+    assert {:ok, :a} ~>> fn a -> {:ok, to_string(a)} end.() == {:ok, "a"}
+    assert :a ~>> fn a -> {:ok, to_string(a)} end.() == :a
+  end
+
 end
