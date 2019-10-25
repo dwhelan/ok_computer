@@ -13,8 +13,8 @@ defmodule OkComputer.Pipe do
     end
   ```
   """
-  @spec pipe({atom, module}) :: Macro.t()
-  defmacro pipe({name, module}) do
+  @spec pipe(module, atom) :: Macro.t()
+  defmacro pipe(module, name) do
     quote do
       @name unquote(name)
       @module unquote(module)
