@@ -1,19 +1,8 @@
 defmodule OkComputer.PipeOperatorTests do
   defmacro assert_Result_bind do
     quote do
-      test "~>> should be Result.bind" do
+      test "~> should be Result.bind" do
         f = fn :value -> {:ok, "value"} end
-
-        assert {:ok, :value} ~>> f.() == {:ok, "value"}
-        assert :anything_else ~>> f.() == :anything_else
-      end
-    end
-  end
-
-  defmacro assert_Result_map do
-    quote do
-      test "~> should be Result.map" do
-        f = fn :value -> "value" end
 
         assert {:ok, :value} ~> f.() == {:ok, "value"}
         assert :anything_else ~> f.() == :anything_else
@@ -21,24 +10,35 @@ defmodule OkComputer.PipeOperatorTests do
     end
   end
 
+  defmacro assert_Result_map do
+    quote do
+      test "~>> should be Result.map" do
+        f = fn :value -> "value" end
+
+        assert {:ok, :value} ~>> f.() == {:ok, "value"}
+        assert :anything_else ~>> f.() == :anything_else
+      end
+    end
+  end
+
   defmacro assert_Error_bind do
     quote do
-      test "<<~ should be Error.bind" do
+      test "<~ should be Error.bind" do
         f = fn :reason -> {:error, "reason"} end
 
-        assert {:error, :reason} <<~ f.() == {:error, "reason"}
-        assert :anything_else <<~ f.() == :anything_else
+        assert {:error, :reason} <~ f.() == {:error, "reason"}
+        assert :anything_else <~ f.() == :anything_else
       end
     end
   end
 
   defmacro assert_Error_map do
     quote do
-      test "<~ should be Error.map" do
+      test "<<~ should be Error.map" do
         f = fn :reason -> "reason" end
 
-        assert {:error, :reason} <~ f.() == {:error, "reason"}
-        assert :anything_else <~ f.() == :anything_else
+        assert {:error, :reason} <<~ f.() == {:error, "reason"}
+        assert :anything_else <<~ f.() == :anything_else
       end
     end
   end
@@ -69,7 +69,7 @@ defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
 
   pipe(Result, :~>)
 
-  assert_Result_map()
+  assert_Result_bind()
 end
 
 defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
@@ -86,7 +86,7 @@ defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
   use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
-  pipe(Result, ~>: :map, ~>>: :bind)
+  pipe(Result, ~>: :bind, ~>>: :map)
 
   assert_Result_bind()
   assert_Result_map()
@@ -110,8 +110,8 @@ defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
 
   pipe([{Result, :~>}, {Error, :<~}])
 
-  assert_Result_map()
-  assert_Error_map()
+  assert_Result_bind()
+  assert_Error_bind()
 end
 
 defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
@@ -131,12 +131,12 @@ defmodule OkComputer.PipeMultiChannelTest do
   alias OkComputer.Monad.{Result, Error}
 
   pipe([
-    {Result, [~>: :map]},
-    {Error, [<~: :map]}
+    {Result, [~>: :bind]},
+    {Error, [<~: :bind]}
   ])
 
-  assert_Result_map()
-  assert_Error_map()
+  assert_Result_bind()
+  assert_Error_bind()
 end
 
 defmodule OkComputer.PipeTest do
