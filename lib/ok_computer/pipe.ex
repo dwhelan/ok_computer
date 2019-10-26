@@ -28,27 +28,27 @@ defmodule OkComputer.Pipe do
   end
 
   def create_pipe_module(module, function_names, pipe_module) do
-    operator_functions = Enum.map(function_names, &create_operator_function(module, &1))
+    Module.create(
+      pipe_module,
+      Enum.map(function_names, fn function_name ->
+        quote do
+          require unquote(module)
 
-    Module.create(pipe_module, operator_functions, Macro.Env.location(__ENV__))
+          @module unquote(module)
+          @name unquote(function_name)
+
+          def unquote(function_name)(left, right) do
+            quote do
+              unquote(@module).unquote(@name)(unquote(left), fn left -> left |> unquote(right) end)
+            end
+          end
+        end
+      end),
+      Macro.Env.location(__ENV__)
+    )
 
     quote do
       import unquote(pipe_module)
-    end
-  end
-
-  defp create_operator_function(module, function_name) do
-    quote do
-      require unquote(module)
-
-      @module unquote(module)
-      @name unquote(function_name)
-
-      def unquote(function_name)(left, right) do
-        quote do
-          unquote(@module).unquote(@name)(unquote(left), fn left -> left |> unquote(right) end)
-        end
-      end
     end
   end
 end
