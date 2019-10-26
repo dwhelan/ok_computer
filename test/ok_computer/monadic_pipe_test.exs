@@ -1,4 +1,4 @@
-defmodule OkComputer.PipeOperatorTests do
+defmodule OkComputer.MonadicPipeTests do
   defmacro assert_Result_bind do
     quote do
       test "~> should be Result.bind" do
@@ -46,15 +46,15 @@ defmodule OkComputer.PipeOperatorTests do
   defmacro __using__(_) do
     quote do
       use ExUnit.Case
-      import OkComputer.PipeOperatorTests
-      import OkComputer.PipeOperator
+      import OkComputer.MonadicPipeTests
+      import OkComputer.MonadicPipe
       alias OkComputer.Monad.Result
     end
   end
 end
 
-defmodule OkComputer.PipeOperator.SingleChannelTest do
-  use OkComputer.PipeOperatorTests
+defmodule OkComputer.MonadicPipe.SingleChannelTest do
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.Result
 
   pipe(Result)
@@ -64,7 +64,7 @@ defmodule OkComputer.PipeOperator.SingleChannelTest do
 end
 
 defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.Result
 
   pipe(Result, :~>)
@@ -73,7 +73,7 @@ defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
 end
 
 defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.Result
 
   pipe(Result, :~>, :~>>)
@@ -83,7 +83,7 @@ defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
 end
 
 defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.Result
 
   pipe(Result, ~>: :bind, ~>>: :map)
@@ -93,7 +93,7 @@ defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
 end
 
 defmodule OkComputer.PipeDualChannelTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.{Result, Error}
 
   pipe(Result, Error)
@@ -105,7 +105,7 @@ defmodule OkComputer.PipeDualChannelTest do
 end
 
 defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.{Result, Error}
 
   pipe([{Result, :~>}, {Error, :<~}])
@@ -115,7 +115,7 @@ defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
 end
 
 defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.{Result, Error}
 
   pipe([{Result, :~>, :~>>}, {Error, :<~, :<<~}])
@@ -127,7 +127,7 @@ defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
 end
 
 defmodule OkComputer.PipeMultiChannelTest do
-  use OkComputer.PipeOperatorTests
+  use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.{Result, Error}
 
   pipe([
@@ -145,7 +145,7 @@ defmodule OkComputer.PipeTest do
   test "must provide at least one pipe" do
     source = """
       defmodule BadPipe do
-        import OkComputer.PipeOperator
+        import OkComputer.MonadicPipe
         pipe []
       end
     """
