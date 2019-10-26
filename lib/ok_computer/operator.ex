@@ -61,19 +61,19 @@ defmodule OkComputer.Operator do
   """
 
   @doc """
-  Builds a module with operators and imports it.
+  Builds an operators module and imports it.
   """
   defmacro operators(bindings) do
-    create_operators_module(bindings, Module.concat(__CALLER__.module, Operators))
+    create(bindings, Module.concat(__CALLER__.module, Operators))
   end
 
   @doc """
   Builds an operators module returns the AST to import it.
   """
-  def create_operators_module(bindings, module) do
+  def create(bindings, module) do
     Code.compile_string(~s[
       defmodule #{module} do
-        #{create_operator_macros(bindings)}
+        #{Enum.map(bindings, &create_macro/1)}
       end
     ])
 
@@ -82,11 +82,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp create_operator_macros(bindings) do
-    Enum.map(bindings, &create_operator_macro/1)
-  end
-
-  defp create_operator_macro({atom, {alias, function_name}}) when is_atom(function_name) do
+  defp create_macro({atom, {alias, function_name}}) when is_atom(function_name) do
     module = Macro.expand(alias, __ENV__)
     ~s[
         require #{module}
