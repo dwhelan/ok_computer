@@ -24,10 +24,10 @@ defmodule OkComputer.Pipe do
     module = Macro.expand(alias, __CALLER__)
     pipe_module = Module.concat(__CALLER__.module, module)
 
-    create_pipe_module(module, List.wrap(function_names), pipe_module)
+    create(module, List.wrap(function_names), pipe_module)
   end
 
-  def create_pipe_module(module, function_names, pipe_module) do
+  def create(module, function_names, pipe_module) do
     Module.create(
       pipe_module,
       Enum.map(function_names, fn function_name ->

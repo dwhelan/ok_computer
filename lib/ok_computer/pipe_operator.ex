@@ -33,6 +33,7 @@ defmodule OkComputer.PipeOperator do
     {@alternate_bind_operator, :bind}
   ]
 
+  alias OkComputer.Pipe
   alias OkComputer.Operator
 
   defmacro pipe([]) do
@@ -129,7 +130,7 @@ defmodule OkComputer.PipeOperator do
     function_names = Enum.map(operators, fn {_, function_name} -> function_name end)
     pipe_module = Module.concat(env.module, module)
 
-    create_pipe_module(module, function_names, pipe_module)
+    Pipe.create(module, function_names, pipe_module)
 
     Enum.map(operators, fn {operator, function_name} ->
       {operator, {pipe_module, function_name}}
