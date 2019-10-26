@@ -32,11 +32,17 @@ defmodule OkComputer.Pipe do
       pipe_module,
       Enum.map(function_names, fn function_name ->
         quote do
-          require unquote(module)
-
+          @moduledoc """
+          Creates operator functions, #{Enum.join(unquote(function_names))}, that acts as pipes via #{
+            unquote(module)
+          }.
+          """
           @module unquote(module)
           @name unquote(function_name)
 
+          require unquote(module)
+
+          @doc "An operator function that calls #{@module}.#{@name}(left, fn _ -> left |> right)"
           def unquote(function_name)(left, right) do
             quote do
               unquote(@module).unquote(@name)(unquote(left), fn left -> left |> unquote(right) end)
