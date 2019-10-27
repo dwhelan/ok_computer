@@ -59,7 +59,6 @@ defmodule OkComputer.Pipe do
   end
 
   def module(target, env) do
-    target = Macro.expand(target, env)
     Module.concat([env.module, Pipe, Module.split(target) |> List.last()])
   end
 

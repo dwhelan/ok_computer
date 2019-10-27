@@ -6,7 +6,7 @@ defmodule OkComputer.PipeOperator do
   alias OkComputer.{Pipe, Operator}
 
   @doc """
-  Builds a pipe operator.
+  Creates pipe operators.
   """
   @spec pipe_operators(target :: {:__aliases__, term, term}, bindings :: keyword(atom)) ::
           Macro.t()
@@ -15,14 +15,14 @@ defmodule OkComputer.PipeOperator do
     pipe_module = Pipe.module(target, __CALLER__)
     operator_module = Operator.module(target, __CALLER__)
 
-    create(pipe_module, operator_module, target, bindings)
+    create(target, bindings, pipe_module, operator_module)
 
     quote do
       import unquote(operator_module)
     end
   end
 
-  def create(pipe_module, operator_module, target, bindings) do
+  def create(target, bindings, pipe_module, operator_module) do
     Pipe.create(target, function_names(bindings), pipe_module)
     Operator.create(pipe_module, bindings, operator_module)
   end
