@@ -6,15 +6,6 @@ defmodule OkComputer.MonadicPipe do
   @type alias :: {:__aliases__, term, term}
 
   @typedoc """
-  A set of pipe operators bound to a module with `Pipe` behaviour.
-  """
-  @type pipe_operator_module ::
-          alias
-          | {alias, bind_operator :: atom}
-          | {:{}, term, list}
-          | {alias, operators}
-
-  @typedoc """
   A keyword list that maps pipe operators to function names.
   """
   @type operators :: [{operator :: atom, function_name :: atom}]
@@ -26,11 +17,13 @@ defmodule OkComputer.MonadicPipe do
   Builds a single pipe_operator_module pipe with custom pipe operators.
   """
   @spec pipe(alias, operators) :: Macro.t()
-  defmacro pipe(alias, operators \\ [~>: :bind, ~>>: :map]) when is_list(operators) do
-    module = Macro.expand(alias, __CALLER__)
-    pipe_module = Module.concat(__CALLER__.module, module)
-    operator_module = Module.concat(__CALLER__.module, Pipes)
-    create(module, operators, pipe_module, operator_module)
+  defmacro pipe(target, operators \\ [~>: :bind, ~>>: :map]) when is_list(operators) do
+    target = Macro.expand(target, __CALLER__)
+    target_name = Module.split(target) |> List.last()
+    pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
+    operator_module = Module.concat([__CALLER__.module, Operator, target_name])
+
+    create(target, operators, pipe_module, operator_module)
 
     quote do
       import unquote(pipe_module)
@@ -38,10 +31,10 @@ defmodule OkComputer.MonadicPipe do
     end
   end
 
-  defp create(module, operators, pipe_module, operator_module) do
+  defp create(target, operators, pipe_module, operator_module) do
     function_names = Enum.map(operators, fn {_, function_name} -> function_name end)
 
-    Pipe.create(module, function_names, pipe_module)
+    Pipe.create(target, function_names, pipe_module)
 
     operator_bindings =
       Enum.map(
