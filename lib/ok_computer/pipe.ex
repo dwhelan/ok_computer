@@ -1,6 +1,6 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  Builds pipe functions that can be used with operators.
+  Creates pipe functions that can be used with operators.
 
   A pipe function is an operator function that calls another function with two arguments.
   The function is specified with a `module` and a `function_name`.
