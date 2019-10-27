@@ -24,7 +24,7 @@ defmodule OkComputer.PipeOperator do
   @doc """
   Builds a pipe module and an operator module.
   """
-  @spec create(module, keyword(atom), module, module) :: Macro.t()
+  @spec create(module, keyword(atom), module, module) :: {:module, module(), binary(), term()}
   def create(target, bindings, pipe_module, operator_module) do
     Pipe.create(target, Keyword.keys(bindings), pipe_module)
     Operator.create(pipe_module, bindings, operator_module)

@@ -78,13 +78,14 @@ defmodule OkComputer.Operator do
   @doc """
   Creates an operator module.
   """
-  @spec create(module, keyword(atom), module) :: Macro.t()
+  @spec create(module, keyword(atom), module) :: {:module, module(), binary(), term()}
   def create(target, bindings, module) do
-    Code.compile_string(~s[
+    [{_, bytecode}] = Code.compile_string(~s[
       defmodule #{module} do
         #{Enum.map(bindings, &create_operator(target, &1))}
       end
     ])
+    {:module, module, bytecode, nil}
   end
 
   defp create_operator(target, {function_name, operator}) do
