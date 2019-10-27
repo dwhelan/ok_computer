@@ -20,12 +20,15 @@ defmodule OkComputer.Pipe do
   ```
   """
   @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
-  defmacro pipes(alias, function_names) do
-    module = Macro.expand(alias, __CALLER__)
-    create(module, List.wrap(function_names), Module.concat(__CALLER__.module, module))
+  defmacro pipes(target, function_names) do
+    target = Macro.expand(target, __CALLER__)
+    target_name = Module.split(target) |> List.last()
+    pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
+
+    create(pipe_module, target, List.wrap(function_names))
   end
 
-  def create(target, function_names, pipe_module) do
+  def create(pipe_module, target, function_names) do
     Module.create(
       pipe_module,
       [
