@@ -64,14 +64,8 @@ defmodule OkComputer.Operator do
   Builds an operators module and imports it.
   """
   defmacro operators(target, bindings) do
-    create(Macro.expand(target, __CALLER__), bindings, __CALLER__)
-  end
-
-  @doc """
-  Builds an operators module returns the AST to import it.
-  """
-  def create(target, bindings, env = %Macro.Env{}) do
-    create(target, bindings, module(env.module, target))
+    target = Macro.expand(target, __CALLER__)
+    create(target, bindings, module(target, __CALLER__))
   end
 
   @doc """
@@ -99,7 +93,8 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def module(creator, target) do
-    Module.concat([creator, Operator, Module.split(target) |> List.last()])
+  def module(target, env) do
+    target = Macro.expand(target, env)
+    Module.concat([env.module, Operator, Module.split(target) |> List.last()])
   end
 end
