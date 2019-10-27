@@ -61,12 +61,18 @@ defmodule OkComputer.Operator do
   """
 
   @doc """
-  Builds an operators module and imports it.
+  Creates an operators module and imports it.
   """
   @spec operators(Macro.t(), keyword(atom)) :: Macro.t()
   defmacro operators(target, bindings) do
     target = Macro.expand(target, __CALLER__)
-    create(target, bindings, module(target, __CALLER__))
+    module = module(target, __CALLER__)
+
+    create(target, bindings, module)
+
+    quote do
+      import unquote(module)
+    end
   end
 
   @doc """
@@ -79,10 +85,6 @@ defmodule OkComputer.Operator do
         #{Enum.map(bindings, &create_operator(target, &1))}
       end
     ])
-
-    quote do
-      import unquote(module)
-    end
   end
 
   defp create_operator(target, {function_name, operator}) do

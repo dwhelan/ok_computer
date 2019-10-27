@@ -6,10 +6,9 @@ defmodule OkComputer.PipeOperator do
   alias OkComputer.{Pipe, Operator}
 
   @doc """
-  Creates pipe operators.
+  Creates pipe operators and imports the operators module.
   """
-  @spec pipe_operators(target :: {:__aliases__, term, term}, bindings :: keyword(atom)) ::
-          Macro.t()
+  @spec pipe_operators(Macro.t(), keyword(atom)) :: Macro.t()
   defmacro pipe_operators(target, bindings) do
     target = Macro.expand(target, __CALLER__)
     pipe_module = Pipe.module(target, __CALLER__)
@@ -22,6 +21,11 @@ defmodule OkComputer.PipeOperator do
     end
   end
 
+
+  @doc """
+  Builds a operators module returns the AST to import it.
+  """
+  @spec create(module, keyword(atom), module, module) :: Macro.t()
   def create(target, bindings, pipe_module, operator_module) do
     Pipe.create(target, Keyword.keys(bindings), pipe_module)
     Operator.create(pipe_module, bindings, operator_module)
