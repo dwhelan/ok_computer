@@ -64,20 +64,20 @@ defmodule OkComputer.Operator do
   Builds an operators module and imports it.
   """
   defmacro operators(target, bindings) do
-    create(__CALLER__, Macro.expand(target, __CALLER__), bindings)
+    create(Macro.expand(target, __CALLER__), bindings, __CALLER__)
   end
 
   @doc """
   Builds an operators module returns the AST to import it.
   """
-  def create(env = %Macro.Env{}, target, bindings) do
-    create(module(env.module, target), target, bindings)
+  def create(target, bindings, env = %Macro.Env{}) do
+    create(target, bindings, module(env.module, target))
   end
 
   @doc """
   Builds an operators module returns the AST to import it.
   """
-  def create(module, target, bindings) do
+  def create(target, bindings, module) do
     Code.compile_string(~s[
       defmodule #{module} do
         #{Enum.map(bindings, &create_operator(target, &1))}

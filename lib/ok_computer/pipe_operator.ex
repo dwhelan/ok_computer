@@ -22,14 +22,9 @@ defmodule OkComputer.PipeOperator do
     end
   end
 
-  def create(env = %Macro.Env{}, target, bindings) do
-    Pipe.create(env, target, function_names(bindings))
-    Operator.create(env, target, bindings)
-  end
-
   def create(pipe_module, operator_module, target, bindings) do
     Pipe.create(pipe_module, target, function_names(bindings))
-    Operator.create(operator_module, pipe_module, bindings)
+    Operator.create(pipe_module, bindings, operator_module)
   end
 
   defp function_names(bindings) do
