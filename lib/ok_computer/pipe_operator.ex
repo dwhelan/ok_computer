@@ -12,7 +12,7 @@ defmodule OkComputer.PipeOperator do
           Macro.t()
   defmacro pipe_operators(target, bindings) do
     target = Macro.expand(target, __CALLER__)
-    pipe_module = Pipe.module(__CALLER__.module, target)
+    pipe_module = Pipe.module(target, __CALLER__)
     operator_module = Operator.module(target, __CALLER__)
 
     create(pipe_module, operator_module, target, bindings)
