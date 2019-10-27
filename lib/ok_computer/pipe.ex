@@ -21,11 +21,11 @@ defmodule OkComputer.Pipe do
   """
   @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
   defmacro pipes(target, function_names) do
-    target = Macro.expand(target, __CALLER__)
-    target_name = Module.split(target) |> List.last()
-    pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
+    create(__CALLER__, Macro.expand(target, __CALLER__), List.wrap(function_names))
+  end
 
-    create(pipe_module, target, List.wrap(function_names))
+  def create(env = %Macro.Env{}, target, function_names) do
+    create(default_module(env.module, target), target, function_names)
   end
 
   def create(pipe_module, target, function_names) do
@@ -59,6 +59,10 @@ defmodule OkComputer.Pipe do
         end
       end
     end
+  end
+
+  defp default_module(creator, target) do
+    Module.concat([creator, Pipe, Module.split(target) |> List.last()])
   end
 
   defp module_doc(target, function_names) do
