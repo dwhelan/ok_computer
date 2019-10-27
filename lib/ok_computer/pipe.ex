@@ -22,10 +22,10 @@ defmodule OkComputer.Pipe do
   @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
   defmacro pipes(target, function_names) do
     target = Macro.expand(target, __CALLER__)
-    create(module(target, __CALLER__), target, List.wrap(function_names))
+    create(target, List.wrap(function_names), module(target, __CALLER__))
   end
 
-  def create(pipe_module, target, function_names) do
+  def create(target, function_names, pipe_module) do
     Module.create(
       pipe_module,
       [
