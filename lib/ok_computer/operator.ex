@@ -63,6 +63,7 @@ defmodule OkComputer.Operator do
   @doc """
   Builds an operators module and imports it.
   """
+  @spec operators(Macro.t(), keyword(atom)) :: Macro.t()
   defmacro operators(target, bindings) do
     target = Macro.expand(target, __CALLER__)
     create(target, bindings, module(target, __CALLER__))
@@ -71,6 +72,7 @@ defmodule OkComputer.Operator do
   @doc """
   Builds an operators module returns the AST to import it.
   """
+  @spec create(module, keyword(atom), module) :: Macro.t()
   def create(target, bindings, module) do
     Code.compile_string(~s[
       defmodule #{module} do
@@ -93,6 +95,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
+  @spec module(module, Macro.Env.t()) :: module
   def module(target, env) do
     Module.concat([env.module, Operator, Module.split(target) |> List.last()])
   end

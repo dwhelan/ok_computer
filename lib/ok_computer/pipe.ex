@@ -27,6 +27,7 @@ defmodule OkComputer.Pipe do
 
   def create(target, function_names, pipe_module) do
     function_names = List.wrap(function_names)
+
     Module.create(
       pipe_module,
       [
