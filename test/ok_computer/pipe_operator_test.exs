@@ -1,4 +1,4 @@
-defmodule OkComputer.MonadicPipeTests do
+defmodule OkComputer.PipeOperatorTests do
   defmacro assert_Result_bind do
     quote do
       test "~> should be Result.bind" do
@@ -46,15 +46,15 @@ defmodule OkComputer.MonadicPipeTests do
   defmacro __using__(_) do
     quote do
       use ExUnit.Case
-      import OkComputer.MonadicPipeTests
-      import OkComputer.MonadicPipe
+      import OkComputer.PipeOperatorTests
+      import OkComputer.PipeOperator
       alias OkComputer.Monad.Result
     end
   end
 end
 
-defmodule OkComputer.MonadicPipe.DefaultOperatorsTest do
-  use OkComputer.MonadicPipeTests
+defmodule OkComputer.PipeOperator.DefaultOperatorsTest do
+  use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
   pipe Result
@@ -63,8 +63,8 @@ defmodule OkComputer.MonadicPipe.DefaultOperatorsTest do
   assert_Result_map()
 end
 
-defmodule OkComputer.MonadicPipe.CustomOperatorsTest do
-  use OkComputer.MonadicPipeTests
+defmodule OkComputer.PipeOperator.CustomOperatorsTest do
+  use OkComputer.PipeOperatorTests
   alias OkComputer.Monad.Result
 
   pipe Result, ~>: :bind, ~>>: :map
