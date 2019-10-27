@@ -22,25 +22,27 @@ defmodule OkComputer.Pipe do
   @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
   defmacro pipes(target, function_names) do
     target = Macro.expand(target, __CALLER__)
-    create(target, function_names, module(target, __CALLER__))
+    module = module(target, __CALLER__)
+
+    create(target, function_names, module)
+
+    quote do
+      import unquote(module)
+    end
   end
 
-  @spec create(module, list(atom), module) :: Macro.t()
-  def create(target, function_names, pipe_module) do
+  @spec create(module, atom | list(atom), module) :: {:module, module(), binary(), term()}
+  def create(target, function_names, module) do
     function_names = List.wrap(function_names)
 
     Module.create(
-      pipe_module,
+      module,
       [
         module_doc(target, function_names),
         Enum.map(function_names, &create_operator_function(target, &1))
       ],
       Macro.Env.location(__ENV__)
     )
-
-    quote do
-      import unquote(pipe_module)
-    end
   end
 
   defp create_operator_function(target, function_name) do

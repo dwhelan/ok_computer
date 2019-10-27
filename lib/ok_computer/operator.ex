@@ -61,7 +61,7 @@ defmodule OkComputer.Operator do
   """
 
   @doc """
-  Creates an operators module and imports it.
+  Creates an operator module and imports it.
   """
   @spec operators(Macro.t(), keyword(atom)) :: Macro.t()
   defmacro operators(target, bindings) do
@@ -76,7 +76,7 @@ defmodule OkComputer.Operator do
   end
 
   @doc """
-  Builds an operators module returns the AST to import it.
+  Creates an operator module.
   """
   @spec create(module, keyword(atom), module) :: Macro.t()
   def create(target, bindings, module) do
