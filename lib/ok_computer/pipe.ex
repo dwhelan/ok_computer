@@ -25,7 +25,7 @@ defmodule OkComputer.Pipe do
   end
 
   def create(env = %Macro.Env{}, target, function_names) do
-    create(default_module(env.module, target), target, function_names)
+    create(module(env.module, target), target, function_names)
   end
 
   def create(pipe_module, target, function_names) do
@@ -61,7 +61,7 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  def default_module(creator, target) do
+  def module(creator, target) do
     Module.concat([creator, Pipe, Module.split(target) |> List.last()])
   end
 

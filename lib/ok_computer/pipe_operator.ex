@@ -12,8 +12,8 @@ defmodule OkComputer.PipeOperator do
           Macro.t()
   defmacro pipe_operators(target, bindings) do
     target = Macro.expand(target, __CALLER__)
-    pipe_module = Pipe.default_module(__CALLER__.module, target)
-    operator_module = Operator.default_module(__CALLER__.module, target)
+    pipe_module = Pipe.module(__CALLER__.module, target)
+    operator_module = Operator.module(__CALLER__.module, target)
 
     create(pipe_module, operator_module, target, bindings)
 

@@ -71,7 +71,7 @@ defmodule OkComputer.Operator do
   Builds an operators module returns the AST to import it.
   """
   def create(env = %Macro.Env{}, target, bindings) do
-    create(default_module(env.module, target), target, bindings)
+    create(module(env.module, target), target, bindings)
   end
 
   @doc """
@@ -80,7 +80,7 @@ defmodule OkComputer.Operator do
   def create(module, target, bindings) do
     Code.compile_string(~s[
       defmodule #{module} do
-        #{Enum.map(bindings, &create_macro(&1, target))}
+        #{Enum.map(bindings, &create_operator(target, &1))}
       end
     ])
 
@@ -89,7 +89,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp create_macro({function_name, operator}, target) do
+  defp create_operator(target, {function_name, operator}) do
     ~s[
         require #{target}
 
@@ -99,7 +99,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def default_module(creator, target) do
+  def module(creator, target) do
     Module.concat([creator, Operator, Module.split(target) |> List.last()])
   end
 end
