@@ -19,14 +19,6 @@ defmodule OkComputer.MonadicPipe do
   """
   @type operators :: [{operator :: atom, function_name :: atom}]
 
-  @bind_operator :~>
-  @map_operator :~>>
-
-  @operators [
-    {@bind_operator, :bind},
-    {@map_operator, :map}
-  ]
-
   alias OkComputer.Pipe
   alias OkComputer.Operator
 
@@ -34,7 +26,7 @@ defmodule OkComputer.MonadicPipe do
   Builds a single pipe_operator_module pipe with custom pipe operators.
   """
   @spec pipe(alias, operators) :: Macro.t()
-  defmacro pipe(alias, operators \\ @operators) when is_list(operators) do
+  defmacro pipe(alias, operators \\ [~>: :bind, ~>>: :map]) when is_list(operators) do
     module = Macro.expand(alias, __CALLER__)
     pipe_module = Module.concat(__CALLER__.module, module)
     operator_module = Module.concat(__CALLER__.module, Pipes)

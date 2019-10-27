@@ -25,12 +25,12 @@ defmodule OkComputer.Pipe do
     create(module, List.wrap(function_names), Module.concat(__CALLER__.module, module))
   end
 
-  def create(module, function_names, pipe_module) do
+  def create(target, function_names, pipe_module) do
     Module.create(
       pipe_module,
       [
-        module_doc(module, function_names),
-        Enum.map(function_names, &create_operator_function(module, &1))
+        module_doc(target, function_names),
+        Enum.map(function_names, &create_operator_function(target, &1))
       ],
       Macro.Env.location(__ENV__)
     )
@@ -40,29 +40,29 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  defp module_doc(module, function_names) do
+  defp create_operator_function(target, function_name) do
     quote do
-      @moduledoc """
-      Creates operator functions, #{Enum.join(unquote(function_names))}, that pipe via #{
-        unquote(module)
-      }.
-      """
+      @target unquote(target)
+      @function_name unquote(function_name)
+
+      require unquote(target)
+
+      @doc "An operator function that calls #{@target}.#{@function_name}(left, fn _ -> left |> right)"
+      def unquote(function_name)(left, right) do
+        quote do
+          unquote(@target).unquote(@function_name)(unquote(left), fn left -> left |> unquote(right) end)
+        end
+      end
     end
   end
 
-  defp create_operator_function(module, function_name) do
+  defp module_doc(target, function_names) do
     quote do
-      @module unquote(module)
-      @name unquote(function_name)
-
-      require unquote(module)
-
-      @doc "An operator function that calls #{@module}.#{@name}(left, fn _ -> left |> right)"
-      def unquote(function_name)(left, right) do
-        quote do
-          unquote(@module).unquote(@name)(unquote(left), fn left -> left |> unquote(right) end)
-        end
-      end
+      @moduledoc """
+      Creates operator functions, #{Enum.join(unquote(function_names))}, that pipe via #{
+        unquote(target)
+      }.
+      """
     end
   end
 end
