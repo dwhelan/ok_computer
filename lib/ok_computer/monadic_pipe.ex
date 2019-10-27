@@ -37,17 +37,28 @@ defmodule OkComputer.MonadicPipe do
   defmacro pipe(alias, operators \\ @operators) when is_list(operators) do
     module = Macro.expand(alias, __CALLER__)
     pipe_module = Module.concat(__CALLER__.module, module)
-    create(module, operators, pipe_module)
-    |> Operator.create(Module.concat(__CALLER__.module, Pipes))
+    operator_module = Module.concat(__CALLER__.module, Pipes)
+    create(module, operators, pipe_module, operator_module)
+
+    quote do
+      import unquote(pipe_module)
+      import unquote(operator_module)
+    end
   end
 
-  defp create(module, operators, pipe_module) do
+  defp create(module, operators, pipe_module, operator_module) do
     function_names = Enum.map(operators, fn {_, function_name} -> function_name end)
 
     Pipe.create(module, function_names, pipe_module)
 
-    Enum.map(operators, fn {operator, function_name} ->
-      {operator, {pipe_module, function_name}}
-    end)
+    operator_bindings =
+      Enum.map(
+        operators,
+        fn {operator, function_name} ->
+          {operator, {pipe_module, function_name}}
+        end
+      )
+
+    Operator.create(operator_bindings, operator_module)
   end
 end

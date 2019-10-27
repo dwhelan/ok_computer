@@ -21,7 +21,6 @@ defmodule OkComputer.Pipe do
   """
   @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
   defmacro pipes(alias, function_names) do
-
     module = Macro.expand(alias, __CALLER__)
     create(module, List.wrap(function_names), Module.concat(__CALLER__.module, module))
   end
@@ -29,7 +28,10 @@ defmodule OkComputer.Pipe do
   def create(module, function_names, pipe_module) do
     Module.create(
       pipe_module,
-      [module_doc(module, function_names), Enum.map(function_names, &create_operator_function(module, &1))],
+      [
+        module_doc(module, function_names),
+        Enum.map(function_names, &create_operator_function(module, &1))
+      ],
       Macro.Env.location(__ENV__)
     )
 
