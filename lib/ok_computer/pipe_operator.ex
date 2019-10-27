@@ -3,21 +3,11 @@ defmodule OkComputer.PipeOperator do
   Creates pipe operators that connect operators to pipes.
   """
 
-  @typedoc """
-  A keyword list that maps pipe operators to function names.
-  """
-  @type target :: {:__aliases__, term, term}
-
-  @typedoc """
-  A keyword list that binds operators to pipe function names.
-  """
-  @type bindings :: [{operator :: atom, function_name :: atom}]
-
   @doc """
   Builds a pipe operator.
   """
-  @spec pipe(target, bindings) :: Macro.t()
-  defmacro pipe(target, bindings \\ [~>: :bind, ~>>: :map]) when is_list(bindings) do
+  @spec pipe_operator(target :: {:__aliases__, term, term}, bindings :: keyword(atom)) :: Macro.t()
+  defmacro pipe_operator(target, bindings) do
     target = Macro.expand(target, __CALLER__)
     target_name = Module.split(target) |> List.last()
     pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
@@ -31,7 +21,7 @@ defmodule OkComputer.PipeOperator do
     end
   end
 
-  defp create(target, bindings, pipe_module, operator_module) do
+  def create(target, bindings, pipe_module, operator_module) do
     OkComputer.Pipe.create(target, function_names(bindings), pipe_module)
     OkComputer.Operator.create(operator_bindings(bindings, pipe_module), operator_module)
   end
