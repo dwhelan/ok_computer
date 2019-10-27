@@ -99,7 +99,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  defp default_module(creator, target) do
+  def default_module(creator, target) do
     Module.concat([creator, Operator, Module.split(target) |> List.last()])
   end
 end

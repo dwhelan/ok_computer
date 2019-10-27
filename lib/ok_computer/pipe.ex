@@ -61,7 +61,7 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  defp default_module(creator, target) do
+  def default_module(creator, target) do
     Module.concat([creator, Pipe, Module.split(target) |> List.last()])
   end
 

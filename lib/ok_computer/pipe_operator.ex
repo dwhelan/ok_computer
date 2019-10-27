@@ -3,6 +3,8 @@ defmodule OkComputer.PipeOperator do
   Creates pipe operators that connect operators to pipes.
   """
 
+  alias OkComputer.{Pipe, Operator}
+
   @doc """
   Builds a pipe operator.
   """
@@ -10,9 +12,8 @@ defmodule OkComputer.PipeOperator do
           Macro.t()
   defmacro pipe_operators(target, bindings) do
     target = Macro.expand(target, __CALLER__)
-    target_name = Module.split(target) |> List.last()
-    pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
-    operator_module = Module.concat([__CALLER__.module, Operator, target_name])
+    pipe_module = Pipe.default_module(__CALLER__.module, target)
+    operator_module = Operator.default_module(__CALLER__.module, target)
 
     create(pipe_module, operator_module, target, bindings)
 
@@ -21,9 +22,14 @@ defmodule OkComputer.PipeOperator do
     end
   end
 
+  def create(env = %Macro.Env{}, target, bindings) do
+    Pipe.create(env, target, function_names(bindings))
+    Operator.create(env, target, bindings)
+  end
+
   def create(pipe_module, operator_module, target, bindings) do
-    OkComputer.Pipe.create(pipe_module, target, function_names(bindings))
-    OkComputer.Operator.create(operator_module, pipe_module, bindings)
+    Pipe.create(pipe_module, target, function_names(bindings))
+    Operator.create(operator_module, pipe_module, bindings)
   end
 
   defp function_names(bindings) do
