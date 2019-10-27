@@ -23,11 +23,7 @@ defmodule OkComputer.PipeOperator do
   end
 
   def create(target, bindings, pipe_module, operator_module) do
-    Pipe.create(target, function_names(bindings), pipe_module)
+    Pipe.create(target, Keyword.keys(bindings), pipe_module)
     Operator.create(pipe_module, bindings, operator_module)
-  end
-
-  defp function_names(bindings) do
-    Enum.map(bindings, fn {function_name, _} -> function_name end)
   end
 end
