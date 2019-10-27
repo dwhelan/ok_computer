@@ -14,7 +14,7 @@ defmodule OkComputer.PipeOperator do
     pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
     operator_module = Module.concat([__CALLER__.module, Operator, target_name])
 
-    create(pipe_module, OkComputer.Operator.operator_module(__CALLER__.module, target), target, bindings)
+    create(pipe_module, operator_module, target, bindings)
 
     quote do
       import unquote(operator_module)

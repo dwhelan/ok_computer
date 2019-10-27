@@ -64,27 +64,32 @@ defmodule OkComputer.Operator do
   Builds an operators module and imports it.
   """
   defmacro operators(target, bindings) do
-    target = Macro.expand(target, __CALLER__)
-    create(operator_module(__CALLER__.module, target), target, bindings)
+    create(__CALLER__, Macro.expand(target, __CALLER__), bindings)
   end
 
   @doc """
   Builds an operators module returns the AST to import it.
   """
-  def create(operator_module, target, bindings) do
+  def create(env = %Macro.Env{}, target, bindings) do
+    create(default_module(env.module, target), target, bindings)
+  end
+
+  @doc """
+  Builds an operators module returns the AST to import it.
+  """
+  def create(module, target, bindings) do
     Code.compile_string(~s[
-      defmodule #{operator_module} do
+      defmodule #{module} do
         #{Enum.map(bindings, &create_macro(&1, target))}
       end
     ])
 
     quote do
-      import unquote(operator_module)
+      import unquote(module)
     end
   end
 
-  defp create_macro({function_name, operator}, target) when is_atom(function_name) do
-    target = Macro.expand(target, __ENV__)
+  defp create_macro({function_name, operator}, target) do
     ~s[
         require #{target}
 
@@ -94,8 +99,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  def operator_module(caller, target) do
-    target_name = Module.split(target) |> List.last()
-    operator_module = Module.concat([caller, Operator, target_name])
+  defp default_module(creator, target) do
+    Module.concat([creator, Operator, Module.split(target) |> List.last()])
   end
 end
