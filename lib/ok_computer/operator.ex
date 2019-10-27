@@ -64,7 +64,8 @@ defmodule OkComputer.Operator do
   Builds an operators module and imports it.
   """
   defmacro operators(target, bindings) do
-    create(Module.concat(__CALLER__.module, Operators), target, bindings)
+    target = Macro.expand(target, __CALLER__)
+    create(operator_module(__CALLER__.module, target), target, bindings)
   end
 
   @doc """
@@ -91,5 +92,10 @@ defmodule OkComputer.Operator do
           #{target}.#{function_name}(left, right)
         end
     ]
+  end
+
+  def operator_module(caller, target) do
+    target_name = Module.split(target) |> List.last()
+    operator_module = Module.concat([caller, Operator, target_name])
   end
 end

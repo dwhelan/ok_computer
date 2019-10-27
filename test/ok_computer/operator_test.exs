@@ -21,7 +21,7 @@ defmodule OkComputer.OperatorTest do
 
   operators(Functions, plus: :+, pipe: :~>)
 
-  import OkComputer.OperatorTest.Operators
+  import OkComputer.OperatorTest.Operator.Functions
 
   test "math operator" do
     assert 1 + 2 == 3
