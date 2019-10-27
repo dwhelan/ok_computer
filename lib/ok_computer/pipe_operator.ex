@@ -1,6 +1,6 @@
 defmodule OkComputer.PipeOperator do
   @moduledoc """
-  Builds pipes.
+  Builds pipe operators that combine pipes with operators.
   """
 
   @type alias :: {:__aliases__, term, term}
@@ -35,10 +35,6 @@ defmodule OkComputer.PipeOperator do
 
   alias OkComputer.Pipe
   alias OkComputer.Operator
-
-  defmacro pipe([]) do
-    raise ArgumentError, "expected at least one pipe_operator_module"
-  end
 
   @doc """
   Builds a single pipe_operator_module pipe with default pipe operators.
@@ -96,9 +92,7 @@ defmodule OkComputer.PipeOperator do
   @spec create_pipe_modules(list(pipe_operator_module), Macro.Env.t()) :: Macro.t()
   defp create_pipe_modules(pipe_operator_modules, env) do
     pipe_operator_modules
-    |> Enum.flat_map(fn pipe_operator_module ->
-      create_pipe_operator_module(pipe_operator_module, env)
-    end)
+    |> Enum.flat_map(fn pipe_operator_module -> create_pipe_operator_module(pipe_operator_module, env) end)
     |> Operator.create(Module.concat(env.module, Pipes))
   end
 
@@ -135,4 +129,5 @@ defmodule OkComputer.PipeOperator do
       {operator, {pipe_module, function_name}}
     end)
   end
+
 end

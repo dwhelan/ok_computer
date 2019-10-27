@@ -21,113 +21,28 @@ defmodule OkComputer.MonadicPipe do
 
   @bind_operator :~>
   @map_operator :~>>
-  @alternate_bind_operator :<~
-  @alternate_map_operator :<<~
 
   @operators [
     {@bind_operator, :bind},
     {@map_operator, :map}
   ]
-  @alternate_operators [
-    {@alternate_map_operator, :map},
-    {@alternate_bind_operator, :bind}
-  ]
 
   alias OkComputer.Pipe
   alias OkComputer.Operator
-
-  defmacro pipe([]) do
-    raise ArgumentError, "expected at least one pipe_operator_module"
-  end
-
-  @doc """
-  Builds a single pipe_operator_module pipe with default pipe operators.
-  """
-  defmacro pipe({:__aliases__, _, _} = alias) do
-    create_pipe_modules([alias], __CALLER__)
-  end
-
-  @doc """
-  Builds a multi pipe_operator_module pipe with custom pipe operators.
-  """
-  @spec pipe(list(pipe_operator_module)) :: Macro.t()
-  defmacro pipe(pipe_operator_modules) do
-    create_pipe_modules(pipe_operator_modules, __CALLER__)
-  end
-
-  @doc """
-  Builds a single pipe_operator_module pipe with `bind` and `map` operators.
-  """
-  @spec pipe(alias, bind_operator :: atom, map_operator :: atom) :: Macro.t()
-  defmacro pipe(alias, bind_operator, map_operator) do
-    create_pipe_modules([{:{}, [], [alias, bind_operator, map_operator]}], __CALLER__)
-  end
-
-  @doc """
-  Builds a single pipe_operator_module pipe with a `bind` operator.
-  """
-  @spec pipe(alias, bind_operator :: atom) :: Macro.t()
-  defmacro pipe(alias, bind_operator) when is_atom(bind_operator) do
-    create_pipe_modules([{alias, bind_operator}], __CALLER__)
-  end
 
   @doc """
   Builds a single pipe_operator_module pipe with custom pipe operators.
   """
   @spec pipe(alias, operators) :: Macro.t()
-  defmacro pipe(alias, operators) when is_list(operators) do
-    create_pipe_modules([{alias, operators}], __CALLER__)
+  defmacro pipe(alias, operators \\ @operators) when is_list(operators) do
+    module = Macro.expand(alias, __CALLER__)
+    pipe_module = Module.concat(__CALLER__.module, module)
+    create(module, operators, pipe_module)
+    |> Operator.create(Module.concat(__CALLER__.module, Pipes))
   end
 
-  @doc """
-  Builds a dual pipe_operator_module pipe with default pipe operators.
-  """
-  @spec pipe(alias, alias) :: Macro.t()
-  defmacro pipe(default, alternate) do
-    create_pipe_modules(
-      [
-        {default, @operators},
-        {alternate, @alternate_operators}
-      ],
-      __CALLER__
-    )
-  end
-
-  @spec create_pipe_modules(list(pipe_operator_module), Macro.Env.t()) :: Macro.t()
-  defp create_pipe_modules(pipe_operator_modules, env) do
-    pipe_operator_modules
-    |> Enum.flat_map(fn pipe_operator_module ->
-      create_pipe_operator_module(pipe_operator_module, env)
-    end)
-    |> Operator.create(Module.concat(env.module, Pipes))
-  end
-
-  @spec create_pipe_operator_module(pipe_operator_module, Macro.Env.t()) :: Macro.t()
-  defp create_pipe_operator_module({:__aliases__, _, _} = alias, env) do
-    create(
-      alias,
-      @operators,
-      env
-    )
-  end
-
-  defp create_pipe_operator_module({alias, operator}, env) when is_atom(operator) do
-    create(alias, [{operator, :bind}], env)
-  end
-
-  defp create_pipe_operator_module({:{}, _, [alias, bind_operator, map_operator]}, env)
-       when is_atom(bind_operator) and is_atom(map_operator) do
-    create(alias, [{bind_operator, :bind}, {map_operator, :map}], env)
-  end
-
-  defp create_pipe_operator_module({alias, operators}, env) do
-    create(alias, operators, env)
-  end
-
-  defp create(alias, operators, env) do
-    module = Macro.expand(alias, env)
+  defp create(module, operators, pipe_module) do
     function_names = Enum.map(operators, fn {_, function_name} -> function_name end)
-    pipe_module = Module.concat(env.module, module)
 
     Pipe.create(module, function_names, pipe_module)
 

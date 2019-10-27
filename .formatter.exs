@@ -5,6 +5,7 @@
   ],
   locals_without_parens: [
     operators: :*,
+    pipe: :*,
     pipes: :*
   ]
 ]

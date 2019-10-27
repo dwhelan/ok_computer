@@ -53,103 +53,22 @@ defmodule OkComputer.MonadicPipeTests do
   end
 end
 
-defmodule OkComputer.MonadicPipe.SingleChannelTest do
+defmodule OkComputer.MonadicPipe.DefaultOperatorsTest do
   use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.Result
 
-  pipe(Result)
+  pipe Result
 
   assert_Result_bind()
   assert_Result_map()
 end
 
-defmodule OkComputer.PipeSingleChannelWithSingleOperatorTest do
+defmodule OkComputer.MonadicPipe.CustomOperatorsTest do
   use OkComputer.MonadicPipeTests
   alias OkComputer.Monad.Result
 
-  pipe(Result, :~>)
-
-  assert_Result_bind()
-end
-
-defmodule OkComputer.PipeSingleChannelWithTwoOperatorsTest do
-  use OkComputer.MonadicPipeTests
-  alias OkComputer.Monad.Result
-
-  pipe(Result, :~>, :~>>)
+  pipe Result, ~>: :bind, ~>>: :map
 
   assert_Result_bind()
   assert_Result_map()
-end
-
-defmodule OkComputer.PipeSingleChannelWithOperatorsTest do
-  use OkComputer.MonadicPipeTests
-  alias OkComputer.Monad.Result
-
-  pipe(Result, ~>: :bind, ~>>: :map)
-
-  assert_Result_bind()
-  assert_Result_map()
-end
-
-defmodule OkComputer.PipeDualChannelTest do
-  use OkComputer.MonadicPipeTests
-  alias OkComputer.Monad.{Result, Error}
-
-  pipe(Result, Error)
-
-  assert_Result_bind()
-  assert_Result_map()
-  assert_Error_bind()
-  assert_Error_map()
-end
-
-defmodule OkComputer.PipeMultiChannelWithSingleOperatorTest do
-  use OkComputer.MonadicPipeTests
-  alias OkComputer.Monad.{Result, Error}
-
-  pipe([{Result, :~>}, {Error, :<~}])
-
-  assert_Result_bind()
-  assert_Error_bind()
-end
-
-defmodule OkComputer.PipeMultiChannelWithTwoOperatorsTest do
-  use OkComputer.MonadicPipeTests
-  alias OkComputer.Monad.{Result, Error}
-
-  pipe([{Result, :~>, :~>>}, {Error, :<~, :<<~}])
-
-  assert_Result_bind()
-  assert_Result_map()
-  assert_Error_bind()
-  assert_Error_map()
-end
-
-defmodule OkComputer.PipeMultiChannelTest do
-  use OkComputer.MonadicPipeTests
-  alias OkComputer.Monad.{Result, Error}
-
-  pipe([
-    {Result, [~>: :bind]},
-    {Error, [<~: :bind]}
-  ])
-
-  assert_Result_bind()
-  assert_Error_bind()
-end
-
-defmodule OkComputer.PipeTest do
-  use ExUnit.Case
-
-  test "must provide at least one pipe" do
-    source = """
-      defmodule BadPipe do
-        import OkComputer.MonadicPipe
-        pipe []
-      end
-    """
-
-    assert_raise ArgumentError, fn -> Code.eval_string(source) end
-  end
 end
