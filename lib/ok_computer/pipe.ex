@@ -50,7 +50,9 @@ defmodule OkComputer.Pipe do
       @doc "An operator function that calls #{@target}.#{@function_name}(left, fn _ -> left |> right)"
       def unquote(function_name)(left, right) do
         quote do
-          unquote(@target).unquote(@function_name)(unquote(left), fn left -> left |> unquote(right) end)
+          unquote(@target).unquote(@function_name)(unquote(left), fn left ->
+            left |> unquote(right)
+          end)
         end
       end
     end

@@ -1,29 +1,29 @@
 defmodule OkComputer.MonadicPipe do
   @moduledoc """
-  Builds monadic pipes.
+  Creates pipe operators that connect operators to pipes.
   """
-
-  @type alias :: {:__aliases__, term, term}
 
   @typedoc """
   A keyword list that maps pipe operators to function names.
   """
-  @type operators :: [{operator :: atom, function_name :: atom}]
+  @type target :: {:__aliases__, term, term}
 
-  alias OkComputer.Pipe
-  alias OkComputer.Operator
+  @typedoc """
+  A keyword list that binds operators to pipe function names.
+  """
+  @type bindings :: [{operator :: atom, function_name :: atom}]
 
   @doc """
-  Builds a single pipe_operator_module pipe with custom pipe operators.
+  Builds a pipe operator.
   """
-  @spec pipe(alias, operators) :: Macro.t()
-  defmacro pipe(target, operators \\ [~>: :bind, ~>>: :map]) when is_list(operators) do
+  @spec pipe(target, bindings) :: Macro.t()
+  defmacro pipe(target, bindings \\ [~>: :bind, ~>>: :map]) when is_list(bindings) do
     target = Macro.expand(target, __CALLER__)
     target_name = Module.split(target) |> List.last()
     pipe_module = Module.concat([__CALLER__.module, Pipe, target_name])
     operator_module = Module.concat([__CALLER__.module, Operator, target_name])
 
-    create(target, operators, pipe_module, operator_module)
+    create(target, bindings, pipe_module, operator_module)
 
     quote do
       import unquote(pipe_module)
@@ -31,19 +31,22 @@ defmodule OkComputer.MonadicPipe do
     end
   end
 
-  defp create(target, operators, pipe_module, operator_module) do
-    function_names = Enum.map(operators, fn {_, function_name} -> function_name end)
+  defp create(target, bindings, pipe_module, operator_module) do
+    OkComputer.Pipe.create(target, function_names(bindings), pipe_module)
+    OkComputer.Operator.create(operator_bindings(bindings, pipe_module), operator_module)
+  end
 
-    Pipe.create(target, function_names, pipe_module)
+  defp function_names(operators) do
+    Enum.map(
+      operators,
+      fn {_, function_name} -> function_name end
+    )
+  end
 
-    operator_bindings =
-      Enum.map(
-        operators,
-        fn {operator, function_name} ->
-          {operator, {pipe_module, function_name}}
-        end
-      )
-
-    Operator.create(operator_bindings, operator_module)
+  defp operator_bindings(operators, pipe_module) do
+    Enum.map(
+      operators,
+      fn {operator, function_name} -> {operator, {pipe_module, function_name}} end
+    )
   end
 end
