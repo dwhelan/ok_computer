@@ -64,13 +64,13 @@ defmodule OkComputer.Operator do
   Builds an operators module and imports it.
   """
   defmacro operators(target, bindings) do
-    create(target, bindings, Module.concat(__CALLER__.module, Operators))
+    create(Module.concat(__CALLER__.module, Operators), target, bindings)
   end
 
   @doc """
   Builds an operators module returns the AST to import it.
   """
-  def create(target, bindings, operator_module) do
+  def create(operator_module, target, bindings) do
     Code.compile_string(~s[
       defmodule #{operator_module} do
         #{Enum.map(bindings, &create_macro(&1, target))}

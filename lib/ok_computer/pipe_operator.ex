@@ -23,7 +23,7 @@ defmodule OkComputer.PipeOperator do
 
   def create(target, bindings, pipe_module, operator_module) do
     OkComputer.Pipe.create(pipe_module, target, function_names(bindings))
-    OkComputer.Operator.create(pipe_module, bindings, operator_module)
+    OkComputer.Operator.create(operator_module, pipe_module, bindings)
   end
 
   defp function_names(bindings) do
