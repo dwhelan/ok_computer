@@ -25,6 +25,7 @@ defmodule OkComputer.Pipe do
     create(target, function_names, module(target, __CALLER__))
   end
 
+  @spec create(module, list(atom), module) :: Macro.t()
   def create(target, function_names, pipe_module) do
     function_names = List.wrap(function_names)
 
@@ -60,6 +61,7 @@ defmodule OkComputer.Pipe do
     end
   end
 
+  @spec module(module, Macro.Env.t()) :: module
   def module(target, env) do
     Module.concat([env.module, Pipe, Module.split(target) |> List.last()])
   end
