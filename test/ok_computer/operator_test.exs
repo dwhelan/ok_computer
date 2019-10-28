@@ -10,6 +10,12 @@ defmodule Functions do
       unquote(left) |> unquote(right)
     end
   end
+
+  def return(input) do
+    quote do
+      {:ok, unquote(input)}
+    end
+  end
 end
 
 defmodule OkComputer.OperatorTest do
@@ -28,6 +34,10 @@ defmodule OkComputer.OperatorTest do
   end
 
   test "pipe" do
+    assert :a ~> to_string == "a"
+  end
+
+  test "return" do
     assert :a ~> to_string == "a"
   end
 end

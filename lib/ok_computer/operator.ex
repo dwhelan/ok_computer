@@ -75,7 +75,25 @@ defmodule OkComputer.Operator do
     {:module, module, byte_code, nil}
   end
 
-  defp create_operator(target, {function_name, operator}) do
+  defp create_operator(target, {_, operator} = binding) do
+    cond do
+      Macro.operator?(operator, 2) -> create_binary_operator(target, binding)
+      Macro.operator?(operator, 1) -> create_unary_operator(target, binding)
+    end
+  end
+
+  defp create_unary_operator(target, {function_name, operator}) do
+    IO.inspect m: "unary", target: target, operator: operator
+    ~s[
+        require #{target}
+
+        defmacro #{operator} input do
+          #{target}.#{function_name}(input)
+        end
+    ]
+  end
+
+  defp create_binary_operator(target, {function_name, operator}) do
     ~s[
         require #{target}
 

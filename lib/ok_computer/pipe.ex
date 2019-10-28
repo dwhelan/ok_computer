@@ -1,11 +1,14 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  Creates pipe functions that can be used with operators.
+  Creates pipe that can be used with operators.
 
-  A pipe function is an operator function that calls another function with two arguments.
-  The function is specified with a `module` and a `function_name`.
-  The first argument given is the left input to the binary operator.
-  The second argument given is a function that pipes the left input into the right input.
+
+  ## Pipe functions
+  Pipe functions are used to conditionally
+
+  They takes two arguments.
+  The first is the left input to a binary operator macro.
+  The second is a function that pipes the left input into the right input.
   The pipe function will return the value returned by the function.
   """
 
