@@ -2,6 +2,7 @@ defmodule OkComputer.Operator do
   @moduledoc """
   Creates operator macros.
 
+  ## Operator functions
   Operator functions are used to perform binary operations.
   Operator functions take two quoted arguments and return a quoted expression.
 
@@ -22,8 +23,8 @@ defmodule OkComputer.Operator do
   end
   ```
 
-  You use the `operators/2` macro to create binary operators that
-  are connected to binary operators:
+  ## Creating operators
+  Use the `operators/2` macro to create and import binary operators.
   ```
   defmodule MyModule
     import OkComputer.Operator
