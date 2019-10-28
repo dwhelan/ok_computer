@@ -2,66 +2,45 @@ defmodule OkComputer.Operator do
   @moduledoc """
   Creates operator macros.
 
-  You can easily define operator functions or macros if you know in advance the operator you want to use:
+  Operator functions are used to perform binary operations.
+  Operator functions take two quoted arguments and return a quoted expression.
 
-  ```elixir
-  defmacro a + b do
-    quote do
-      unquote(a) + unquote(b)
-    end
-  end
-  ```
-
-  If you want a variable operator things get tricky:
-
-  ```elixir
-  op = :+
-
-  # This won't compile:
-  defmacro a op b do
-    quote do
-      unquote(a) + unquote(b)
-    end
-  end
-  ```
-
-  `operators/1` solves this problem.
-  It takes an operator, a module and a function to call.
-  It creates an operator macro and calls the provided function with the left and right inputs to the operator.
-
-  For example:
+  The following Math module has `plus` and `minus` operator functions:
   ```
   defmodule Math do
-    import OkComputer.Operator
-
-    operators +: {Functions, :plus}
-  end
-
-  defmodule Functions do
     def plus(a, b) do
       quote do
         unquote(a) + unquote(b)
       end
     end
+
+    def minus(a, b) do
+      quote do
+        unquote(a) - unquote(b)
+      end
+    end
   end
   ```
 
-  This is equivalent to:
+  You use the `operators/2` macro to create binary operators that
+  are connected to binary operators:
   ```
-  defmodule Math do
-    import Kernel, except: [+: 2]
+  defmodule MyModule
+    import OkComputer.Operator
 
-    defmacro left + right do
-      quote do
-        unquote(left) + unquote(right)
-      end
-    end
+    operators Math, plus: :+, minus: :-
+
+    1 + 1 # > 2
+    3 - 2 # > 1
   end
   ```
   """
 
   @doc """
-  Creates an operator module and imports it.
+  Creates operators in a new module and imports it.
+
+  The operator module will be created using `module/2` with the callers environment.
+  Operators will be created using `create/3`.
   """
   @spec operators(Macro.t(), keyword(atom)) :: Macro.t()
   defmacro operators(target, bindings) do
@@ -77,6 +56,13 @@ defmodule OkComputer.Operator do
 
   @doc """
   Creates an operator module.
+
+  `target` should be an existing module with operator functions that you want to use.
+  `bindings` should be a keyword list where each key is the name of
+  an operator function in `target` and each value is the operator atom
+  to use.
+
+  A module named `module` will be created with a binary operator for each binding.
   """
   @spec create(module, keyword(atom), module) :: {:module, module(), binary(), term()}
   def create(target, bindings, module) do
@@ -98,6 +84,11 @@ defmodule OkComputer.Operator do
     ]
   end
 
+  @doc """
+  Returns the operator module to use for `target`.
+
+  It will return the concatenation of `env.module`, `Operator` and the last part of `target`.
+  """
   @spec module(module, Macro.Env.t()) :: module
   def module(target, env) do
     Module.concat([env.module, Operator, Module.split(target) |> List.last()])
