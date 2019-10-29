@@ -72,31 +72,16 @@ defmodule OkComputer.Operator do
     [{_, byte_code}] =
       Code.compile_string(
         ~s[
-      defmodule #{module} do
-        #{
-          Enum.map(
-            bindings,
-            fn
-              {name, operator} when is_atom(operator) -> create_operator(target, {name, operator})
-              {operator, [{name, arity}]} -> create_operator(target, name, arity, operator)
+            defmodule #{module} do
+              #{Enum.map(bindings, &create_operator(target, &1))}
             end
-          )
-        }
-      end
-    ]
+        ]
       )
 
     {:module, module, byte_code, nil}
   end
 
-  defp create_operator(target, {name, operator}) do
-    cond do
-      Macro.operator?(operator, 2) -> create_operator(target, name, 2, operator)
-      Macro.operator?(operator, 1) -> create_operator(target, name, 1, operator)
-    end
-  end
-
-  defp create_operator(target, name, _arity = 1, operator) do
+  defp create_operator(target, {operator, [{name, 1}]}) do
     ~s[
         require #{target}
 
@@ -106,7 +91,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  defp create_operator(target, name, _arity = 2, operator) do
+  defp create_operator(target, {operator, [{name, 2}]}) do
     ~s[
         require #{target}
 
