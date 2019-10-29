@@ -69,14 +69,11 @@ defmodule OkComputer.Operator do
   """
   @spec create(module, keyword(atom), module) :: {:module, module(), binary(), term()}
   def create(target, bindings, module) do
-    [{_, byte_code}] =
-      Code.compile_string(
-        ~s[
+    [{_, byte_code}] = Code.compile_string(~s[
             defmodule #{module} do
               #{Enum.map(bindings, &create_operator(target, &1))}
             end
-        ]
-      )
+        ])
 
     {:module, module, byte_code, nil}
   end

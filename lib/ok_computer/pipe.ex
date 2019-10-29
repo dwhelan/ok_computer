@@ -23,11 +23,11 @@ defmodule OkComputer.Pipe do
   ```
   """
   @spec pipes(Macro.t(), atom | list(atom)) :: Macro.t()
-  defmacro pipes(target, function_names) do
+  defmacro pipes(target, names) do
     target = Macro.expand(target, __CALLER__)
     module = module(target, __CALLER__)
 
-    create(target, function_names, module)
+    create(target, names, module)
 
     quote do
       import unquote(module)
@@ -35,30 +35,30 @@ defmodule OkComputer.Pipe do
   end
 
   @spec create(module, atom | list(atom), module) :: {:module, module(), binary(), term()}
-  def create(target, function_names, module) do
-    function_names = List.wrap(function_names)
+  def create(target, names, module) do
+    names = List.wrap(names)
 
     Module.create(
       module,
       [
-        module_doc(target, function_names),
-        Enum.map(function_names, &create_operator_function(target, &1))
+        module_doc(target, names),
+        Enum.map(names, &create_operator_function(target, &1))
       ],
       Macro.Env.location(__ENV__)
     )
   end
 
-  defp create_operator_function(target, function_name) do
+  defp create_operator_function(target, name) do
     quote do
       @target unquote(target)
-      @function_name unquote(function_name)
+      @name unquote(name)
 
       require unquote(target)
 
-      @doc "An operator function that calls #{@target}.#{@function_name}(left, fn _ -> left |> right)"
-      def unquote(function_name)(left, right) do
+      @doc "An operator function that calls #{@target}.#{@name}(left, fn _ -> left |> right)"
+      def unquote(name)(left, right) do
         quote do
-          unquote(@target).unquote(@function_name)(unquote(left), fn left ->
+          unquote(@target).unquote(@name)(unquote(left), fn left ->
             left |> unquote(right)
           end)
         end
@@ -71,10 +71,10 @@ defmodule OkComputer.Pipe do
     Module.concat([env.module, Pipe, Module.split(target) |> List.last()])
   end
 
-  defp module_doc(target, function_names) do
+  defp module_doc(target, names) do
     quote do
       @moduledoc """
-      Creates operator functions, #{Enum.join(unquote(function_names))}, that pipe via #{
+      Creates operator functions, #{Enum.join(unquote(names))}, that pipe via #{
         unquote(target)
       }.
       """
