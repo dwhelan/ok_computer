@@ -31,7 +31,7 @@ defmodule OkComputer.Operator do
   You can create operators on the fly for your module only or you can create
   a module with operators to be used across modules.
   
-  You can also compose this using the `create/3` macro.
+  You can also do this with the `create/3` macro.
   """
 
   @doc """
@@ -77,30 +77,29 @@ defmodule OkComputer.Operator do
     {:module, module, byte_code, nil}
   end
 
-  defp create_operator(target, {_, operator} = binding) do
+  defp create_operator(target, {name, operator}) do
     cond do
-      Macro.operator?(operator, 2) -> create_binary_operator(target, binding)
-      Macro.operator?(operator, 1) -> create_unary_operator(target, binding)
+      Macro.operator?(operator, 2) -> create_operator(target, name, 2, operator)
+      Macro.operator?(operator, 1) -> create_operator(target, name, 1, operator)
     end
   end
 
-  defp create_unary_operator(target, {function_name, operator}) do
-    IO.inspect m: "unary", target: target, operator: operator
+  defp create_operator(target, name, _arity = 1, operator) do
     ~s[
         require #{target}
 
         defmacro #{operator} input do
-          #{target}.#{function_name}(input)
+          #{target}.#{name}(input)
         end
     ]
   end
 
-  defp create_binary_operator(target, {function_name, operator}) do
+  defp create_operator(target, name,  _arity = 2, operator) do
     ~s[
         require #{target}
 
         defmacro left #{operator} right do
-          #{target}.#{function_name}(left, right)
+          #{target}.#{name}(left, right)
         end
     ]
   end
