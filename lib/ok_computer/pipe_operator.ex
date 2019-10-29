@@ -33,7 +33,8 @@ defmodule OkComputer.PipeOperator do
   end
 
   defp names(bindings) do
-    Keyword.keys(bindings)
-#    bindings |> Keyword.values() |> elem(0)
+#    Keyword.keys(bindings)
+    IO.inspect bindings: bindings, values: bindings |> Keyword.values()
+    bindings |> Keyword.values() |> Enum.map(fn [{name, arity}] -> name end)
   end
 end

@@ -3,7 +3,7 @@ defmodule OkComputer.PipeOperator.CustomOperatorsTest do
   import OkComputer.PipeOperator
   alias OkComputer.Monad.Result
 
-  pipe_operators(Result, bind: :~>, map: :~>>)
+  pipe_operators Result, ~>: [bind: 2], ~>>: [map: 2]
 
   test "~> should be Result.bind" do
     f = fn :value -> {:ok, "value"} end
