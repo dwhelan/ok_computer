@@ -25,7 +25,7 @@ defmodule OkComputer.OperatorTest do
 
   doctest OkComputer.Operator
 
-  operators(Functions, plus: :+, pipe: :~>)
+  operators(Functions, +: [plus: 2], ~>: [pipe: 2])
 
   import OkComputer.OperatorTest.Operator.Functions
 

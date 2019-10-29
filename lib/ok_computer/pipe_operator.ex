@@ -28,7 +28,12 @@ defmodule OkComputer.PipeOperator do
   """
   @spec create(module, keyword(atom), module, module) :: {:module, module(), binary(), term()}
   def create(target, bindings, pipe_module, operator_module) do
-    Pipe.create(target, Keyword.keys(bindings), pipe_module)
+    Pipe.create(target, names(bindings), pipe_module)
     Operator.create(pipe_module, bindings, operator_module)
+  end
+
+  defp names(bindings) do
+    Keyword.keys(bindings)
+#    bindings |> Keyword.values() |> elem(0)
   end
 end

@@ -6,7 +6,7 @@ defmodule OkComputer.Operator do
   If your function has arity two then it will be given the left and right operands.
   If it has arity one then it will be given the single operand. The function
   should return a quoted expression.
-  
+
   ```
   defmodule Pipe do
     def pipe(left, right) do
@@ -16,7 +16,7 @@ defmodule OkComputer.Operator do
     end
   end
   ```
-  
+
   You connect it to an operator with the `operators/2` macro:  
   ```
   defmodule Operators do
@@ -27,10 +27,10 @@ defmodule OkComputer.Operator do
     :a ~> to_string()   # "a"
   end
   ```
-  
+
   You can create operators on the fly for your module only or you can create
   a module with operators to be used across modules.
-  
+
   You can also do this with the `create/3` macro.
   """
 
@@ -40,7 +40,7 @@ defmodule OkComputer.Operator do
   Set `target` to a module with operator functions.
   Set the `bindings` keyword using a key that is the name of an operator function
   and a value that is the operator atom to use.
-  
+
   An operator sub-module will be created with a binary operator for each binding.
   The sub-module name will the last part of `targets's name.
 
@@ -69,11 +69,23 @@ defmodule OkComputer.Operator do
   """
   @spec create(module, keyword(atom), module) :: {:module, module(), binary(), term()}
   def create(target, bindings, module) do
-    [{_, byte_code}] = Code.compile_string(~s[
+    [{_, byte_code}] =
+      Code.compile_string(
+        ~s[
       defmodule #{module} do
-        #{Enum.map(bindings, &create_operator(target, &1))}
+        #{
+          Enum.map(
+            bindings,
+            fn
+              {name, operator} when is_atom(operator) -> create_operator(target, {name, operator})
+              {operator, [{name, arity}]} -> create_operator(target, name, arity, operator)
+            end
+          )
+        }
       end
-    ])
+    ]
+      )
+
     {:module, module, byte_code, nil}
   end
 
@@ -94,7 +106,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  defp create_operator(target, name,  _arity = 2, operator) do
+  defp create_operator(target, name, _arity = 2, operator) do
     ~s[
         require #{target}
 
