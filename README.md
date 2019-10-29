@@ -150,4 +150,5 @@ end
   - check for unique pipe operators
   - check for valid pipe operators (binary and left-to-right)
   - check for valid functions (arity == 2)
+  - have mechanism to force arity (e.g. + is both a unary and binary operator) `{:+, :unary}`
   - support unary operators (perhaps return/1?)

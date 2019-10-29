@@ -1,47 +1,50 @@
 defmodule OkComputer.Operator do
   @moduledoc """
-  Creates operator macros.
+  Creates operators that connect to functions you provide.
 
-  ## Operator functions
-  Operator functions are used to perform binary operations.
-  Operator functions take two quoted arguments and return a quoted expression.
-
-  The following Math module has `plus` and `minus` operator functions:
+  You can connect any operator to a function.
+  If your function has arity two then it will be given the left and right operands.
+  If it has arity one then it will be given the single operand. The function
+  should return a quoted expression.
+  
   ```
-  defmodule Math do
-    def plus(a, b) do
+  defmodule Pipe do
+    def pipe(left, right) do
       quote do
-        unquote(a) + unquote(b)
-      end
-    end
-
-    def minus(a, b) do
-      quote do
-        unquote(a) - unquote(b)
+        unquote(left) |> unquote(right)
       end
     end
   end
   ```
-
-  ## Creating operators
-  Use the `operators/2` macro to create and import binary operators.
+  
+  You connect it to an operator with the `operators/2` macro:  
   ```
-  defmodule MyModule
+  defmodule Operators do
     import OkComputer.Operator
 
-    operators Math, plus: :+, minus: :-
-
-    1 + 1 # > 2
-    3 - 2 # > 1
+    operators Pipe, pipe: :~>
+    
+    :a ~> to_string()   # "a"
   end
   ```
+  
+  You can create operators on the fly for your module only or you can create
+  a module with operators to be used across modules.
+  
+  You can also compose this using the `create/3` macro.
   """
 
   @doc """
-  Creates operators in a new module and imports it.
+  Creates operators in a sub-module and imports it.
 
-  The operator module will be created using `module/2` with the callers environment.
-  Operators will be created using `create/3`.
+  Set `target` to a module with operator functions.
+  Set the `bindings` keyword using a key that is the name of an operator function
+  and a value that is the operator atom to use.
+  
+  An operator sub-module will be created with a binary operator for each binding.
+  The sub-module name will the last part of `targets's name.
+
+  The sub-module will be imported.
   """
   @spec operators(Macro.t(), keyword(atom)) :: Macro.t()
   defmacro operators(target, bindings) do
@@ -58,10 +61,9 @@ defmodule OkComputer.Operator do
   @doc """
   Creates an operator module.
 
-  `target` should be an existing module with operator functions that you want to use.
-  `bindings` should be a keyword list where each key is the name of
-  an operator function in `target` and each value is the operator atom
-  to use.
+  Set `target` to a module with operator functions.
+  Set the `bindings` keyword using a key that is the name of an operator function
+  and a value that is the operator atom to use.
 
   A module named `module` will be created with a binary operator for each binding.
   """
