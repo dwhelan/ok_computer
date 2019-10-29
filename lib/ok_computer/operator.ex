@@ -22,7 +22,7 @@ defmodule OkComputer.Operator do
   defmodule Operators do
     import OkComputer.Operator
 
-    operators Pipe, pipe: :~>
+    operators Pipe, ~>: [pipe: 2]
     
     :a ~> to_string()   # "a"
   end
@@ -31,7 +31,7 @@ defmodule OkComputer.Operator do
   You can create operators on the fly for your module only or you can create
   a module with operators to be used across modules.
 
-  You can also do this with the `create/3` macro.
+  You can also create operators with `create/3`.
   """
 
   @doc """
@@ -78,7 +78,7 @@ defmodule OkComputer.Operator do
     {:module, module, byte_code, nil}
   end
 
-  defp create_operator(target, {operator, [{name, 1}]}) do
+  defp create_operator(target, {operator, [{name, _arity = 1}]}) do
     ~s[
         require #{target}
 
@@ -88,7 +88,7 @@ defmodule OkComputer.Operator do
     ]
   end
 
-  defp create_operator(target, {operator, [{name, 2}]}) do
+  defp create_operator(target, {operator, [{name, _arity = 2}]}) do
     ~s[
         require #{target}
 

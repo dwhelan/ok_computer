@@ -74,9 +74,7 @@ defmodule OkComputer.Pipe do
   defp module_doc(target, names) do
     quote do
       @moduledoc """
-      Creates operator functions, #{Enum.join(unquote(names))}, that pipe via #{
-        unquote(target)
-      }.
+      Creates operator functions, #{Enum.join(unquote(names))}, that pipe via #{unquote(target)}.
       """
     end
   end
