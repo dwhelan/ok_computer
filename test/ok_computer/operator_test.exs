@@ -23,7 +23,7 @@ defmodule OkComputer.NewOperatorTest do
     use ExUnit.Case
     import OkComputer.Operator
 
-    operator(:~>, fn left, right ->
+    operator_macro(:~>, fn left, right ->
       quote do
         unquote(left) |> unquote(right)
       end
@@ -38,7 +38,7 @@ defmodule OkComputer.NewOperatorTest do
     use ExUnit.Case
     import OkComputer.Operator
 
-    operator(:~>>, fn left, right ->
+    operator_macro(:~>>, fn left, right ->
       quote do
         unquote(left) |> unquote(right)
       end

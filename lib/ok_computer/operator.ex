@@ -109,7 +109,7 @@ defmodule OkComputer.Operator do
   end
 
   defmodule TildeRight do
-    def operator(f) do
+    def operator_macro(f) do
       quote do
         defmacro left ~> right do
           unquote(f).(left, right)
@@ -119,7 +119,7 @@ defmodule OkComputer.Operator do
   end
 
   defmodule TildeRightRight do
-    def operator(f) do
+    def operator_macro(f) do
       quote do
         defmacro left ~>> right do
           unquote(f).(left, right)
@@ -128,10 +128,13 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defmacro operator(atom, f) do
-    case atom do
-      :~> -> TildeRight.operator(f)
-      :~>> -> TildeRightRight.operator(f)
-    end
+  @operators %{
+    ~>: TildeRight,
+    ~>>: TildeRightRight
+  }
+
+  defmacro operator_macro(atom, f) do
+    operator = Map.get(@operators, atom)
+    operator.operator_macro(f)
   end
 end
