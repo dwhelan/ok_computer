@@ -118,7 +118,20 @@ defmodule OkComputer.Operator do
     end
   end
 
+  defmodule TildeRightRight do
+    def operator(f) do
+      quote do
+        defmacro left ~>> right do
+          unquote(f).(left, right)
+        end
+      end
+    end
+  end
+
   defmacro operator(atom, f) do
-    TildeRight.operator(f)
+    case atom do
+      :~> -> TildeRight.operator(f)
+      :~>> -> TildeRightRight.operator(f)
+    end
   end
 end
