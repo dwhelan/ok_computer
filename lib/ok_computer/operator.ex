@@ -107,4 +107,18 @@ defmodule OkComputer.Operator do
   def module(target, env) do
     Module.concat([env.module, Operator, Module.split(target) |> List.last()])
   end
+
+  defmodule TildeRight do
+    def operator(f) do
+      quote do
+        defmacro left ~> right do
+          unquote(f).(left, right)
+        end
+      end
+    end
+  end
+
+  defmacro operator(atom, f) do
+    TildeRight.operator(f)
+  end
 end
