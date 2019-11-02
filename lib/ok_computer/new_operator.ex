@@ -43,14 +43,20 @@ defmodule OkComputer.NewOperator do
   end
 
   @operators %{
-    @: At,
-    +: Plus,
-    ~>: TildeRight,
-    ~>>: TildeRightRight
+    @:   {At, 1},
+    +:   {Plus, 2},
+    ~>:  {TildeRight, 2},
+    ~>>: {TildeRightRight, 2}
   }
 
   defmacro operator_macro(atom, f) do
-    operator = Map.get(@operators, atom)
-    operator.operator_macro(f, 2)
+    IO.inspect f: function_arity(f)
+    {operator, arity} = Map.get(@operators, atom)
+    operator.operator_macro(f, arity)
+  end
+
+  defp function_arity(f) do
+    {f, _} = Code.eval_quoted(f)
+    Function.info(f, :arity)
   end
 end
