@@ -12,7 +12,7 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule At do
-    def operator_macro(f, _) do
+    def operator_macro(f, 1) do
       quote do
         import Kernel, [except: [@: 1]]
         defmacro @ input do
@@ -50,13 +50,19 @@ defmodule OkComputer.NewOperator do
   }
 
   defmacro operator_macro(atom, f) do
-    IO.inspect f: function_arity(f)
-    {operator, arity} = Map.get(@operators, atom)
-    operator.operator_macro(f, arity)
+    {operator, operator_arity} = Map.get(@operators, atom)
+    if function_arity(f) in List.wrap(operator_arity) do
+      operator.operator_macro(f, operator_arity)
+    end
   end
 
   defp function_arity(f) do
     {f, _} = Code.eval_quoted(f)
-    Function.info(f, :arity)
+{:arity, arity} = Function.info(f, :arity)
+    arity
+  end
+
+  defp operator_arities(arities) do
+    List.wrap(arities)
   end
 end
