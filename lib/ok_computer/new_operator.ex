@@ -1,5 +1,7 @@
 defmodule OkComputer.NewOperator do
   defmodule Plus do
+    def arity(), do: [1, 2]
+
     def operator_macro(f, 1) do
       quote do
         import Kernel, except: [+: 1]
@@ -22,6 +24,8 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule At do
+    def arity(), do: [1]
+
     def operator_macro(f, 1) do
       quote do
         import Kernel, except: [@: 1]
@@ -34,6 +38,8 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule TildeRight do
+    def arity(), do: [2]
+
     def operator_macro(f, 2) do
       quote do
         defmacro left ~> right do
@@ -44,6 +50,8 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule TildeRightRight do
+    def arity(), do: [2]
+
     def operator_macro(f, 2) do
       quote do
         defmacro left ~>> right do
@@ -54,19 +62,19 @@ defmodule OkComputer.NewOperator do
   end
 
   @operators %{
-    @: {At, 1},
-    +: {Plus, [1, 2]},
-    ~>: {TildeRight, 2},
-    ~>>: {TildeRightRight, 2}
+    @: At,
+    +: Plus,
+    ~>: TildeRight,
+    ~>>: TildeRightRight
   }
 
   defmacro operator_macro(atom, f) do
-    {operator, operator_arity} = Map.get(@operators, atom)
+    operator = Map.get(@operators, atom)
 
-    if function_arity(f) in List.wrap(operator_arity) do
+    if function_arity(f) in operator.arity() do
       operator.operator_macro(f, function_arity(f) )
     else
-      raise "expected a function with arity in #{inspect List.wrap(operator_arity)}, but got a function with arity #{function_arity(f)}"
+      raise "expected a function with arity in #{inspect operator.arity()}, but got a function with arity #{function_arity(f)}"
     end
   end
 
