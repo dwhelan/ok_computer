@@ -13,12 +13,13 @@ defmodule OkComputer.Operator.AtMacroTest do
   use ExUnit.Case
   import OkComputer.NewOperator
 
-    operator_macro(:@, fn input -> quote do
-        to_string(unquote(input))
-      end
-    end)
-
-    test "@" do
-      assert @:a == "a"
+  operator_macro(:@, fn input ->
+    quote do
+      to_string(unquote(input))
     end
+  end)
+
+  test "@" do
+    assert @:a == "a"
+  end
 end

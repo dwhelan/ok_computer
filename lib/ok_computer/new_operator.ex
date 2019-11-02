@@ -1,5 +1,4 @@
 defmodule OkComputer.NewOperator do
-
   @operators %{
     @: At,
     +: Plus,
@@ -17,12 +16,13 @@ defmodule OkComputer.NewOperator do
 
   defp create_operator(atom, f, create_function) do
     operator = Module.concat(__MODULE__, Map.get(@operators, atom))
+    operator_arity = operator_arity(atom)
     arity = function_arity(f)
 
-    if arity in operator.arity() do
+    if arity in operator_arity do
       apply(operator, create_function, [f, arity])
     else
-      raise "expected a function with arity in #{inspect(operator.arity())}, but got a function with arity #{
+      raise "expected a function with arity in #{inspect(operator_arity)}, but got a function with arity #{
               arity
             }"
     end
@@ -32,5 +32,9 @@ defmodule OkComputer.NewOperator do
     {f, _} = Code.eval_quoted(f)
     {:arity, arity} = Function.info(f, :arity)
     arity
+  end
+
+  def operator_arity(atom) do
+    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(atom, arity) end)
   end
 end
