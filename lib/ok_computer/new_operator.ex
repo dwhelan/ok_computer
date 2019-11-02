@@ -1,7 +1,7 @@
 defmodule OkComputer.NewOperator do
 
   defmodule Plus do
-    def operator_macro(f) do
+    def operator_macro(f, 2) do
       quote do
         import Kernel, [except: [+: 2]]
         defmacro left + right do
@@ -12,7 +12,7 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule At do
-    def operator_macro(f) do
+    def operator_macro(f, _) do
       quote do
         import Kernel, [except: [@: 1]]
         defmacro @ input do
@@ -23,7 +23,7 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule TildeRight do
-    def operator_macro(f) do
+    def operator_macro(f, 2) do
       quote do
         defmacro left ~> right do
           unquote(f).(left, right)
@@ -33,7 +33,7 @@ defmodule OkComputer.NewOperator do
   end
 
   defmodule TildeRightRight do
-    def operator_macro(f) do
+    def operator_macro(f, 2) do
       quote do
         defmacro left ~>> right do
           unquote(f).(left, right)
@@ -51,6 +51,6 @@ defmodule OkComputer.NewOperator do
 
   defmacro operator_macro(atom, f) do
     operator = Map.get(@operators, atom)
-    operator.operator_macro(f)
+    operator.operator_macro(f, 2)
   end
 end

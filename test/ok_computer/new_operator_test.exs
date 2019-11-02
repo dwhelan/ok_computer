@@ -20,7 +20,7 @@ defmodule OkComputer.NewOperatorTest do
 
     operator_macro(:@, fn input ->
       quote do
-        unquote(input) |> to_string()
+        to_string(unquote(input))
       end
     end)
 
