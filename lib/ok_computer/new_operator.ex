@@ -69,10 +69,14 @@ defmodule OkComputer.NewOperator do
   }
 
   defmacro operator_macro(atom, f) do
+    create_operator(atom, f, :operator_macro)
+  end
+
+  defp create_operator(atom, f, create_function) do
     operator = Map.get(@operators, atom)
 
     if function_arity(f) in operator.arity() do
-      operator.operator_macro(f, function_arity(f) )
+      apply(operator, create_function, [f, function_arity(f)])
     else
       raise "expected a function with arity in #{inspect operator.arity()}, but got a function with arity #{function_arity(f)}"
     end
