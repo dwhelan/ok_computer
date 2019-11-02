@@ -108,6 +108,17 @@ defmodule OkComputer.Operator do
     Module.concat([env.module, Operator, Module.split(target) |> List.last()])
   end
 
+  defmodule At do
+    def operator_macro(f) do
+      quote do
+        import Kernel, [except: [@: 1]]
+        defmacro @ input do
+          unquote(f).(input)
+        end
+      end
+    end
+  end
+
   defmodule TildeRight do
     def operator_macro(f) do
       quote do
@@ -129,6 +140,7 @@ defmodule OkComputer.Operator do
   end
 
   @operators %{
+    @: At,
     ~>: TildeRight,
     ~>>: TildeRightRight
   }

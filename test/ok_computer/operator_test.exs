@@ -19,6 +19,21 @@ defmodule Functions do
 end
 
 defmodule OkComputer.NewOperatorTest do
+  defmodule At do
+    use ExUnit.Case
+    import OkComputer.Operator
+
+    operator_macro(:@, fn input ->
+      quote do
+        unquote(input) |> to_string()
+      end
+    end)
+
+    test "@" do
+      assert @ :a == "a"
+    end
+  end
+
   defmodule TildeRight do
     use ExUnit.Case
     import OkComputer.Operator
