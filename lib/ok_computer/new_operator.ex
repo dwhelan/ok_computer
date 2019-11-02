@@ -2,6 +2,16 @@ defmodule OkComputer.NewOperator do
   defmodule Plus do
     def arity(), do: [1, 2]
 
+    def operator(f, 1) do
+      quote do
+        import Kernel, except: [+: 1]
+
+        def +input do
+          unquote(f).(input)
+        end
+      end
+    end
+
     def operator_macro(f, 1) do
       quote do
         import Kernel, except: [+: 1]
@@ -68,17 +78,24 @@ defmodule OkComputer.NewOperator do
     ~>>: TildeRightRight
   }
 
+  defmacro operator(atom, f) do
+    create_operator(atom, f, :operator)
+  end
+
   defmacro operator_macro(atom, f) do
     create_operator(atom, f, :operator_macro)
   end
 
   defp create_operator(atom, f, create_function) do
     operator = Map.get(@operators, atom)
+    arity = function_arity(f)
 
-    if function_arity(f) in operator.arity() do
-      apply(operator, create_function, [f, function_arity(f)])
+    if arity in operator.arity() do
+      apply(operator, create_function, [f, arity])
     else
-      raise "expected a function with arity in #{inspect operator.arity()}, but got a function with arity #{function_arity(f)}"
+      raise "expected a function with arity in #{inspect(operator.arity())}, but got a function with arity #{
+              arity
+            }"
     end
   end
 
