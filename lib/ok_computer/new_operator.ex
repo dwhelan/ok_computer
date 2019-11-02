@@ -1,9 +1,19 @@
 defmodule OkComputer.NewOperator do
-
   defmodule Plus do
+    def operator_macro(f, 1) do
+      quote do
+        import Kernel, except: [+: 1]
+
+        defmacro +input do
+          unquote(f).(input)
+        end
+      end
+    end
+
     def operator_macro(f, 2) do
       quote do
-        import Kernel, [except: [+: 2]]
+        import Kernel, except: [+: 2]
+
         defmacro left + right do
           unquote(f).(left, right)
         end
@@ -14,8 +24,9 @@ defmodule OkComputer.NewOperator do
   defmodule At do
     def operator_macro(f, 1) do
       quote do
-        import Kernel, [except: [@: 1]]
-        defmacro @ input do
+        import Kernel, except: [@: 1]
+
+        defmacro @input do
           unquote(f).(input)
         end
       end
@@ -43,22 +54,25 @@ defmodule OkComputer.NewOperator do
   end
 
   @operators %{
-    @:   {At, 1},
-    +:   {Plus, 2},
-    ~>:  {TildeRight, 2},
+    @: {At, 1},
+    +: {Plus, [1, 2]},
+    ~>: {TildeRight, 2},
     ~>>: {TildeRightRight, 2}
   }
 
   defmacro operator_macro(atom, f) do
     {operator, operator_arity} = Map.get(@operators, atom)
+
     if function_arity(f) in List.wrap(operator_arity) do
-      operator.operator_macro(f, operator_arity)
+      operator.operator_macro(f, function_arity(f) )
+    else
+      raise "expected a function with arity in #{inspect List.wrap(operator_arity)}, but got a function with arity #{function_arity(f)}"
     end
   end
 
   defp function_arity(f) do
     {f, _} = Code.eval_quoted(f)
-{:arity, arity} = Function.info(f, :arity)
+    {:arity, arity} = Function.info(f, :arity)
     arity
   end
 
