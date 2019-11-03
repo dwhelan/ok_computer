@@ -1,17 +1,3 @@
-defmodule OkComputer.PipeTest.NewSinglePipe do
-  import OkComputer.NewPipe
-  alias OkComputer.Monad.Result
-
-
-#  pipe :~>, Result, :map
-
-  pipes Result, :map
-
-  defmacro left ~>> right do
-    map(left, right)
-  end
-end
-
 defmodule OkComputer.PipeTest.NewSinglePipeTest do
   use ExUnit.Case
   import OkComputer.NewPipe
