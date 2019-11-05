@@ -7,36 +7,42 @@ defmodule OkComputer.NewPipe do
   end
 
   def create(atom, module, function_name) do
-    operator_function =
+    alias OkComputer.{NewOperator, NewPipe}
+    NewOperator.create_operator(
+      atom,
       quote do
-        OkComputer.NewPipe.operator_function(
-          unquote(module),
-          unquote(function_name)
-        )
-      end
-
-    OkComputer.NewOperator.create_operator(atom, operator_function, :operator_macro)
+        NewPipe.operator_function(unquote(module), unquote(function_name))
+      end,
+      :operator_macro
+    )
   end
 
   def operator_function(module, function_name) do
     fn left, right ->
-      operator_function =
-        quote do
-          module = unquote(module)
-          function_name = unquote(function_name)
-          left = unquote(left)
+      quote do
+        pipe(
+          unquote(left),
+          fn left -> left |> unquote(right) end,
+          unquote(module),
+          unquote(function_name)
+        )
+      end
+    end
+  end
 
-          cond do
-            module.pipe?(left) ->
-              apply(module, function_name, [
-                left,
-                fn left -> left |> unquote(right) end
-              ])
+  def pipe(a, f, module, function_name) do
+    cond do
+      module.pipe?(a) -> apply(module, function_name, [a, f])
+      true -> a
+    end
+  end
 
-            true ->
-              left
-          end
-        end
+  defmacro __using__(_) do
+    quote do
+      alias OkComputer.NewPipe
+      import NewPipe
+
+      @behaviour NewPipe
     end
   end
 end
