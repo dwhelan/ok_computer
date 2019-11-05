@@ -8,6 +8,7 @@ defmodule OkComputer.NewPipe do
 
   def create(atom, module, function_name) do
     alias OkComputer.{NewOperator, NewPipe}
+
     NewOperator.create_operator(
       atom,
       quote do

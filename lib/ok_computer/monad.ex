@@ -10,9 +10,10 @@ defmodule OkComputer.Monad do
   @doc "bind"
   @callback bind(t, f :: (any -> t)) :: t
 
-  defmacro __using__(_) do
+  defmacro monad(do: block) do
     quote do
       alias OkComputer.{Monad, Functor, Applicative}
+      import Monad
 
       @behaviour Monad
       @behaviour Functor
@@ -23,6 +24,8 @@ defmodule OkComputer.Monad do
 
       @impl Applicative
       def apply(a, f), do: bind(f, &map(a, &1))
+
+      unquote(block)
     end
   end
 end
