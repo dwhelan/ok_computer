@@ -1,4 +1,4 @@
-defmodule OkComputer.NewPipe do
+defmodule OkComputer.Pipe do
   @callback pipe?(any) :: boolean
 
   defmacro pipe(atom, module, function_name) do
@@ -6,12 +6,12 @@ defmodule OkComputer.NewPipe do
   end
 
   def create(atom, module, function_name) do
-    alias OkComputer.{Operator, NewPipe}
+    alias OkComputer.{Operator, Pipe}
 
     Operator.create_operator(
       atom,
       quote do
-        NewPipe.operator_function(unquote(module), unquote(function_name))
+        Pipe.operator_function(unquote(module), unquote(function_name))
       end,
       :operator_macro
     )
@@ -39,10 +39,10 @@ defmodule OkComputer.NewPipe do
 
   defmacro __using__(_) do
     quote do
-      alias OkComputer.NewPipe
-      import NewPipe
+      alias OkComputer.Pipe
+      import Pipe
 
-      @behaviour NewPipe
+      @behaviour Pipe
     end
   end
 end

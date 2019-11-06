@@ -1,7 +1,7 @@
 defmodule OkComputer.Monad.ErrorTest do
   use ExUnit.Case
   alias OkComputer.Monad.Error
-  import OkComputer.NewPipe
+  import OkComputer.Pipe
   import Monad.Laws
   import Error
 

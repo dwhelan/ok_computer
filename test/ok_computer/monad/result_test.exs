@@ -1,7 +1,7 @@
 defmodule OkComputer.Monad.ResultTest do
   use ExUnit.Case
   alias OkComputer.Monad.Result
-  import OkComputer.NewPipe
+  import OkComputer.Pipe
   import Monad.Laws
   import Result
 

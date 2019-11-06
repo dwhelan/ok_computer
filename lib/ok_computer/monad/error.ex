@@ -1,7 +1,7 @@
 defmodule OkComputer.Monad.Error do
-  alias OkComputer.{Monad, NewPipe}
+  alias OkComputer.{Monad, Pipe}
   import Monad
-  use NewPipe
+  use Pipe
 
   monad do
     @impl Monad
@@ -12,7 +12,7 @@ defmodule OkComputer.Monad.Error do
     def bind(a, _f), do: a
   end
 
-  @impl NewPipe
+  @impl Pipe
   def pipe?({:error, _}), do: true
   def pipe?(_), do: false
 end
