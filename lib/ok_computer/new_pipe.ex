@@ -1,5 +1,4 @@
 defmodule OkComputer.NewPipe do
-  @doc "pipe?"
   @callback pipe?(any) :: boolean
 
   defmacro pipe(atom, module, function_name) do
