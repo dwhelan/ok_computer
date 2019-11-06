@@ -1,6 +1,7 @@
 defmodule OkComputer.Monad.Result do
   alias OkComputer.{Monad, NewPipe}
   import Monad
+  use NewPipe
 
   monad do
     @impl Monad
