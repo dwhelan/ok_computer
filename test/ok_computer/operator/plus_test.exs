@@ -1,6 +1,6 @@
 defmodule OkComputer.Operator.PlusTest do
   use ExUnit.Case
-  import OkComputer.NewOperator
+  import OkComputer.Operator
 
   operator :+, fn input -> to_string(input) end
 
@@ -17,7 +17,7 @@ end
 
 defmodule OkComputer.Operator.PlusMacroTest do
   use ExUnit.Case
-  import OkComputer.NewOperator
+  import OkComputer.Operator
 
   operator_macro(:+, fn input ->
     quote do

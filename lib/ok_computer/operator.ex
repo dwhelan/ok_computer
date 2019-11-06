@@ -1,4 +1,4 @@
-defmodule OkComputer.NewOperator do
+defmodule OkComputer.Operator do
   @operators %{
     @: At,
     +: Plus,

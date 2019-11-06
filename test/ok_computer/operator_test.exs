@@ -1,7 +1,7 @@
-defmodule OkComputer.NewOperatorTest do
+defmodule OkComputer.OperatorTest do
   defmodule TildeRight do
     use ExUnit.Case
-    import OkComputer.NewOperator
+    import OkComputer.Operator
 
     operator_macro(:~>, fn left, right ->
       quote do
@@ -16,7 +16,7 @@ defmodule OkComputer.NewOperatorTest do
 
   defmodule TildeRightRight do
     use ExUnit.Case
-    import OkComputer.NewOperator
+    import OkComputer.Operator
 
     operator_macro(:~>>, fn left, right ->
       quote do

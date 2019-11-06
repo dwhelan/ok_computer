@@ -1,6 +1,6 @@
 defmodule OkComputer.Operator.AtTest do
   use ExUnit.Case
-  import OkComputer.NewOperator
+  import OkComputer.Operator
 
   operator :@, &to_string(&1)
 
@@ -11,7 +11,7 @@ end
 
 defmodule OkComputer.Operator.AtMacroTest do
   use ExUnit.Case
-  import OkComputer.NewOperator
+  import OkComputer.Operator
 
   operator_macro(:@, fn input ->
     quote do

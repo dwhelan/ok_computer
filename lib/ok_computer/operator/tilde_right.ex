@@ -1,4 +1,4 @@
-defmodule OkComputer.NewOperator.TildeRight do
+defmodule OkComputer.Operator.TildeRight do
   def operator(f, 2) do
     quote do
       def left ~> right do

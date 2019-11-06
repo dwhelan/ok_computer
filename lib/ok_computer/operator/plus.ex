@@ -1,4 +1,4 @@
-defmodule OkComputer.NewOperator.Plus do
+defmodule OkComputer.Operator.Plus do
   def operator(f, 1) do
     quote do
       import Kernel, except: [+: 1]

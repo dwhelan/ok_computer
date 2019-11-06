@@ -1,4 +1,4 @@
-defmodule OkComputer.NewOperator.At do
+defmodule OkComputer.Operator.At do
   def operator(f, 1) do
     quote do
       import Kernel, except: [@: 1]
