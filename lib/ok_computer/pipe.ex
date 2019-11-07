@@ -6,7 +6,7 @@ defmodule OkComputer.Pipe do
   end
 
   def create(atom, module, function_name) do
-    OkComputer.Operator.create(atom, operator_function(module, function_name), :operator_macro)
+    OkComputer.Operator.create(atom, operator_function(module, function_name), :defmacro)
   end
 
   def operator_function(module, function_name) do

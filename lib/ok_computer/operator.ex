@@ -1,42 +1,13 @@
 defmodule OkComputer.Operator do
-  @operators %{
-    @: At,
-    +: Plus,
-    ~>: TildeRight,
-    ~>>: TildeRightRight
-  }
-
   defmacro operator(atom, f) do
-    create(atom, f, :operator)
+    create(atom, f, :def)
   end
 
   defmacro operator_macro(atom, f) do
-    create(atom, f, :operator_macro)
+    create(atom, f, :defmacro)
   end
 
-  def create(atom, f, create_function) do
-    operator = Module.concat(__MODULE__, Map.get(@operators, atom))
-    operator_arities = operator_arities(atom)
-    arity = arity(f)
-
-    if arity in operator_arities do
-      apply(operator, create_function, [f, arity])
-    else
-      raise "expected a function with arity in #{inspect(operator_arities)}, but got a function with arity #{
-              arity
-            }"
-    end
-  end
-
-  defmacro operator2(atom, f) do
-    create2(atom, f, :def)
-  end
-
-  defmacro operator_macro2(atom, f) do
-    create2(atom, f, :defmacro)
-  end
-
-  def create2(atom, f, type) do
+  def create(atom, f, type) do
     if arity(f) in operator_arities(atom) do
       operator(atom, f, arity(f), type)
     else
