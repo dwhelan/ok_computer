@@ -8,16 +8,10 @@ defmodule OkComputer.Operator do
   end
 
   def create(atom, f, type) do
-    if arity(f) in operator_arities(atom) do
-      operator(atom, f, arity(f), type)
-    else
-      raise "expected a function with arity in #{inspect(operator_arities(atom))}, but got a function with arity #{
-              arity(f)
-            }"
-    end
+    operator(atom, f, arity(f), type)
   end
 
-  def operator(atom, f, 1, :def) do
+  defp operator(atom, f, 1, :def) do
     quote do
       import Kernel, except: [{unquote(atom), 1}]
 
@@ -27,7 +21,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  def operator(atom, f, 2, :def) do
+  defp operator(atom, f, 2, :def) do
     quote do
       import Kernel, except: [{unquote(atom), 2}]
 
@@ -37,7 +31,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  def operator(atom, f, 1, :defmacro) do
+  defp operator(atom, f, 1, :defmacro) do
     quote do
       import Kernel, except: [{unquote(atom), 1}]
 
@@ -47,7 +41,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  def operator(atom, f, 2, :defmacro) do
+  defp operator(atom, f, 2, :defmacro) do
     quote do
       import Kernel, except: [{unquote(atom), 2}]
 
@@ -56,7 +50,6 @@ defmodule OkComputer.Operator do
       end
     end
   end
-
 
   defp arity(f) do
     {f, _} = Code.eval_quoted(f)
