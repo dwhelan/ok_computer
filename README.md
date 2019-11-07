@@ -133,22 +133,14 @@ end
 - retain Elixir pipe behaviour
 
 ## To do
-- should not import over-ridden Kernel operators
-- validate source provided to Operator
-  - currently it silently fails if incorrect
-- pipe wrappers for other monads (Witchcraft, MonadEx, OK ... protocol?)
+- pipe wrappers for other monad libraries (Witchcraft, MonadEx, OK ... protocol?)
 - test applicatives
 - add applicative pipes `>>>`, `<<<`?
 - other monads: reader, writer, state ...
 - move laws to lib folder rather than test folder
 - build a 'do' or `for` that has `when` behaviour with monadic values
 - create pipe laws
-  - map/2 exists
-  - bind/2 exists
-  - apply/2 exists?
+  - returns input if input is not in M ()
 - operators
-  - check for unique pipe operators
-  - check for valid pipe operators (binary and left-to-right)
-  - check for valid functions (arity == 2)
-  - have mechanism to force arity (e.g. + is both a unary and binary operator) `{:+, :unary}`
-  - support unary operators (perhaps return/1?)
+  - check for valid pipe operators (binary and left-to-right) or generalize to named functions/macros
+  - support n-ary operators

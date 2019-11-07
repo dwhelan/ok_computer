@@ -1,9 +1,13 @@
 defmodule OkComputer.Operator.At do
   def operator(f, 1) do
-    quote do
-      import Kernel, except: [@: 1]
+    operator(:@, f, 1)
+  end
 
-      def @input do
+  def operator(atom, f, 1) do
+    quote do
+      import Kernel, except: [{unquote(atom), 1}]
+
+      def unquote(atom)(input) do
         unquote(f).(input)
       end
     end

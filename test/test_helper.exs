@@ -43,7 +43,8 @@ defmodule Monad.Laws do
         end
 
         test "monad right identity" do
-          assert @a |> @monad.bind(&@monad.return/1) == @a
+          m = @monad.return(@a)
+          assert m |> @monad.bind(&@monad.return/1) == m
         end
 
         test "monad associativity" do
