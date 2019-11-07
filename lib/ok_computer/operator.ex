@@ -7,14 +7,14 @@ defmodule OkComputer.Operator do
   }
 
   defmacro operator(atom, f) do
-    create_operator(atom, f, :operator)
+    create(atom, f, :operator)
   end
 
   defmacro operator_macro(atom, f) do
-    create_operator(atom, f, :operator_macro)
+    create(atom, f, :operator_macro)
   end
 
-  def create_operator(atom, f, create_function) do
+  def create(atom, f, create_function) do
     operator = Module.concat(__MODULE__, Map.get(@operators, atom))
     operator_arity = operator_arity(atom)
     arity = function_arity(f)
