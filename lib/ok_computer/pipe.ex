@@ -33,13 +33,4 @@ defmodule OkComputer.Pipe do
       _ -> a
     end
   end
-
-  defmacro __using__(_) do
-    quote do
-      alias OkComputer.Pipe
-      import Pipe
-
-      @behaviour Pipe
-    end
-  end
 end

@@ -1,7 +1,6 @@
 defmodule OkComputer.Monad.Result do
   alias OkComputer.{Monad, Pipe}
   import Monad
-  use Pipe
 
   monad do
     @impl Monad
@@ -10,9 +9,9 @@ defmodule OkComputer.Monad.Result do
     @impl Monad
     def bind({:ok, value}, f), do: f.(value)
     def bind(a, _f), do: a
-  end
 
-  @impl Pipe
-  def pipe?({:ok, _}), do: true
-  def pipe?(_), do: false
+    @impl Pipe
+    def pipe?({:ok, _}), do: true
+    def pipe?(_), do: false
+  end
 end

@@ -12,12 +12,13 @@ defmodule OkComputer.Monad do
 
   defmacro monad(do: block) do
     quote do
-      alias OkComputer.{Monad, Functor, Applicative}
+      alias OkComputer.{Monad, Functor, Applicative, Pipe}
       import Monad
 
       @behaviour Monad
       @behaviour Functor
       @behaviour Applicative
+      @behaviour Pipe
 
       @impl Functor
       def map(a, f), do: bind(a, &(f.(&1) |> return()))
