@@ -1,31 +1,16 @@
 defmodule OkComputer.OperatorTest do
-  defmodule TildeRight do
-    use ExUnit.Case
-    import OkComputer.Operator
+  use ExUnit.Case
+  import OkComputer.Operator
 
-    operator_macro(:~>, fn left, right ->
-      quote do
-        unquote(left) |> unquote(right)
-      end
-    end)
+  operator :+, fn input -> to_string(input) end
 
-    test "~>" do
-      assert :a ~> to_string() == "a"
-    end
+  test "+/1" do
+    assert +:a == "a"
   end
 
-  defmodule TildeRightRight do
-    use ExUnit.Case
-    import OkComputer.Operator
+  operator :+, fn left, right -> to_string(left) <> to_string(right) end
 
-    operator_macro(:~>>, fn left, right ->
-      quote do
-        unquote(left) |> unquote(right)
-      end
-    end)
-
-    test "~>>" do
-      assert :a ~>> to_string() == "a"
-    end
+  test "+/2" do
+    assert :a + :b == "ab"
   end
 end
