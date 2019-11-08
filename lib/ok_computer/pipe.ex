@@ -5,21 +5,21 @@ defmodule OkComputer.Pipe do
     create(atom, module, function_name)
   end
 
-  def create(atom, module, function_name) do
-    OkComputer.Operator.create(atom, operator_function(module, function_name), :defmacro)
+  def create(atom, pipe, function_name) do
+    OkComputer.Operator.create(atom, operator_function(pipe, function_name), :defmacro)
   end
 
-  def operator_function(module, function_name) do
+  defp operator_function(pipe, function_name) do
     quote do
       fn left, right ->
-        module = unquote(module)
+        pipe = unquote(pipe)
         function_name = unquote(function_name)
 
         quote do
           pipe(
             unquote(left),
             fn left -> left |> unquote(right) end,
-            unquote(module),
+            unquote(pipe),
             unquote(function_name)
           )
         end
@@ -27,9 +27,9 @@ defmodule OkComputer.Pipe do
     end
   end
 
-  def pipe(a, f, module, function_name) do
-    case module.pipe?(a) do
-      true -> apply(module, function_name, [a, f])
+  def pipe(a, f, pipe, function_name) do
+    case pipe.pipe?(a) do
+      true -> apply(pipe, function_name, [a, f])
       _ -> a
     end
   end

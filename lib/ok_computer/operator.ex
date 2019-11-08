@@ -56,8 +56,4 @@ defmodule OkComputer.Operator do
     {:arity, arity} = Function.info(f, :arity)
     arity
   end
-
-  def operator_arities(atom) do
-    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(atom, arity) end)
-  end
 end
