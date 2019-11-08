@@ -1,12 +1,12 @@
-defmodule OkComputer.Monad.ResultTest do
+defmodule OkComputer.Monad.OkTest do
   use ExUnit.Case
-  alias OkComputer.Monad.Result
+  alias OkComputer.Monad.Ok
   import OkComputer.Pipe
   import Monad.Laws
-  import Result
+  import Ok
 
-  pipe :~>, Result, :bind
-  pipe :~>>, Result, :map
+  pipe :~>, Ok, :bind
+  pipe :~>>, Ok, :map
 
   def stringify(a), do: {:ok, to_string(a)}
 
@@ -41,5 +41,5 @@ defmodule OkComputer.Monad.ResultTest do
     assert :a ~>> to_string() == :a
   end
 
-  test_monad(Result, {:ok, :value})
+  test_monad(Ok, {:ok, :value})
 end

@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad.Result do
+defmodule OkComputer.Monad.Ok do
   alias OkComputer.{Monad, Pipe}
   import Monad
 
