@@ -18,14 +18,17 @@ defmodule OkComputer.Monad.ResultTest do
     f = fn :value -> {:ok, "value"} end
 
     assert bind({:ok, :value}, f) == {:ok, "value"}
-    assert bind(:anything_else, f) == :anything_else
   end
 
   test "map" do
     f = fn :value -> "value" end
 
     assert map({:ok, :value}, f) == {:ok, "value"}
-    assert map(:anything_else, f) == :anything_else
+  end
+
+  test "pipe?" do
+    assert pipe?({:ok, :value})
+    refute pipe?(:a)
   end
 
   test "pipe bind" do
