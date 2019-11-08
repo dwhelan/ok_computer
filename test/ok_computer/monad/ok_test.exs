@@ -8,7 +8,7 @@ defmodule OkComputer.Monad.OkTest do
   pipe :~>, Ok, :bind
   pipe :~>>, Ok, :map
 
-  def stringify(a), do: {:ok, to_string(a)}
+  def stringify(value), do: {:ok, to_string(value)}
 
   test "return" do
     assert return(:value) == {:ok, :value}
@@ -16,29 +16,27 @@ defmodule OkComputer.Monad.OkTest do
 
   test "bind" do
     f = fn :value -> {:ok, "value"} end
-
     assert bind({:ok, :value}, f) == {:ok, "value"}
   end
 
   test "map" do
     f = fn :value -> "value" end
-
     assert map({:ok, :value}, f) == {:ok, "value"}
   end
 
   test "pipe?" do
     assert pipe?({:ok, :value})
-    refute pipe?(:a)
+    refute pipe?(:value)
   end
 
   test "pipe bind" do
-    assert {:ok, :a} ~> stringify() == {:ok, "a"}
-    assert :a ~> stringify() == :a
+    assert {:ok, :value} ~> stringify() == {:ok, "value"}
+    assert :value ~> stringify() == :value
   end
 
   test "pipe map" do
-    assert {:ok, :a} ~>> to_string() == {:ok, "a"}
-    assert :a ~>> to_string() == :a
+    assert {:ok, :value} ~>> to_string() == {:ok, "value"}
+    assert :value ~>> to_string() == :value
   end
 
   test_monad(Ok, {:ok, :value})

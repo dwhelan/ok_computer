@@ -8,7 +8,7 @@ defmodule OkComputer.Monad.ErrorTest do
   pipe :~>, Error, :bind
   pipe :~>>, Error, :map
 
-  def stringify(a), do: {:error, to_string(a)}
+  def stringify(reason), do: {:error, to_string(reason)}
 
   test "return" do
     assert return(:reason) == {:error, :reason}
@@ -16,26 +16,27 @@ defmodule OkComputer.Monad.ErrorTest do
 
   test "bind" do
     f = fn :reason -> {:error, "reason"} end
-
     assert bind({:error, :reason}, f) == {:error, "reason"}
-    assert bind(:anything_else, f) == :anything_else
   end
 
   test "map" do
     f = fn :reason -> "reason" end
-
     assert map({:error, :reason}, f) == {:error, "reason"}
-    assert map(:anything_else, f) == :anything_else
+  end
+
+  test "pipe?" do
+    assert pipe?({:error, :reason})
+    refute pipe?(:reason)
   end
 
   test "pipe bind" do
-    assert {:error, :a} ~> stringify() == {:error, "a"}
-    assert :a ~> stringify() == :a
+    assert {:error, :reason} ~> stringify() == {:error, "reason"}
+    assert :reason ~> stringify() == :reason
   end
 
   test "pipe map" do
-    assert {:error, :a} ~>> to_string() == {:error, "a"}
-    assert :a ~>> to_string() == :a
+    assert {:error, :reason} ~>> to_string() == {:error, "reason"}
+    assert :reason ~>> to_string() == :reason
   end
 
   test_monad(Error, {:error, :reason})
