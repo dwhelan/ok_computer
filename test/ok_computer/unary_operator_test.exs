@@ -2,12 +2,12 @@ defmodule OkComputer.UnaryOperatorTest do
   use ExUnit.Case
   import OkComputer.Operator
 
-  operator :@, fn input -> to_string(input) end
-  operator :+, fn input -> to_string(input) end
-  operator :-, fn input -> to_string(input) end
-  operator :!, fn input -> to_string(input) end
-  operator :not, fn input -> to_string(input) end
-  operator :~~~, fn input -> to_string(input) end
+  operator :@, fn input -> "#{input}" end
+  operator :+, fn input -> "#{input}" end
+  operator :-, fn input -> "#{input}" end
+  operator :!, fn input -> "#{input}" end
+  operator :not, fn input -> "#{input}" end
+  operator :~~~, fn input -> "#{input}" end
 
   test "@", do: assert(@:a == "a")
   test "+/1", do: assert(+:a == "a")
