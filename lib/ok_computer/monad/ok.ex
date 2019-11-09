@@ -8,7 +8,7 @@ defmodule OkComputer.Monad.Ok do
 
     @impl Monad
     def bind({:ok, value}, f), do: f.(value)
-#    def bind(a, _f), do: a
+    #    def bind(a, _f), do: a
 
     @impl Pipe
     def pipe?({:ok, _}), do: true
