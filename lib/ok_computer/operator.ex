@@ -1,4 +1,17 @@
 defmodule OkComputer.Operator do
+  @moduledoc """
+  Creates operators using anonymous functions.
+
+  """
+
+  @doc """
+  Creates an operator. 
+
+  ```
+  # comment
+  #{File.read!("test/ok_computer/complex_test.exs")}
+  ```
+  """
   defmacro operator(atom, f) do
     create(atom, f, :def)
   end

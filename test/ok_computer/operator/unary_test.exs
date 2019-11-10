@@ -1,4 +1,4 @@
-defmodule OkComputer.UnaryOperatorTest do
+defmodule OkComputer.Operator.UnaryTest do
   use ExUnit.Case
   import OkComputer.Test
   import OkComputer.Operator
