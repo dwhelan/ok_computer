@@ -83,7 +83,8 @@ defmodule OkComputer.BinaryOperatorTest do
   # Operators that cannot be used
 
   test "can't use '.'" do
-    assert_operator_error_raise(:.,
+    assert_operator_error_raise(
+      :.,
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -94,7 +95,8 @@ defmodule OkComputer.BinaryOperatorTest do
   end
 
   test "can't use 'not in'" do
-    assert_operator_error_raise(:"not in",
+    assert_operator_error_raise(
+      :"not in",
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -105,7 +107,8 @@ defmodule OkComputer.BinaryOperatorTest do
   end
 
   test "can't use '=>'" do
-    assert_operator_error_raise(:"=>",
+    assert_operator_error_raise(
+      :"=>",
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -116,7 +119,8 @@ defmodule OkComputer.BinaryOperatorTest do
   end
 
   test "can't use 'when'" do
-    assert_operator_error_raise(:when,
+    assert_operator_error_raise(
+      :when,
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
