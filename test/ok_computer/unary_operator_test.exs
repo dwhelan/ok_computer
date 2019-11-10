@@ -11,8 +11,8 @@ defmodule OkComputer.UnaryOperatorTest do
   operator :~~~, fn input -> "#{input}" end
 
   test "@", do: assert(@:a == "a")
-  test "+/1", do: assert(+:a == "a")
-  test "-/1", do: assert(-:a == "a")
+  test "+", do: assert(+:a == "a")
+  test "-", do: assert(-:a == "a")
   test "!", do: assert(!:a == "a")
   test "not", do: assert(not :a == "a")
   test "~~~", do: assert(~~~:a == "a")

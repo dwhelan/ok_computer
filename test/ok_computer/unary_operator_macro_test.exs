@@ -11,8 +11,8 @@ defmodule OkComputer.UnaryOperatorMacroTest do
   operator_macro :~~~, fn input -> quote(do: "#{unquote(input)}") end
 
   test "@", do: assert(@:a == "a")
-  test "+/1", do: assert(+:a == "a")
-  test "-/1", do: assert(-:a == "a")
+  test "+", do: assert(+:a == "a")
+  test "-", do: assert(-:a == "a")
   test "!", do: assert(!:a == "a")
   test "not", do: assert(not :a == "a")
   test "~~~", do: assert(~~~:a == "a")
