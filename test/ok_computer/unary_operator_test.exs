@@ -1,5 +1,6 @@
 defmodule OkComputer.UnaryOperatorTest do
   use ExUnit.Case
+  import OkComputer.Test
   import OkComputer.Operator
 
   operator :@, fn input -> "#{input}" end
@@ -16,9 +17,15 @@ defmodule OkComputer.UnaryOperatorTest do
   test "not", do: assert(not :a == "a")
   test "~~~", do: assert(~~~:a == "a")
 
-  test "^/1" do
-    assert_raise CompileError, ~r"cannot use \^a outside of match clauses", fn ->
-      Code.eval_string("^a")
-    end
+  test "can't use '^'" do
+    assert_operator_error_raise(
+      :^,
+      ~S"""
+      defmodule OkComputer.BadOperator do
+        import OkComputer.Operator
+        operator :^, fn input -> "#{input}"  end
+      end
+      """
+    )
   end
 end

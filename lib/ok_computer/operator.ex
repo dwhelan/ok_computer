@@ -7,7 +7,8 @@ defmodule OkComputer.Operator do
     create(atom, f, :defmacro)
   end
 
-  def create(atom, f, type) when atom in [:., :"=>", :"not in", :when] do
+  def create(atom, f, type) when atom in [:., :"=>", :^, :"not in", :when] do
+    IO.inspect(atom: atom)
     raise OkComputer.OperatorError, atom
   end
 

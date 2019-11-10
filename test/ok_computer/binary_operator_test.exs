@@ -1,5 +1,6 @@
 defmodule OkComputer.BinaryOperatorTest do
   use ExUnit.Case
+  import OkComputer.Test
   import OkComputer.Operator
 
   operator :*, fn left, right -> "#{left}#{right}" end
@@ -82,9 +83,7 @@ defmodule OkComputer.BinaryOperatorTest do
   # Operators that cannot be used
 
   test "can't use '.'" do
-    assert_eval_raise(
-      OkComputer.OperatorError,
-      ~r/cannot create an operator for \".\", because it is used by the Elixir parser./,
+    assert_operator_error_raise(:.,
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -95,9 +94,7 @@ defmodule OkComputer.BinaryOperatorTest do
   end
 
   test "can't use 'not in'" do
-    assert_eval_raise(
-      OkComputer.OperatorError,
-      ~r/cannot create an operator for \"not in\", because it is used by the Elixir parser./,
+    assert_operator_error_raise(:"not in",
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -108,9 +105,7 @@ defmodule OkComputer.BinaryOperatorTest do
   end
 
   test "can't use '=>'" do
-    assert_eval_raise(
-      OkComputer.OperatorError,
-      ~r/cannot create an operator for \"=>\", because it is used by the Elixir parser./,
+    assert_operator_error_raise(:"=>",
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -121,9 +116,7 @@ defmodule OkComputer.BinaryOperatorTest do
   end
 
   test "can't use 'when'" do
-    assert_eval_raise(
-      OkComputer.OperatorError,
-      ~r/cannot create an operator for \"when\", because it is used by the Elixir parser./,
+    assert_operator_error_raise(:when,
       ~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
@@ -131,9 +124,5 @@ defmodule OkComputer.BinaryOperatorTest do
       end
       """
     )
-  end
-
-  defp assert_eval_raise(given_exception, given_message, string) do
-    assert_raise given_exception, given_message, fn -> Code.eval_string(string) end
   end
 end

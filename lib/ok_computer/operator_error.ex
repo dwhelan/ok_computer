@@ -2,8 +2,10 @@ defmodule OkComputer.OperatorError do
   defexception [:message]
 
   @impl true
-  def exception(value) do
-    msg = ~s/cannot create an operator for "#{value}", because it is used by the Elixir parser./
-    %OkComputer.OperatorError{message: msg}
+  def exception(atom) do
+    message =
+      ~s/cannot create an operator for "#{atom}", because it is used by the Elixir parser./
+
+    %OkComputer.OperatorError{message: message}
   end
 end

@@ -1,32 +1,11 @@
 ExUnit.start()
 
-defmodule OkComputerTest do
-  def assert_code_raise(error, code) do
-    ExUnit.Assertions.assert_raise(error, fn -> Code.eval_string(code) end)
-  end
-end
+defmodule OkComputer.Test do
+  import ExUnit.Assertions
 
-defmodule EncodeTest do
-  defmacro __using__(_) do
-    quote do
-      use ExUnit.Case
-
-      import DataTypes
-      import OkError
-      import Codec.Encode
-    end
-  end
-end
-
-defmodule DecodeTest do
-  defmacro __using__(_) do
-    quote do
-      use ExUnit.Case
-
-      import DataTypes
-      import OkError
-      import Codec.Decode
-    end
+  def assert_operator_error_raise(atom, string) do
+    message = ~s/cannot create an operator for "#{atom}", because it is used by the Elixir parser./
+    assert_raise(OkComputer.OperatorError, message, fn -> Code.eval_string(string) end)
   end
 end
 
