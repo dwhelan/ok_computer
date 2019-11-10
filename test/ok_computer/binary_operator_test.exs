@@ -43,8 +43,8 @@ defmodule OkComputer.BinaryOperatorTest do
 
   test "*", do: assert(:a * :b == "ab")
   test "/", do: assert(:a / :b == "ab")
-  test "+/2", do: assert(:a + :b == "ab")
-  test "-/2", do: assert(:a - :b == "ab")
+  test "+", do: assert(:a + :b == "ab")
+  test "-", do: assert(:a - :b == "ab")
   test "++", do: assert(:a ++ :b == "ab")
   test "--", do: assert(:a -- :b == "ab")
   test "..", do: assert(:a..:b == "ab")
@@ -79,30 +79,61 @@ defmodule OkComputer.BinaryOperatorTest do
   test ":<-", do: assert((:a <- :b) == "ab")
   test ":\\", do: assert((:a \\ :b) == "ab")
 
-  operator :., fn left, right -> "#{left}#{right}" end
+  # Operators that cannot be used
 
-  test "./2" do
-    assert_raise SyntaxError, ~r"syntax error before: b", fn ->
-      Code.eval_string(":a . :b")
-    end
+  test "can't use '.'" do
+    assert_eval_raise(
+      OkComputer.OperatorError,
+      ~r/cannot create an operator for \".\", because it is used by the Elixir parser./,
+      ~S"""
+      defmodule OkComputer.BadOperator do
+        import OkComputer.Operator
+        operator :".", fn left, right -> "#{left}#{right}" end
+      end
+      """
+    )
   end
 
-  # Should raise error
-  operator :., fn left, right -> "#{left}#{right}" end
-  #  test "./2", do: assert(.(:a, :b) == "ab")
+  test "can't use 'not in'" do
+    assert_eval_raise(
+      OkComputer.OperatorError,
+      ~r/cannot create an operator for \"not in\", because it is used by the Elixir parser./,
+      ~S"""
+      defmodule OkComputer.BadOperator do
+        import OkComputer.Operator
+        operator :"not in", fn left, right -> "#{left}#{right}"  end
+      end
+      """
+    )
+  end
 
-  operator :"not in", fn left, right -> "#{left}#{right}" end
-  #  test "not in", do: assert(:a not in :b == "ab")
+  test "can't use '=>'" do
+    assert_eval_raise(
+      OkComputer.OperatorError,
+      ~r/cannot create an operator for \"=>\", because it is used by the Elixir parser./,
+      ~S"""
+      defmodule OkComputer.BadOperator do
+        import OkComputer.Operator
+        operator :"=>", fn left, right -> "#{left}#{right}"  end
+      end
+      """
+    )
+  end
 
-  #  operator :==, fn left, right -> "#{left}#{right}"  end
-  #  test "==", do: assert(:a == :b == "ab")
+  test "can't use 'when'" do
+    assert_eval_raise(
+      OkComputer.OperatorError,
+      ~r/cannot create an operator for \"when\", because it is used by the Elixir parser./,
+      ~S"""
+      defmodule OkComputer.BadOperator do
+        import OkComputer.Operator
+        operator :when, fn left, right -> "#{left}#{right}"  end
+      end
+      """
+    )
+  end
 
-  #  operator :=, fn left, right -> "#{left}#{right}"  end
-  #  test "=", do: assert((:a = :b) == "ab")
-
-  #  operator :=>, fn left, right -> "#{left}#{right}" end
-  #  test "=>", do: assert(:a => :b == "ab")
-
-  #  operator :when, fn left, right -> "#{left}#{right}" end
-  #  test "when", do: assert(:a when :b == "ab")
+  defp assert_eval_raise(given_exception, given_message, string) do
+    assert_raise given_exception, given_message, fn -> Code.eval_string(string) end
+  end
 end

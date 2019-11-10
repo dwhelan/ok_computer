@@ -1,3 +1,13 @@
+defmodule OkComputer.OperatorError do
+  defexception [:message]
+
+  @impl true
+  def exception(value) do
+    msg = ~s/cannot create an operator for "#{value}", because it is used by the Elixir parser./
+    %OkComputer.OperatorError{message: msg}
+  end
+end
+
 defmodule OkComputer.Operator do
   defmacro operator(atom, f) do
     create(atom, f, :def)
@@ -5,6 +15,10 @@ defmodule OkComputer.Operator do
 
   defmacro operator_macro(atom, f) do
     create(atom, f, :defmacro)
+  end
+
+  def create(atom, f, type) when atom in [:., :"=>", :"not in", :when] do
+    raise OkComputer.OperatorError, atom
   end
 
   def create(atom, f, type) do
