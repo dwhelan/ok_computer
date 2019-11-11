@@ -1,41 +1,28 @@
 defmodule OkComputer.OperatorTest do
   use ExUnit.Case
   import OkComputer.Operator
+  alias OkComputer.OperatorError
 
-  def assert_operator_error_raise(string) do
-    assert_raise(OkComputer.OperatorError, fn -> Code.eval_string(string) end)
-  end
-
-  describe "unary operators" do
-    test "can't use ^" do
-      assert_raise(OkComputer.OperatorError, fn ->
-        create(:def, :^, quote(do: &to_string/1))
+  describe "type" do
+    test "raise if type is not :def or :defmacro" do
+      assert_raise(OperatorError, fn ->
+        create(:foo, :+, quote(do: &to_string/1))
       end)
     end
   end
 
-  describe "binary operators" do
-    test "can't use ." do
-      assert_raise(OkComputer.OperatorError, fn ->
-        create(:def, :., quote(do: &apply/2))
+  describe "atom" do
+    test ~S/raise if in [:., :"=>", :^, :"not in", :when]/ do
+      Enum.each([:., :"=>", :^, :"not in", :when], fn atom ->
+        assert_raise(OperatorError, ~r/parser/, fn ->
+          create(:def, atom, quote(do: &to_string/1))
+        end)
       end)
     end
 
-    test "can't use not in" do
-      assert_raise(OkComputer.OperatorError, fn ->
-        create(:def, :"not in", quote(do: &apply/2))
-      end)
-    end
-
-    test "can't use =>" do
-      assert_raise(OkComputer.OperatorError, fn ->
-        create(:def, :"=>", quote(do: &apply/2))
-      end)
-    end
-
-    test "can't use when" do
-      assert_raise(OkComputer.OperatorError, fn ->
-        create(:def, :when, quote(do: &apply/2))
+    test "raise if atom is not an operator" do
+      assert_raise(OperatorError, fn ->
+        create(:def, :foo, quote(do: &to_string/1))
       end)
     end
   end

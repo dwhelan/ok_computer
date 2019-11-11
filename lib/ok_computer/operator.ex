@@ -4,6 +4,8 @@ defmodule OkComputer.Operator do
 
   """
 
+  alias OkComputer.OperatorError
+
   @doc """
   Creates an operator.
   """
@@ -24,13 +26,30 @@ defmodule OkComputer.Operator do
   Returns the AST to create an operator or an operator macro.
   """
   @spec create(:def | :defmacro, atom, Macro.t()) :: Macro.t()
-  def create(_, atom, _) when atom in [:., :"=>", :^, :"not in", :when] do
-    raise OkComputer.OperatorError,
-          "cannot create an operator for #{atom}, because it is used by the Elixir parser."
+  def create(type, _, _) when type not in [:def, :defmacro] do
+    raise OperatorError, "expected type to be :def or :defmacro but got #{type}."
   end
 
-  def create(type, atom, f) when type in [:def, :defmacro] do
-    operator(type, atom, f, arity(f))
+  def create(_, atom, _) when atom in [:., :"=>", :^, :"not in", :when] do
+    raise OperatorError, "can't use #{atom}, because it is used by the Elixir parser."
+  end
+
+  def create(type, atom, f) do
+    arity = arity(f)
+    operator_arities = operator_arities(atom)
+
+    cond do
+      operator_arities == [] ->
+        raise OperatorError,
+              "expected an operator but got #{atom}."
+
+      arity not in operator_arities ->
+        raise OperatorError,
+              "expected a function with arity in #{operator_arities}, but got arity #{arity}."
+
+      true ->
+        operator(type, atom, f, arity)
+    end
   end
 
   defp operator(:def, atom, f, 1) do
@@ -77,5 +96,9 @@ defmodule OkComputer.Operator do
     {f, _} = Code.eval_quoted(f)
     {:arity, arity} = Function.info(f, :arity)
     arity
+  end
+
+  def operator_arities(atom) do
+    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(atom, arity) end)
   end
 end
