@@ -5,21 +5,25 @@ defmodule OkComputer.Operator do
   """
 
   @doc """
-  Creates an operator. 
-
-  ```
-  # comment
-  #{File.read!("test/ok_computer/operator/complex_test.exs")}
-  ```
+  Creates an operator.
   """
+  @spec operator(atom, Macro.t) :: Macro.t
   defmacro operator(atom, f) do
     create(:def, atom, f)
   end
 
+  @doc """
+  Creates an operator macro.
+  """
+  @spec operator_macro(atom, Macro.t) :: Macro.t
   defmacro operator_macro(atom, f) do
     create(:defmacro, atom, f)
   end
 
+  @doc """
+  Returns the AST to create an operator or an operator macro.
+  """
+  @spec create(:def | :defmacro, atom, Macro.t) :: Macro.t
   def create(_, atom, _) when atom in [:., :"=>", :^, :"not in", :when] do
     raise OkComputer.OperatorError, atom
   end
@@ -68,13 +72,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  def arity2(f) do
-    {f, _} = Code.eval_quoted(f)
-    {:arity, arity} = Function.info(f, :arity)
-    arity
-  end
-
-  def arity(f) do
+  defp arity(f) do
     {f, _} = Code.eval_quoted(f)
     {:arity, arity} = Function.info(f, :arity)
     arity
