@@ -13,18 +13,18 @@ defmodule OkComputer.Operator do
   ```
   """
   defmacro operator(atom, f) do
-    create(atom, f, :def)
+    create(:def, atom, f)
   end
 
   defmacro operator_macro(atom, f) do
-    create(atom, f, :defmacro)
+    create(:defmacro, atom, f)
   end
 
-  def create(atom, _, _) when atom in [:., :"=>", :^, :"not in", :when] do
+  def create(_, atom, _) when atom in [:., :"=>", :^, :"not in", :when] do
     raise OkComputer.OperatorError, atom
   end
 
-  def create(atom, f, type) do
+  def create(type, atom, f) when type in [:def, :defmacro] do
     operator(type, atom, f, arity(f))
   end
 
