@@ -3,11 +3,8 @@ ExUnit.start()
 defmodule OkComputer.Test do
   import ExUnit.Assertions
 
-  def assert_operator_error_raise(atom, string) do
-    message =
-      ~s/cannot create an operator for "#{atom}", because it is used by the Elixir parser./
-
-    assert_raise(OkComputer.OperatorError, message, fn -> Code.eval_string(string) end)
+  def assert_operator_error_raise(string) do
+    assert_raise(OkComputer.OperatorError, fn -> Code.eval_string(string) end)
   end
 end
 

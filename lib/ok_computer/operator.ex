@@ -7,7 +7,7 @@ defmodule OkComputer.Operator do
   @doc """
   Creates an operator.
   """
-  @spec operator(atom, Macro.t) :: Macro.t
+  @spec operator(atom, Macro.t()) :: Macro.t()
   defmacro operator(atom, f) do
     create(:def, atom, f)
   end
@@ -15,7 +15,7 @@ defmodule OkComputer.Operator do
   @doc """
   Creates an operator macro.
   """
-  @spec operator_macro(atom, Macro.t) :: Macro.t
+  @spec operator_macro(atom, Macro.t()) :: Macro.t()
   defmacro operator_macro(atom, f) do
     create(:defmacro, atom, f)
   end
@@ -23,9 +23,10 @@ defmodule OkComputer.Operator do
   @doc """
   Returns the AST to create an operator or an operator macro.
   """
-  @spec create(:def | :defmacro, atom, Macro.t) :: Macro.t
+  @spec create(:def | :defmacro, atom, Macro.t()) :: Macro.t()
   def create(_, atom, _) when atom in [:., :"=>", :^, :"not in", :when] do
-    raise OkComputer.OperatorError, atom
+    raise OkComputer.OperatorError,
+          "cannot create an operator for #{atom}, because it is used by the Elixir parser."
   end
 
   def create(type, atom, f) when type in [:def, :defmacro] do

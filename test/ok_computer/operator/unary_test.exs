@@ -16,16 +16,4 @@ defmodule OkComputer.Operator.UnaryTest do
   test "!", do: assert(!:a == "a")
   test "not", do: assert(not :a == "a")
   test "~~~", do: assert(~~~:a == "a")
-
-  test "can't use '^'" do
-    assert_operator_error_raise(
-      :^,
-      ~S"""
-      defmodule OkComputer.BadOperator do
-        import OkComputer.Operator
-        operator :^, fn input -> "#{input}"  end
-      end
-      """
-    )
-  end
 end
