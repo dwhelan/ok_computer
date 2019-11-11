@@ -1,14 +1,16 @@
 defmodule OkComputer.OperatorTest do
   use ExUnit.Case
-  import OkComputer.Test
-  import OkComputer.Operator
+
+  def assert_operator_error_raise(string) do
+    assert_raise(OkComputer.OperatorError, fn -> Code.eval_string(string) end)
+  end
 
   describe "unary operators" do
     test "can't use '^'" do
       assert_operator_error_raise(~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
-        operator_macro :^, & &1
+        operator :^, fn input -> input end
       end
       """)
     end
@@ -19,7 +21,7 @@ defmodule OkComputer.OperatorTest do
       assert_operator_error_raise(~S"""
       defmodule OkComputer.BadOperator do
         import OkComputer.Operator
-        operator :".", fn left, right -> "#{left}#{right}" end
+        operator :".", fn left, right -> "#{left}#{right}"  end
       end
       """)
     end

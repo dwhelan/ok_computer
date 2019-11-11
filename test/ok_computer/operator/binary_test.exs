@@ -1,6 +1,5 @@
 defmodule OkComputer.BinaryTest do
   use ExUnit.Case
-  import OkComputer.Test
   import OkComputer.Operator
 
   operator :*, fn left, right -> "#{left}#{right}" end

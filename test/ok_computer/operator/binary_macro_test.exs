@@ -1,6 +1,5 @@
 defmodule OkComputer.Operator.BinaryMacroTest do
   use ExUnit.Case
-  import OkComputer.Test
   import OkComputer.Operator
 
   operator_macro :*, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end

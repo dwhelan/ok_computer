@@ -1,6 +1,5 @@
 defmodule OkComputer.Operator.UnaryMacroTest do
   use ExUnit.Case
-  import OkComputer.Test
   import OkComputer.Operator
 
   def stringify(input), do: quote(do: "#{unquote(input)}")

@@ -1,13 +1,5 @@
 ExUnit.start()
 
-defmodule OkComputer.Test do
-  import ExUnit.Assertions
-
-  def assert_operator_error_raise(string) do
-    assert_raise(OkComputer.OperatorError, fn -> Code.eval_string(string) end)
-  end
-end
-
 defmodule Monad.Laws do
   defmacro test_monad(monad, a) do
     quote do
