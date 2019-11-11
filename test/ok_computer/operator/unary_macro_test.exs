@@ -3,6 +3,9 @@ defmodule OkComputer.Operator.UnaryMacroTest do
   import OkComputer.Test
   import OkComputer.Operator
 
+  def stringify(input), do: quote(do: "#{unquote(input)}")
+
+#  operator_macro :@, &__MODULE__.stringify/1
   operator_macro :@, fn input -> quote(do: "#{unquote(input)}") end
   operator_macro :+, fn input -> quote(do: "#{unquote(input)}") end
   operator_macro :-, fn input -> quote(do: "#{unquote(input)}") end

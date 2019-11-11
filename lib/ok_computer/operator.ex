@@ -9,7 +9,7 @@ defmodule OkComputer.Operator do
 
   ```
   # comment
-  #{File.read!("test/ok_computer/complex_test.exs")}
+  #{File.read!("test/ok_computer/operator/complex_test.exs")}
   ```
   """
   defmacro operator(atom, f) do
@@ -20,15 +20,15 @@ defmodule OkComputer.Operator do
     create(atom, f, :defmacro)
   end
 
-  def create(atom, f, type) when atom in [:., :"=>", :^, :"not in", :when] do
+  def create(atom, _, _) when atom in [:., :"=>", :^, :"not in", :when] do
     raise OkComputer.OperatorError, atom
   end
 
   def create(atom, f, type) do
-    operator(atom, f, arity(f), type)
+    operator(type, atom, f, arity(f))
   end
 
-  defp operator(atom, f, 1, :def) do
+  defp operator(:def, atom, f, 1) do
     quote do
       import Kernel, except: [{unquote(atom), 1}]
 
@@ -38,7 +38,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp operator(atom, f, 2, :def) do
+  defp operator(:def, atom, f, 2) do
     quote do
       import Kernel, except: [{unquote(atom), 2}]
 
@@ -48,7 +48,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp operator(atom, f, 1, :defmacro) do
+  defp operator(:defmacro, atom, f, 1) do
     quote do
       import Kernel, except: [{unquote(atom), 1}]
 
@@ -58,7 +58,7 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp operator(atom, f, 2, :defmacro) do
+  defp operator(:defmacro, atom, f, 2) do
     quote do
       import Kernel, except: [{unquote(atom), 2}]
 
@@ -68,7 +68,13 @@ defmodule OkComputer.Operator do
     end
   end
 
-  defp arity(f) do
+  def arity2(f) do
+    {f, _} = Code.eval_quoted(f)
+    {:arity, arity} = Function.info(f, :arity)
+    arity
+  end
+
+  def arity(f) do
     {f, _} = Code.eval_quoted(f)
     {:arity, arity} = Function.info(f, :arity)
     arity
