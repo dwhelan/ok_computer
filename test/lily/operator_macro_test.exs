@@ -1,6 +1,6 @@
-defmodule OkComputer.OperatorMacroTest do
+defmodule Lily.OperatorMacroTest do
   use ExUnit.Case
-  import OkComputer.Operator
+  import Lily.Operator
 
   describe "unary operator macro" do
     operator_macro :@, fn input -> quote(do: "#{unquote(input)}") end

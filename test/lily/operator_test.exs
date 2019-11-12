@@ -1,7 +1,7 @@
-defmodule OkComputer.OperatorTest do
+defmodule Lily.OperatorTest do
   use ExUnit.Case
-  import OkComputer.Operator
-  alias OkComputer.OperatorError
+  import Lily.Operator
+  alias Lily.OperatorError
 
   describe "type" do
     test "raise if type is not :def or :defmacro" do

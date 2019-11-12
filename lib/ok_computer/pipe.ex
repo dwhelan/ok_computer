@@ -6,7 +6,7 @@ defmodule OkComputer.Pipe do
   end
 
   def create(atom, pipe, function_name) do
-    OkComputer.Operator.create(:defmacro, atom, operator_function(pipe, function_name))
+    Lily.Operator.create(:defmacro, atom, operator_function(pipe, function_name))
   end
 
   defp operator_function(pipe, function_name) do

@@ -15,7 +15,7 @@ end
 
 defmodule OkComputer.Pipe.OkTest do
   use ExUnit.Case
-  import OkComputer.Operator
+  import Lily.Operator
 
   operator_macro :~>, OkComputer.Pipe.Ok.pipe_operator()
 

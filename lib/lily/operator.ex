@@ -1,10 +1,10 @@
-defmodule OkComputer.Operator do
+defmodule Lily.Operator do
   @moduledoc """
   Creates operators using anonymous functions.
 
   """
 
-  alias OkComputer.OperatorError
+  alias Lily.OperatorError
 
   @doc """
   Creates an operator.
