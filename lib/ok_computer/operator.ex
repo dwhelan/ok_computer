@@ -56,8 +56,8 @@ defmodule OkComputer.Operator do
     quote do
       import Kernel, except: [{unquote(atom), 1}]
 
-      def unquote(atom)(input) do
-        unquote(f).(input)
+      def unquote(atom)(a) do
+        unquote(f).(a)
       end
     end
   end
@@ -66,8 +66,8 @@ defmodule OkComputer.Operator do
     quote do
       import Kernel, except: [{unquote(atom), 2}]
 
-      def unquote(atom)(left, right) do
-        unquote(f).(left, right)
+      def unquote(atom)(a, b) do
+        unquote(f).(a, b)
       end
     end
   end
@@ -76,8 +76,8 @@ defmodule OkComputer.Operator do
     quote do
       import Kernel, except: [{unquote(atom), 1}]
 
-      defmacro unquote(atom)(input) do
-        unquote(f).(input)
+      defmacro unquote(atom)(a) do
+        unquote(f).(a)
       end
     end
   end
@@ -86,8 +86,8 @@ defmodule OkComputer.Operator do
     quote do
       import Kernel, except: [{unquote(atom), 2}]
 
-      defmacro unquote(atom)(left, right) do
-        unquote(f).(left, right)
+      defmacro unquote(atom)(a, b) do
+        unquote(f).(a, b)
       end
     end
   end
