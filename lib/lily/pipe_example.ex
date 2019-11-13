@@ -1,7 +1,7 @@
 # defmodule Lily.PipeExample do
 #  import Lily.Operator
 #
-#  operator_macro :~>, fn left, right ->
+#  operator_macros ~>: fn left, right ->
 #    quote do
 #      "#{unquote left} ringy dingies" |> unquote(right)
 #    end

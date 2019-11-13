@@ -3,12 +3,12 @@ defmodule Lily.OperatorMacroTest do
   import Lily.Operator
 
   describe "unary operator macro" do
-    operator_macro :@, fn input -> quote(do: "#{unquote(input)}") end
-    operator_macro :+, fn input -> quote(do: "#{unquote(input)}") end
-    operator_macro :-, fn input -> quote(do: "#{unquote(input)}") end
-    operator_macro :!, fn input -> quote(do: "#{unquote(input)}") end
-    operator_macro :not, fn input -> quote(do: "#{unquote(input)}") end
-    operator_macro :~~~, fn input -> quote(do: "#{unquote(input)}") end
+    operator_macros(@: fn input -> quote(do: "#{unquote(input)}") end)
+    operator_macros(+: fn input -> quote(do: "#{unquote(input)}") end)
+    operator_macros(-: fn input -> quote(do: "#{unquote(input)}") end)
+    operator_macros(!: fn input -> quote(do: "#{unquote(input)}") end)
+    operator_macros(not: fn input -> quote(do: "#{unquote(input)}") end)
+    operator_macros(~~~: fn input -> quote(do: "#{unquote(input)}") end)
 
     test "@", do: assert(@:a == "a")
     test "+/1", do: assert(+:a == "a")
@@ -19,44 +19,44 @@ defmodule Lily.OperatorMacroTest do
   end
 
   describe "binary operator macro" do
-    operator_macro :*, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :/, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :+, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :-, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :++, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :--, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :.., fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :^^^, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :in, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :|>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<<<, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :>>>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<<~, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :~>>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<~, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :~>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<~>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<|>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :>, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<=, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :>=, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :!=, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :=~, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :===, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :!==, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :&&, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :&&&, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :and, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :||, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :|||, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :or, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :=, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :|, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :"::", fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :<-, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
-    operator_macro :\\, fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end
+    operator_macros(*: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(/: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(+: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(-: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(++: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(--: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(..: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(^^^: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(in: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(|>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<<<: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(>>>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<<~: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(~>>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<~: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(~>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<~>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<|>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(>: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<=: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(>=: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(!=: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(=~: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(===: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(!==: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(&&: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(&&&: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(and: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(||: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(|||: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(or: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(=: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(|: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros("::": fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(<-: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
+    operator_macros(\\: fn left, right -> quote(do: "#{unquote(left)}#{unquote(right)}") end)
 
     test "*", do: assert(:a * :b == "ab")
     test "/", do: assert(:a / :b == "ab")

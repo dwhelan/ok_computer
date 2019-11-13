@@ -17,7 +17,7 @@ defmodule OkComputer.Pipe.OkTest do
   use ExUnit.Case
   import Lily.Operator
 
-  operator_macro :~>, OkComputer.Pipe.Ok.pipe_operator()
+  operator_macros ~>: OkComputer.Pipe.Ok.pipe_operator()
 
   test "~>/2" do
     assert {:ok, :a} ~> to_string() == {:ok, "a"}

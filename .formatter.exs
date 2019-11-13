@@ -4,8 +4,8 @@
     "{config,lib,test}/**/*.{ex,exs}"
   ],
   locals_without_parens: [
-    operator: :*,
-    operator_macro: :*,
+    operators: :*,
+    operator_macros: :*,
     pipe: :*,
     pipes: :*
   ]

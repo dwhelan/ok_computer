@@ -2,7 +2,7 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates funny operators.
 
-  You create an operator by calling `&operator/1` or `&operator_macro/1` with a `name` and a `function`.
+  You create an operator by calling `&operator2/1` or `&operator_macro2/1` with a `name` and a `function`.
   These macros will insert a `:def` or `:defmacro` function called `name` into your module.
   The created function simply calls `function` with its input args.
   """
@@ -53,13 +53,13 @@ defmodule Lily.Operator do
   end
 
   @doc """
-  Creates an operator macro.
+  Creates operator macros.
 
 
   """
-  @spec operator_macro(atom, Macro.t()) :: Macro.t()
-  defmacro operator_macro(name, f) do
-    create(:defmacro, name, f)
+  @spec operator_macros(list) :: Macro.t()
+  defmacro operator_macros(list) do
+    operators(:defmacro, list)
   end
 
   @doc """
