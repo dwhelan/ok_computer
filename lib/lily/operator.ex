@@ -1,6 +1,6 @@
 defmodule Lily.Operator do
   @moduledoc """
-  Creates operators using anonymous functions.
+  Creates funny operators.
 
   """
 
@@ -14,8 +14,16 @@ defmodule Lily.Operator do
     create(:def, atom, f)
   end
 
-  @doc """
+  @doc ~S"""
   Creates an operator macro.
+
+  iex> use Lily.Complex
+  iex> import Kernel, except: [+: 2, -: 2]
+  iex> {1, 2} + {3, 4}
+  {4, 6}
+  iex> {1, 2} - {3, 4}
+  {-2, -2}
+
   """
   @spec operator_macro(atom, Macro.t()) :: Macro.t()
   defmacro operator_macro(atom, f) do
