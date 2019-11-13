@@ -3,12 +3,12 @@ defmodule Lily.SupportedOperatorsTest do
   import Lily.Operator
 
   describe "unary operator" do
-    operator :@, fn a -> "#{a}" end
-    operator :+, fn a -> "#{a}" end
-    operator :-, fn a -> "#{a}" end
-    operator :!, fn a -> "#{a}" end
-    operator :not, fn a -> "#{a}" end
-    operator :~~~, fn a -> "#{a}" end
+    operators(@: fn a -> "#{a}" end)
+    operators(+: fn a -> "#{a}" end)
+    operators(-: fn a -> "#{a}" end)
+    operators(!: fn a -> "#{a}" end)
+    operators(not: fn a -> "#{a}" end)
+    operators(~~~: fn a -> "#{a}" end)
 
     test "@", do: assert(@:a == "a")
     test "+/1", do: assert(+:a == "a")
@@ -19,44 +19,44 @@ defmodule Lily.SupportedOperatorsTest do
   end
 
   describe "binary operator" do
-    operator :*, fn a, b -> "#{a}#{b}" end
-    operator :/, fn a, b -> "#{a}#{b}" end
-    operator :+, fn a, b -> "#{a}#{b}" end
-    operator :-, fn a, b -> "#{a}#{b}" end
-    operator :++, fn a, b -> "#{a}#{b}" end
-    operator :--, fn a, b -> "#{a}#{b}" end
-    operator :.., fn a, b -> "#{a}#{b}" end
-    operator :<>, fn a, b -> "#{a}#{b}" end
-    operator :^^^, fn a, b -> "#{a}#{b}" end
-    operator :in, fn a, b -> "#{a}#{b}" end
-    operator :|>, fn a, b -> "#{a}#{b}" end
-    operator :<<<, fn a, b -> "#{a}#{b}" end
-    operator :>>>, fn a, b -> "#{a}#{b}" end
-    operator :<<~, fn a, b -> "#{a}#{b}" end
-    operator :~>>, fn a, b -> "#{a}#{b}" end
-    operator :<~, fn a, b -> "#{a}#{b}" end
-    operator :~>, fn a, b -> "#{a}#{b}" end
-    operator :<~>, fn a, b -> "#{a}#{b}" end
-    operator :<|>, fn a, b -> "#{a}#{b}" end
-    operator :<, fn a, b -> "#{a}#{b}" end
-    operator :>, fn a, b -> "#{a}#{b}" end
-    operator :<=, fn a, b -> "#{a}#{b}" end
-    operator :>=, fn a, b -> "#{a}#{b}" end
-    operator :!=, fn a, b -> "#{a}#{b}" end
-    operator :=~, fn a, b -> "#{a}#{b}" end
-    operator :===, fn a, b -> "#{a}#{b}" end
-    operator :!==, fn a, b -> "#{a}#{b}" end
-    operator :&&, fn a, b -> "#{a}#{b}" end
-    operator :&&&, fn a, b -> "#{a}#{b}" end
-    operator :and, fn a, b -> "#{a}#{b}" end
-    operator :||, fn a, b -> "#{a}#{b}" end
-    operator :|||, fn a, b -> "#{a}#{b}" end
-    operator :or, fn a, b -> "#{a}#{b}" end
-    operator :=, fn a, b -> "#{a}#{b}" end
-    operator :|, fn a, b -> "#{a}#{b}" end
-    operator :"::", fn a, b -> "#{a}#{b}" end
-    operator :<-, fn a, b -> "#{a}#{b}" end
-    operator :\\, fn a, b -> "#{a}#{b}" end
+    operators(*: fn a, b -> "#{a}#{b}" end)
+    operators(/: fn a, b -> "#{a}#{b}" end)
+    operators(+: fn a, b -> "#{a}#{b}" end)
+    operators(-: fn a, b -> "#{a}#{b}" end)
+    operators(++: fn a, b -> "#{a}#{b}" end)
+    operators(--: fn a, b -> "#{a}#{b}" end)
+    operators(..: fn a, b -> "#{a}#{b}" end)
+    operators(<>: fn a, b -> "#{a}#{b}" end)
+    operators(^^^: fn a, b -> "#{a}#{b}" end)
+    operators(in: fn a, b -> "#{a}#{b}" end)
+    operators(|>: fn a, b -> "#{a}#{b}" end)
+    operators(<<<: fn a, b -> "#{a}#{b}" end)
+    operators(>>>: fn a, b -> "#{a}#{b}" end)
+    operators(<<~: fn a, b -> "#{a}#{b}" end)
+    operators(~>>: fn a, b -> "#{a}#{b}" end)
+    operators(<~: fn a, b -> "#{a}#{b}" end)
+    operators(~>: fn a, b -> "#{a}#{b}" end)
+    operators(<~>: fn a, b -> "#{a}#{b}" end)
+    operators(<|>: fn a, b -> "#{a}#{b}" end)
+    operators(<: fn a, b -> "#{a}#{b}" end)
+    operators(>: fn a, b -> "#{a}#{b}" end)
+    operators(<=: fn a, b -> "#{a}#{b}" end)
+    operators(>=: fn a, b -> "#{a}#{b}" end)
+    operators(!=: fn a, b -> "#{a}#{b}" end)
+    operators(=~: fn a, b -> "#{a}#{b}" end)
+    operators(===: fn a, b -> "#{a}#{b}" end)
+    operators(!==: fn a, b -> "#{a}#{b}" end)
+    operators(&&: fn a, b -> "#{a}#{b}" end)
+    operators(&&&: fn a, b -> "#{a}#{b}" end)
+    operators(and: fn a, b -> "#{a}#{b}" end)
+    operators(||: fn a, b -> "#{a}#{b}" end)
+    operators(|||: fn a, b -> "#{a}#{b}" end)
+    operators(or: fn a, b -> "#{a}#{b}" end)
+    operators(=: fn a, b -> "#{a}#{b}" end)
+    operators(|: fn a, b -> "#{a}#{b}" end)
+    operators("::": fn a, b -> "#{a}#{b}" end)
+    operators(<-: fn a, b -> "#{a}#{b}" end)
+    operators(\\: fn a, b -> "#{a}#{b}" end)
 
     test "*", do: assert(:a * :b == "ab")
     test "/", do: assert(:a / :b == "ab")

@@ -10,7 +10,7 @@ defmodule Lily.Operator do
   alias Lily.OperatorError
 
   @doc """
-  Creates an operator.
+  Creates operators.
 
   ## Examples
   For example, you might want to use complex math operators:
@@ -26,11 +26,7 @@ defmodule Lily.Operator do
         {-2, -2}
 
   """
-  @spec operator(atom, Macro.t()) :: Macro.t()
-  defmacro operator(name, f) do
-    create(:def, name, f)
-  end
-
+  @spec operators(atom, list) :: Macro.t()
   defmacro operators(list) do
     operators(:def, list)
   end
