@@ -32,6 +32,10 @@ defmodule Lily.Operator do
     create(:def, name, f)
   end
 
+  defmacro operators(list) do
+    Enum.map(list, fn {name, f} -> create(:def, name, f) end)
+  end
+
   @doc """
   Creates an operator macro.
 
