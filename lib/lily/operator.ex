@@ -13,13 +13,13 @@ defmodule Lily.Operator do
   Creates an operator.
 
   ## Examples
-  For example, you could create a module for complex math. It might look something like:
+  For example, you might want to use complex math operators:
 
   ```
   #{File.read!("test/support/complex.ex")}
   ```
 
-        iex> use Lily.Complex
+        iex> use Complex
         iex> {1, 2} + {3, 4}
         {4, 6}
         iex> {1, 2} - {3, 4}

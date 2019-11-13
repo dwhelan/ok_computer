@@ -1,4 +1,4 @@
-defmodule Lily.Complex do
+defmodule Complex do
   import Lily.Operator
 
   operators(
