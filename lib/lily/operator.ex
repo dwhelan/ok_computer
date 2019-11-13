@@ -2,32 +2,44 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates funny operators.
 
+  You create an operator by calling `&operator/1` or `&operator_macro/1` with a `name` and a `function`.
+  These macros will insert a `:def` or `:defmacro` function called `name` into your module.
+  The created function simply calls `function` with its input args.
   """
 
   alias Lily.OperatorError
 
   @doc """
   Creates an operator.
+
+  For example, you could create a module for complex math. It would look something like:
+
+  ```
+  #{File.read!("test/support/complex.ex")}
+  ```
+
+  ## Examples
+        iex> import Lily.Complex
+        iex> import Kernel, except: [+: 2, -: 2]
+        iex> {1, 2} + {3, 4}
+        {4, 6}
+        iex> {1, 2} - {3, 4}
+        {-2, -2}
+
   """
   @spec operator(atom, Macro.t()) :: Macro.t()
-  defmacro operator(atom, f) do
-    create(:def, atom, f)
+  defmacro operator(name, f) do
+    create(:def, name, f)
   end
 
-  @doc ~S"""
+  @doc """
   Creates an operator macro.
 
-  iex> use Lily.Complex
-  iex> import Kernel, except: [+: 2, -: 2]
-  iex> {1, 2} + {3, 4}
-  {4, 6}
-  iex> {1, 2} - {3, 4}
-  {-2, -2}
 
   """
   @spec operator_macro(atom, Macro.t()) :: Macro.t()
-  defmacro operator_macro(atom, f) do
-    create(:defmacro, atom, f)
+  defmacro operator_macro(name, f) do
+    create(:defmacro, name, f)
   end
 
   @doc """
@@ -38,63 +50,63 @@ defmodule Lily.Operator do
     raise OperatorError, "expected type to be :def or :defmacro but got #{type}."
   end
 
-  def create(_, atom, _) when atom in [:., :"=>", :^, :"not in", :when] do
-    raise OperatorError, "can't use #{atom}, because it is used by the Elixir parser."
+  def create(_, name, _) when name in [:., :"=>", :^, :"not in", :when] do
+    raise OperatorError, "can't use #{name}, because it is used by the Elixir parser."
   end
 
-  def create(type, atom, f) do
+  def create(type, name, f) do
     arity = arity(f)
-    operator_arities = operator_arities(atom)
+    operator_arities = operator_arities(name)
 
     cond do
       operator_arities == [] ->
         raise OperatorError,
-              "expected an operator but got #{atom}."
+              "expected an operator but got #{name}."
 
       arity not in operator_arities ->
         raise OperatorError,
               "expected a function with arity in #{operator_arities}, but got arity #{arity}."
 
       true ->
-        operator(type, atom, f, arity)
+        operator(type, name, f, arity)
     end
   end
 
-  defp operator(:def, atom, f, 1) do
+  defp operator(:def, name, f, 1) do
     quote do
-      import Kernel, except: [{unquote(atom), 1}]
+      import Kernel, except: [{unquote(name), 1}]
 
-      def unquote(atom)(a) do
+      def unquote(name)(a) do
         unquote(f).(a)
       end
     end
   end
 
-  defp operator(:def, atom, f, 2) do
+  defp operator(:def, name, f, 2) do
     quote do
-      import Kernel, except: [{unquote(atom), 2}]
+      import Kernel, except: [{unquote(name), 2}]
 
-      def unquote(atom)(a, b) do
+      def unquote(name)(a, b) do
         unquote(f).(a, b)
       end
     end
   end
 
-  defp operator(:defmacro, atom, f, 1) do
+  defp operator(:defmacro, name, f, 1) do
     quote do
-      import Kernel, except: [{unquote(atom), 1}]
+      import Kernel, except: [{unquote(name), 1}]
 
-      defmacro unquote(atom)(a) do
+      defmacro unquote(name)(a) do
         unquote(f).(a)
       end
     end
   end
 
-  defp operator(:defmacro, atom, f, 2) do
+  defp operator(:defmacro, name, f, 2) do
     quote do
-      import Kernel, except: [{unquote(atom), 2}]
+      import Kernel, except: [{unquote(name), 2}]
 
-      defmacro unquote(atom)(a, b) do
+      defmacro unquote(name)(a, b) do
         unquote(f).(a, b)
       end
     end
@@ -106,7 +118,7 @@ defmodule Lily.Operator do
     arity
   end
 
-  def operator_arities(atom) do
-    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(atom, arity) end)
+  def operator_arities(name) do
+    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(name, arity) end)
   end
 end

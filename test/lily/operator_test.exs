@@ -1,7 +1,6 @@
 defmodule Lily.OperatorTest do
   use ExUnit.Case
-  alias Lily.Operator
-  alias Lily.OperatorError
+  alias Lily.{Operator, OperatorError}
   import Operator
 
   doctest Operator

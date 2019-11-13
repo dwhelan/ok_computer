@@ -10,7 +10,7 @@ defmodule OkComputer.MixProject do
       source_url: "https://github.com/dwhelan/ok_computer",
       package: package(),
       elixir: "~> 1.7",
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
       aliases: aliases(),
       preferred_cli_env: [build: :test],
@@ -23,7 +23,7 @@ defmodule OkComputer.MixProject do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
     [
