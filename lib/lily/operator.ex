@@ -12,15 +12,14 @@ defmodule Lily.Operator do
   @doc """
   Creates an operator.
 
-  For example, you could create a module for complex math. It would look something like:
+  ## Examples
+  For example, you could create a module for complex math. It might look something like:
 
   ```
   #{File.read!("test/support/complex.ex")}
   ```
 
-  ## Examples
-        iex> import Lily.Complex
-        iex> import Kernel, except: [+: 2, -: 2]
+        iex> use Lily.Complex
         iex> {1, 2} + {3, 4}
         {4, 6}
         iex> {1, 2} - {3, 4}
@@ -33,7 +32,28 @@ defmodule Lily.Operator do
   end
 
   defmacro operators(list) do
-    Enum.map(list, fn {name, f} -> create(:def, name, f) end)
+    operators(:def, list)
+  end
+
+  defp operators(type, list) do
+    [
+      Enum.map(list, fn {name, f} -> create(type, name, f) end),
+      create_using_macro(list)
+    ]
+  end
+
+  defp create_using_macro(list) do
+    quote do
+      defmacro __using__(_) do
+        module = __MODULE__
+        operators = unquote(Enum.map(list, fn {name, f} -> {name, arity(f)} end))
+
+        quote do
+          import Kernel, except: unquote(operators)
+          import unquote(module)
+        end
+      end
+    end
   end
 
   @doc """
