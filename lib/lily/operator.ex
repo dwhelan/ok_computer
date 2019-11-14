@@ -2,18 +2,21 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates operators using anonymous functions.
 
-  You create an operator by calling `&operators/1` or `&operator_macros/1` with a keyword list of functions.
+  You create an operator by calling `&operators/1` or `&operator_macros/1`
+  with a keyword list of functions.
   These macros will insert a `:def` or `:defmacro` function called `name` into your module.
-  When an operator is called the given function will be called with the same arguments.
+
+  When an operator is called the given function will be called with the operator arguments.
   """
 
-  alias Lily.OperatorError
+  alias Lily.Error
 
   @doc """
   Creates operators.
 
-  This will insert operator functions for each operator given.
-  A `__using__` macro will be inserted that imports Kernel except for any operators created.
+  Insert operator functions for each operator given in `list`.
+  The key is the operator name and the value is the function that the operator should call.
+
   ## Examples
   A complex math module:
 
@@ -25,8 +28,12 @@ defmodule Lily.Operator do
         {4, 6}
         iex> {1, 2} - {3, 4}
         {-2, -2}
+
+  A `__using__` macro will be inserted that imports `Kernel`,
+  except operators, and then imports itself.
+  ## Examples
   """
-  @spec operators(keyword(function)) :: Macro.t()
+  @spec operators(keyword(f :: Macro.t())) :: Macro.t()
   defmacro operators(list) do
     operators(:def, list)
   end
@@ -34,12 +41,11 @@ defmodule Lily.Operator do
   @doc """
   Creates operator macros.
 
-  This will insert operator macros for each operator given.
-  A `__using__` macro will be inserted that imports Kernel except for any operators created.
+  This will insert operator macros for each operator given in `list`.
+  The key is the operator name and the value is the function that the operator should call.
 
   ## Examples
-  Create a `~>` operator that pipes `:ok` values and simply return its input
-  for anything else.
+  A `~>` operator that pipes `:ok` values and short circuits anything else.
   ```
   #{File.read!("test/support/ok_pipe.ex")}
   ```
@@ -48,8 +54,11 @@ defmodule Lily.Operator do
         {:ok, "a"}
         iex> :a ~> to_string()
         :a
+
+  A `__using__` macro will be inserted that imports `Kernel`,
+  except operators, and then imports itself.
   """
-  @spec operator_macros(keyword(function)) :: Macro.t()
+  @spec operator_macros(keyword(f :: Macro.t())) :: Macro.t()
   defmacro operator_macros(list) do
     operators(:defmacro, list)
   end
@@ -77,14 +86,24 @@ defmodule Lily.Operator do
 
   @doc """
   Returns the AST to create an operator or an operator macro.
+
+  This is useful if you would like to create your own macro that
+  uses an operator or operator macro.
+
+  If you want to create an operator function provide `:def` as the first argument
+  along with the name of the operator and the function to call.
+
+  If you want to create an operator macro provide `:defmacro` as the first argument instead.
+
+  ## Examples
   """
-  @spec create(:def | :defmacro, atom, Macro.t()) :: Macro.t()
+  @spec create(:def | :defmacro, atom, f :: Macro.t()) :: Macro.t()
   def create(type, _, _) when type not in [:def, :defmacro] do
-    raise OperatorError, "expected type to be :def or :defmacro but got #{type}."
+    raise Error, "expected type to be :def or :defmacro but got #{type}."
   end
 
   def create(_, name, _) when name in [:., :"=>", :^, :"not in", :when] do
-    raise OperatorError, "can't use #{name}, because it is used by the Elixir parser."
+    raise Error, "can't use #{name}, because it is used by the Elixir parser."
   end
 
   def create(type, name, f) do
@@ -93,11 +112,11 @@ defmodule Lily.Operator do
 
     cond do
       operator_arities == [] ->
-        raise OperatorError,
+        raise Error,
               "expected an operator but got #{name}."
 
       arity not in operator_arities ->
-        raise OperatorError,
+        raise Error,
               "expected a function with arity in #{operator_arities}, but got arity #{arity}."
 
       true ->

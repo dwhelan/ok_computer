@@ -2,11 +2,11 @@ defmodule OkPipe do
   import Lily.Operator
 
   operator_macros(
-    ~>: fn left, right ->
+    ~>: fn a, f ->
       quote do
-        case unquote(left) do
-          {:ok, left} -> {:ok, left |> unquote(right)}
-          left -> left
+        case unquote(a) do
+          {:ok, a} -> {:ok, a |> unquote(f)}
+          a -> a
         end
       end
     end
