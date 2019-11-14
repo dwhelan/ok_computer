@@ -1,10 +1,10 @@
 defmodule Lily.Operator do
   @moduledoc """
-  Creates funny operators.
+  Creates operators using anonymous functions.
 
   You create an operator by calling `&operators/1` or `&operator_macros/1` with a keyword list of functions.
   These macros will insert a `:def` or `:defmacro` function called `name` into your module.
-  The created function simply calls `function` with its input args.
+  When an operator is called the given function will be called with the same arguments.
   """
 
   alias Lily.OperatorError
@@ -12,8 +12,10 @@ defmodule Lily.Operator do
   @doc """
   Creates operators.
 
+  This will insert operator functions for each operator given.
+  A `__using__` macro will be inserted that imports Kernel except for any operators created.
   ## Examples
-  For example, you might want to use complex math operators:
+  A complex math module:
 
   ```
   #{File.read!("test/support/complex.ex")}
@@ -23,7 +25,6 @@ defmodule Lily.Operator do
         {4, 6}
         iex> {1, 2} - {3, 4}
         {-2, -2}
-
   """
   @spec operators(keyword(function)) :: Macro.t()
   defmacro operators(list) do
@@ -32,6 +33,21 @@ defmodule Lily.Operator do
 
   @doc """
   Creates operator macros.
+
+  This will insert operator macros for each operator given.
+  A `__using__` macro will be inserted that imports Kernel except for any operators created.
+
+  ## Examples
+  Create a `~>` operator that pipes `:ok` values and simply return its input
+  for anything else.
+  ```
+  #{File.read!("test/support/ok_pipe.ex")}
+  ```
+        iex> use OkPipe
+        iex> {:ok, :a} ~> to_string()
+        {:ok, "a"}
+        iex> :a ~> to_string()
+        :a
   """
   @spec operator_macros(keyword(function)) :: Macro.t()
   defmacro operator_macros(list) do
