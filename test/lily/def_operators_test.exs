@@ -1,4 +1,4 @@
-defmodule Lily.OperatorsTest do
+defmodule Lily.DefOperatorsTest do
   use ExUnit.Case
   import Lily.Operator
 
