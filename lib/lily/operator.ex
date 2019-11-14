@@ -2,7 +2,7 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates funny operators.
 
-  You create an operator by calling `&operator2/1` or `&operator_macro2/1` with a `name` and a `function`.
+  You create an operator by calling `&operators/1` or `&operator_macros/1` with a keyword list of functions.
   These macros will insert a `:def` or `:defmacro` function called `name` into your module.
   The created function simply calls `function` with its input args.
   """
@@ -18,7 +18,6 @@ defmodule Lily.Operator do
   ```
   #{File.read!("test/support/complex.ex")}
   ```
-
         iex> use Complex
         iex> {1, 2} + {3, 4}
         {4, 6}
@@ -26,9 +25,17 @@ defmodule Lily.Operator do
         {-2, -2}
 
   """
-  @spec operators(atom, list) :: Macro.t()
+  @spec operators(keyword(function)) :: Macro.t()
   defmacro operators(list) do
     operators(:def, list)
+  end
+
+  @doc """
+  Creates operator macros.
+  """
+  @spec operator_macros(keyword(function)) :: Macro.t()
+  defmacro operator_macros(list) do
+    operators(:defmacro, list)
   end
 
   defp operators(type, list) do
@@ -42,24 +49,14 @@ defmodule Lily.Operator do
     quote do
       defmacro __using__(_) do
         module = __MODULE__
-        operators = unquote(Enum.map(list, fn {name, f} -> {name, arity(f)} end))
+        kernel_excludes = unquote(Enum.map(list, fn {name, f} -> {name, arity(f)} end))
 
         quote do
-          import Kernel, except: unquote(operators)
+          import Kernel, except: unquote(kernel_excludes)
           import unquote(module)
         end
       end
     end
-  end
-
-  @doc """
-  Creates operator macros.
-
-
-  """
-  @spec operator_macros(list) :: Macro.t()
-  defmacro operator_macros(list) do
-    operators(:defmacro, list)
   end
 
   @doc """
