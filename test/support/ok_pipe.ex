@@ -1,4 +1,5 @@
 defmodule OkPipe do
+  @moduledoc false
   import Lily.Operator
 
   defoperator_macros(

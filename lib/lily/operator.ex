@@ -2,11 +2,23 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates operators using anonymous functions.
 
-  You create an operator by calling `&operators/1` or `&defoperator_macros/1`
-  with a keyword list of functions.
-  These macros will insert a `:def` or `:defmacro` function called `name` into your module.
+  Operators can be more dynamic, by building them with anonymous functions.
 
-  When an operator is called the given function will be called with the operator arguments.
+  The `Concat` module below shows two ways you could create a concat operator:
+  ```
+  #{File.read!("test/support/concat.ex")}
+  ```
+
+  Instead of declaring an operator using `def`, you provide an equivalent anonymous function to `defoperators/1`.
+
+  You can also create operator macros using `defoperator_macros/1`:
+  ```
+  #{File.read!("test/support/ok_pipe.ex")}
+  ```
+
+  By default, a `__using__` macro will be inserted that imports `Kernel`,
+  (except the operators you created) and then imports itself.
+  If you don't want this behaviour include `{:__using__, false}` in `operators`.
   """
 
   alias Lily.Error
@@ -14,8 +26,9 @@ defmodule Lily.Operator do
   @doc """
   Creates operators.
 
-  Insert operator functions for each operator given in `list`.
+  Insert operator functions for each operator given in `operators`.
   The key is the operator name and the value is the function that the operator should call.
+  The function should return an expression.
 
   ## Examples
   A complex math module:
@@ -28,63 +41,40 @@ defmodule Lily.Operator do
         {4, 6}
         iex> {1, 2} - {3, 4}
         {-2, -2}
-
-  A `__using__` macro will be inserted that imports `Kernel`,
-  except operators, and then imports itself.
-  ## Examples
   """
   @spec defoperators(keyword(f :: Macro.t())) :: Macro.t()
-  defmacro defoperators(list) do
-    create(:def, list)
+  defmacro defoperators(operators) do
+    create(:def, operators)
   end
 
   @doc """
   Creates operator macros.
 
-  This will insert operator macros for each operator in `list`.
+  This will insert operator macros for each operator in `operators`.
   The key is the operator name and the value is the function that the operator should call.
-
-  ## Examples
-  A `~>` operator that pipes `:ok` values and short circuits anything else.
-  ```
-  #{File.read!("test/support/ok_pipe.ex")}
-  ```
-        iex> use OkPipe
-        iex> {:ok, :a} ~> to_string()
-        {:ok, "a"}
-        iex> :a ~> to_string()
-        :a
-
-  By default, a `__using__` macro will be inserted that imports `Kernel`,
-  except operators, and then imports itself. If you don't want this
-  include `{:__using__, false}` in `list`.
+  The function should return a quoted expression.
   """
   @spec defoperator_macros(keyword(f :: Macro.t())) :: Macro.t()
-  defmacro defoperator_macros(list) do
-    create(:defmacro, list)
+  defmacro defoperator_macros(operators) do
+    create(:defmacro, operators)
   end
 
   @doc """
   Returns the AST to create an operator or an operator macro.
 
-  This is useful if you would like to create your own macro that
-  uses an operator or operator macro.
+  This is useful for programmatically creating operators.
 
-  If you want to create an operator function provide `:def` as the second argument
-  along with the name of the operator and the function to call.
-
+  If you want to create an operator function provide `:def` as the second argument.
   If you want to create an operator macro provide `:defmacro` instead.
-
-  ## Examples
   """
-  @spec create(list, :def | :defmacro) :: Macro.t()
-  def create(type, list) do
-    {using, list} = Keyword.get_and_update(list, :__using__, fn _ -> :pop end)
+  @spec create(keyword(f :: Macro.t()), :def | :defmacro) :: Macro.t()
+  def create(type, operators) do
+    {using, operators} = Keyword.get_and_update(operators, :__using__, fn _ -> :pop end)
 
     [
-      Enum.map(list, fn {name, f} -> create(type, name, f) end),
+      Enum.map(operators, fn {operator, f} -> create(type, operator, f) end),
       if using != false do
-        create__using_macro__macro(list)
+        create__using_macro__macro(operators)
       end
     ]
   end

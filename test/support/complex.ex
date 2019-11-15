@@ -1,4 +1,5 @@
 defmodule Complex do
+  @moduledoc false
   import Lily.Operator
 
   defoperators(
