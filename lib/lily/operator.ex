@@ -35,7 +35,7 @@ defmodule Lily.Operator do
   """
   @spec defoperators(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperators(list) do
-    create(list, :def)
+    create(:def, list)
   end
 
   @doc """
@@ -61,7 +61,7 @@ defmodule Lily.Operator do
   """
   @spec defoperator_macros(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperator_macros(list) do
-    create(list, :defmacro)
+    create(:defmacro, list)
   end
 
   @doc """
@@ -78,7 +78,7 @@ defmodule Lily.Operator do
   ## Examples
   """
   @spec create(list, :def | :defmacro) :: Macro.t()
-  def create(list, type) do
+  def create(type, list) do
     {using, list} = Keyword.get_and_update(list, :__using__, fn _ -> :pop end)
 
     [
@@ -86,7 +86,7 @@ defmodule Lily.Operator do
 
       case using do
         false -> nil
-        _ -> create_using_macro(list)
+        _ -> create__using_macro__macro(list)
       end
     ]
   end
@@ -95,33 +95,33 @@ defmodule Lily.Operator do
     raise Error, "expected type to be :def or :defmacro but got #{type}."
   end
 
-  def create(_, name, _) when name in [:., :"=>", :^, :"not in", :when] do
-    raise Error, "can't use #{name}, because it is used by the Elixir parser."
+  def create(_, operator, _) when operator in [:., :"=>", :^, :"not in", :when] do
+    raise Error, "can't use #{operator}, because it is used by the Elixir parser."
   end
 
-  def create(type, name, f) do
+  def create(type, operator, f) do
     arity = arity(f)
-    operator_arities = operator_arities(name)
+    operator_arities = arities(operator)
 
     cond do
       operator_arities == [] ->
         raise Error,
-              "expected an operator but got #{name}."
+              "expected an operator but got #{operator}."
 
       arity not in operator_arities ->
         raise Error,
               "expected a function with arity in #{operator_arities}, but got arity #{arity}."
 
       true ->
-        operator(type, name, f, arity)
+        operator(type, operator, f, arity)
     end
   end
 
-  defp create_using_macro(list) do
+  defp create__using_macro__macro(operators) do
     quote do
       defmacro __using__(_) do
         module = __MODULE__
-        kernel_excludes = unquote(Enum.map(list, fn {name, f} -> {name, arity(f)} end))
+        kernel_excludes = unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f)} end))
 
         quote do
           import Kernel, except: unquote(kernel_excludes)
@@ -131,41 +131,41 @@ defmodule Lily.Operator do
     end
   end
 
-  defp operator(:def, name, f, 1) do
+  defp operator(:def, operator, f, 1) do
     quote do
-      import Kernel, except: [{unquote(name), 1}]
+      import Kernel, except: [{unquote(operator), 1}]
 
-      def unquote(name)(a) do
+      def unquote(operator)(a) do
         unquote(f).(a)
       end
     end
   end
 
-  defp operator(:def, name, f, 2) do
+  defp operator(:def, operator, f, 2) do
     quote do
-      import Kernel, except: [{unquote(name), 2}]
+      import Kernel, except: [{unquote(operator), 2}]
 
-      def unquote(name)(a, b) do
+      def unquote(operator)(a, b) do
         unquote(f).(a, b)
       end
     end
   end
 
-  defp operator(:defmacro, name, f, 1) do
+  defp operator(:defmacro, operator, f, 1) do
     quote do
-      import Kernel, except: [{unquote(name), 1}]
+      import Kernel, except: [{unquote(operator), 1}]
 
-      defmacro unquote(name)(a) do
+      defmacro unquote(operator)(a) do
         unquote(f).(a)
       end
     end
   end
 
-  defp operator(:defmacro, name, f, 2) do
+  defp operator(:defmacro, operator, f, 2) do
     quote do
-      import Kernel, except: [{unquote(name), 2}]
+      import Kernel, except: [{unquote(operator), 2}]
 
-      defmacro unquote(name)(a, b) do
+      defmacro unquote(operator)(a, b) do
         unquote(f).(a, b)
       end
     end
@@ -177,7 +177,7 @@ defmodule Lily.Operator do
     arity
   end
 
-  def operator_arities(name) do
-    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(name, arity) end)
+  defp arities(operator) do
+    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(operator, arity) end)
   end
 end
