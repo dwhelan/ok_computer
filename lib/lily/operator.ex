@@ -83,7 +83,9 @@ defmodule Lily.Operator do
 
     [
       Enum.map(list, fn {name, f} -> create(type, name, f) end),
-      if using != false do create__using_macro__macro(list) end
+      if using != false do
+        create__using_macro__macro(list)
+      end
     ]
   end
 
@@ -174,6 +176,8 @@ defmodule Lily.Operator do
         quote do
           import Kernel, except: unquote(kernel_excludes)
           import unquote(module)
+
+          IO.inspect(module: unquote(module), excludes: unquote(kernel_excludes))
         end
       end
     end

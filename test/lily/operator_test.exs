@@ -3,8 +3,6 @@ defmodule Lily.OperatorTest do
   alias Lily.{Operator, Error}
   import Operator
 
-  doctest Operator
-
   describe "type" do
     test "raise if type is not :def or :defmacro" do
       assert_raise(
@@ -15,13 +13,13 @@ defmodule Lily.OperatorTest do
     end
   end
 
-  describe "atom" do
+  describe "operator" do
     test ~S/raise if in [:., :"=>", :^, :"not in", :when]/ do
-      Enum.each([:., :"=>", :^, :"not in", :when], fn atom ->
+      Enum.each([:., :"=>", :^, :"not in", :when], fn operator ->
         assert_raise(
           Error,
           ~r/used by the Elixir parser/,
-          fn -> create(:def, [{atom, quote(do: &to_string/1)}]) end
+          fn -> create(:def, [{operator, quote(do: &to_string/1)}]) end
         )
       end)
     end
@@ -33,5 +31,19 @@ defmodule Lily.OperatorTest do
         fn -> create(:def, [{:foo, quote(do: &to_string/1)}]) end
       )
     end
+  end
+
+  defoperators(
+    -: fn a -> "#{a}" end,
+    +: &"#{&1}",
+    @: &to_string/1,
+    !: &Kernel.to_string/1
+  )
+
+  describe "operator function: " do
+    test "anonymous", do: assert(-:a == "a")
+    test "capture operator", do: assert(+:a == "a")
+    test "local capture", do: assert(@:a == "a")
+    test "remote capture", do: assert(!:a == "a")
   end
 end
