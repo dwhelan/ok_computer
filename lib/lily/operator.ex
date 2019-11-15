@@ -83,10 +83,7 @@ defmodule Lily.Operator do
 
     [
       Enum.map(list, fn {name, f} -> create(type, name, f) end),
-
-      if using != false do
-        create__using_macro__macro(list)
-      end
+      if using != false do create__using_macro__macro(list) end
     ]
   end
 
@@ -170,7 +167,9 @@ defmodule Lily.Operator do
     quote do
       defmacro __using__(_) do
         module = __MODULE__
-        kernel_excludes = unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f)} end))
+
+        kernel_excludes =
+          unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f)} end))
 
         quote do
           import Kernel, except: unquote(kernel_excludes)
