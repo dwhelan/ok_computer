@@ -35,13 +35,13 @@ defmodule Lily.Operator do
   """
   @spec operators(keyword(f :: Macro.t())) :: Macro.t()
   defmacro operators(list) do
-    operators(:def, list)
+    create(list, :def)
   end
 
   @doc """
   Creates operator macros.
 
-  This will insert operator macros for each operator given in `list`.
+  This will insert operator macros for each operator in `list`.
   The key is the operator name and the value is the function that the operator should call.
 
   ## Examples
@@ -55,33 +55,13 @@ defmodule Lily.Operator do
         iex> :a ~> to_string()
         :a
 
-  A `__using__` macro will be inserted that imports `Kernel`,
-  except operators, and then imports itself.
+  By default, a `__using__` macro will be inserted that imports `Kernel`,
+  except operators, and then imports itself. If you don't want this
+  include `{:__using__, false}` in `list`.
   """
   @spec operator_macros(keyword(f :: Macro.t())) :: Macro.t()
   defmacro operator_macros(list) do
-    operators(:defmacro, list)
-  end
-
-  defp operators(type, list) do
-    [
-      Enum.map(list, fn {name, f} -> create(type, name, f) end),
-      create_using_macro(list)
-    ]
-  end
-
-  defp create_using_macro(list) do
-    quote do
-      defmacro __using__(_) do
-        module = __MODULE__
-        kernel_excludes = unquote(Enum.map(list, fn {name, f} -> {name, arity(f)} end))
-
-        quote do
-          import Kernel, except: unquote(kernel_excludes)
-          import unquote(module)
-        end
-      end
-    end
+    create(list, :defmacro)
   end
 
   @doc """
@@ -99,11 +79,14 @@ defmodule Lily.Operator do
   """
   @spec create(list, :def | :defmacro) :: Macro.t()
   def create(list, type) do
+    {using, list} = Keyword.get_and_update(list, :__using__, fn _ -> :pop end)
+
     [
       Enum.map(list, fn {name, f} -> create(type, name, f) end),
-      case Keyword.get(list, :__using__, true) do
-        true -> create_using_macro(list)
-        _ -> nil
+
+      case using do
+        false -> nil
+        _ -> create_using_macro(list)
       end
     ]
   end
@@ -114,12 +97,6 @@ defmodule Lily.Operator do
 
   def create(_, name, _) when name in [:., :"=>", :^, :"not in", :when] do
     raise Error, "can't use #{name}, because it is used by the Elixir parser."
-  end
-
-  def create(_, :create__using__, true) do
-  end
-
-  def create(_, :create__using__, _) do
   end
 
   def create(type, name, f) do
@@ -137,6 +114,20 @@ defmodule Lily.Operator do
 
       true ->
         operator(type, name, f, arity)
+    end
+  end
+
+  defp create_using_macro(list) do
+    quote do
+      defmacro __using__(_) do
+        module = __MODULE__
+        kernel_excludes = unquote(Enum.map(list, fn {name, f} -> {name, arity(f)} end))
+
+        quote do
+          import Kernel, except: unquote(kernel_excludes)
+          import unquote(module)
+        end
+      end
     end
   end
 

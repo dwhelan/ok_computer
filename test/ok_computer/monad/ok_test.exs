@@ -7,7 +7,8 @@ defmodule OkComputer.Monad.OkTest do
 
   defpipes(
     ~>: &Ok.bind/2,
-    ~>>: &Ok.map/2
+    ~>>: &Ok.map/2,
+    __using__: false
   )
 
   def stringify(value), do: {:ok, to_string(value)}
