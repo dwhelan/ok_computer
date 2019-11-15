@@ -97,7 +97,11 @@ defmodule Lily.Operator do
 
   ## Examples
   """
-  @spec create(:def | :defmacro, atom, f :: Macro.t()) :: Macro.t()
+  @spec create(:def | :defmacro, list) :: Macro.t()
+  def create(type, list) do
+      Enum.map(list, fn {name, f} -> create(type, name, f) end)
+  end
+
   def create(type, _, _) when type not in [:def, :defmacro] do
     raise Error, "expected type to be :def or :defmacro but got #{type}."
   end
