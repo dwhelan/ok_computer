@@ -5,8 +5,8 @@ defmodule OkComputer.Monad.OkTest do
   import Monad.Laws
   import Ok
 
-  pipe :~>, Ok, :bind
-  pipe :~>>, Ok, :map
+  pipe :~>, &Ok.bind/2
+  pipe :~>>, &Ok.map/2
 
   def stringify(value), do: {:ok, to_string(value)}
 

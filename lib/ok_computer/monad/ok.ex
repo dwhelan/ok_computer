@@ -4,10 +4,11 @@ defmodule OkComputer.Monad.Ok do
 
   monad do
     @impl Monad
-    def return(value), do: {:ok, value}
+    def return(a), do: {:ok, a}
 
     @impl Monad
-    def bind({:ok, value}, f), do: f.(value)
+    def bind({:ok, a}, f), do: f.(a)
+    def bind(a, _f), do: a
 
     @impl Pipe
     def pipe?({:ok, _}), do: true

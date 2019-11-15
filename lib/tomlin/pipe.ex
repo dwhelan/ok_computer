@@ -1,36 +1,25 @@
 defmodule OkComputer.Pipe do
   @callback pipe?(any) :: boolean
 
-  defmacro pipe(atom, module, function_name) do
-    create(atom, module, function_name)
+  defmacro pipe(atom, f) do
+    create(atom, f)
   end
 
-  def create(atom, pipe, function_name) do
-    Lily.Operator.create(:defmacro, atom, operator_function(pipe, function_name))
+  def create(atom, f) do
+    Lily.Operator.create(:defmacro, atom, operator_function(f))
   end
 
-  defp operator_function(pipe, function_name) do
+  defp operator_function(g) do
     quote do
       fn left, right ->
-        pipe = unquote(pipe)
-        function_name = unquote(function_name)
-
+        g = unquote(g)
         quote do
-          pipe(
-            unquote(left),
-            fn left -> left |> unquote(right) end,
-            unquote(pipe),
-            unquote(function_name)
+          apply(
+            unquote(g),
+            [unquote(left), fn left -> left |> unquote(right) end]
           )
         end
       end
-    end
-  end
-
-  def pipe(a, f, pipe, function_name) do
-    case pipe.pipe?(a) do
-      true -> apply(pipe, function_name, [a, f])
-      _ -> a
     end
   end
 end
