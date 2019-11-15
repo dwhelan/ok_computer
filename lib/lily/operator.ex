@@ -2,7 +2,7 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates operators using anonymous functions.
 
-  You create an operator by calling `&operators/1` or `&operator_macros/1`
+  You create an operator by calling `&operators/1` or `&defoperator_macros/1`
   with a keyword list of functions.
   These macros will insert a `:def` or `:defmacro` function called `name` into your module.
 
@@ -59,8 +59,8 @@ defmodule Lily.Operator do
   except operators, and then imports itself. If you don't want this
   include `{:__using__, false}` in `list`.
   """
-  @spec operator_macros(keyword(f :: Macro.t())) :: Macro.t()
-  defmacro operator_macros(list) do
+  @spec defoperator_macros(keyword(f :: Macro.t())) :: Macro.t()
+  defmacro defoperator_macros(list) do
     create(list, :defmacro)
   end
 

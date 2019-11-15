@@ -2,7 +2,7 @@ defmodule Lily.DefMacroOperatorsTest do
   use ExUnit.Case
   import Lily.Operator
 
-  operator_macros(
+  defoperator_macros(
     # unary
     @: fn input -> quote(do: "#{unquote(input)}") end,
     +: fn input -> quote(do: "#{unquote(input)}") end,

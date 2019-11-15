@@ -1,7 +1,7 @@
 defmodule OkPipe do
   import Lily.Operator
 
-  operator_macros(
+  defoperator_macros(
     ~>: fn a, f ->
       quote do
         case unquote(a) do
