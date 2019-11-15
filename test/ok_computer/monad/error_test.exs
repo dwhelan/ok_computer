@@ -5,8 +5,10 @@ defmodule OkComputer.Monad.ErrorTest do
   import Monad.Laws
   import Error
 
-  pipe :~>, &Error.bind/2
-  pipe :~>>, &Error.map/2
+  defpipes(
+    ~>: &Error.bind/2,
+    ~>>: &Error.map/2
+  )
 
   def stringify(reason), do: {:error, to_string(reason)}
 

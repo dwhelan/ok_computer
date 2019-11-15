@@ -90,16 +90,22 @@ defmodule Lily.Operator do
   This is useful if you would like to create your own macro that
   uses an operator or operator macro.
 
-  If you want to create an operator function provide `:def` as the first argument
+  If you want to create an operator function provide `:def` as the second argument
   along with the name of the operator and the function to call.
 
-  If you want to create an operator macro provide `:defmacro` as the first argument instead.
+  If you want to create an operator macro provide `:defmacro` instead.
 
   ## Examples
   """
-  @spec create(:def | :defmacro, list) :: Macro.t()
-  def create(type, list) do
-      Enum.map(list, fn {name, f} -> create(type, name, f) end)
+  @spec create(list, :def | :defmacro) :: Macro.t()
+  def create(list, type) do
+    [
+      Enum.map(list, fn {name, f} -> create(type, name, f) end),
+      case Keyword.get(list, :__using__, true) do
+        true -> create_using_macro(list)
+        _ -> nil
+      end
+    ]
   end
 
   def create(type, _, _) when type not in [:def, :defmacro] do
@@ -108,6 +114,12 @@ defmodule Lily.Operator do
 
   def create(_, name, _) when name in [:., :"=>", :^, :"not in", :when] do
     raise Error, "can't use #{name}, because it is used by the Elixir parser."
+  end
+
+  def create(_, :create__using__, true) do
+  end
+
+  def create(_, :create__using__, _) do
   end
 
   def create(type, name, f) do
