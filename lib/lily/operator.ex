@@ -84,22 +84,21 @@ defmodule Lily.Operator do
     [
       Enum.map(list, fn {name, f} -> create(type, name, f) end),
 
-      case using do
-        false -> nil
-        _ -> create__using_macro__macro(list)
+      if using != false do
+        create__using_macro__macro(list)
       end
     ]
   end
 
-  def create(type, _, _) when type not in [:def, :defmacro] do
+  defp create(type, _, _) when type not in [:def, :defmacro] do
     raise Error, "expected type to be :def or :defmacro but got #{type}."
   end
 
-  def create(_, operator, _) when operator in [:., :"=>", :^, :"not in", :when] do
+  defp create(_, operator, _) when operator in [:., :"=>", :^, :"not in", :when] do
     raise Error, "can't use #{operator}, because it is used by the Elixir parser."
   end
 
-  def create(type, operator, f) do
+  defp create(type, operator, f) do
     arity = arity(f)
     operator_arities = arities(operator)
 
@@ -114,20 +113,6 @@ defmodule Lily.Operator do
 
       true ->
         operator(type, operator, f, arity)
-    end
-  end
-
-  defp create__using_macro__macro(operators) do
-    quote do
-      defmacro __using__(_) do
-        module = __MODULE__
-        kernel_excludes = unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f)} end))
-
-        quote do
-          import Kernel, except: unquote(kernel_excludes)
-          import unquote(module)
-        end
-      end
     end
   end
 
@@ -179,5 +164,19 @@ defmodule Lily.Operator do
 
   defp arities(operator) do
     [1, 2] |> Enum.filter(fn arity -> Macro.operator?(operator, arity) end)
+  end
+
+  defp create__using_macro__macro(operators) do
+    quote do
+      defmacro __using__(_) do
+        module = __MODULE__
+        kernel_excludes = unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f)} end))
+
+        quote do
+          import Kernel, except: unquote(kernel_excludes)
+          import unquote(module)
+        end
+      end
+    end
   end
 end
