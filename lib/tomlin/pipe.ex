@@ -13,7 +13,11 @@ defmodule OkComputer.Pipe do
   end
 
   def create(pipes) do
-    Lily.Operator.create(:defmacro, pipes |> Enum.map(fn {operator, pipe_function} -> {operator, operator_function(pipe_function)} end))
+    Lily.Operator.create(:defmacro, operator_functions(pipes))
+  end
+
+  defp operator_functions(pipes) do
+    Enum.map(pipes, fn {operator, pipe_function} -> {operator, operator_function(pipe_function)} end)
   end
 
   defp operator_function(pipe_function) do
