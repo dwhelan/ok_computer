@@ -27,11 +27,6 @@ defmodule OkComputer.Monad.OkTest do
     assert map({:ok, :value}, f) == {:ok, "value"}
   end
 
-  test "pipe?" do
-    assert pipe?({:ok, :value})
-    refute pipe?(:value)
-  end
-
   test "pipe bind" do
     assert {:ok, :value} ~> stringify() == {:ok, "value"}
     assert :value ~> stringify() == :value

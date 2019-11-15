@@ -26,11 +26,6 @@ defmodule OkComputer.Monad.ErrorTest do
     assert map({:error, :reason}, f) == {:error, "reason"}
   end
 
-  test "pipe?" do
-    assert pipe?({:error, :reason})
-    refute pipe?(:reason)
-  end
-
   test "pipe bind" do
     assert {:error, :reason} ~> stringify() == {:error, "reason"}
     assert :reason ~> stringify() == :reason
