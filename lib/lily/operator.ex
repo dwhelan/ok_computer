@@ -8,6 +8,12 @@ defmodule Lily.Operator do
   ```
   #{File.read!("test/support/concat.ex")}
   ```
+        iex> use Concat
+        iex> import Kernel, except: [+: 2, ++: 2]
+        iex> :a + :b # <- standard operator
+        "ab"
+        iex> :a ++ :b # <- lily operator
+        "ab"
 
   Instead of declaring an operator using `def`, you provide an equivalent anonymous function to `defoperators/1`.
 
@@ -26,9 +32,9 @@ defmodule Lily.Operator do
   @doc """
   Creates operators.
 
-  Insert operator functions for each operator given in `operators`.
+  Insert operator functions for each operator in `operators`.
   The key is the operator name and the value is the function that the operator should call.
-  The function should return an expression.
+  The function should return an expression which results from the operator inputs.
 
   ## Examples
   A complex math module:
@@ -50,7 +56,7 @@ defmodule Lily.Operator do
   @doc """
   Creates operator macros.
 
-  This will insert operator macros for each operator in `operators`.
+  Insert operator macros for each operator in `operators`.
   The key is the operator name and the value is the function that the operator should call.
   The function should return a quoted expression.
   """
@@ -64,10 +70,10 @@ defmodule Lily.Operator do
 
   This is useful for programmatically creating operators.
 
-  If you want to create an operator function provide `:def` as the second argument.
+  If you want to create an operator function provide `:def` as the first argument.
   If you want to create an operator macro provide `:defmacro` instead.
   """
-  @spec create(keyword(f :: Macro.t()), :def | :defmacro) :: Macro.t()
+  @spec create(:def | :defmacro, keyword(f :: Macro.t())) :: Macro.t()
   def create(type, operators) do
     {using, operators} = Keyword.get_and_update(operators, :__using__, fn _ -> :pop end)
 
@@ -166,8 +172,6 @@ defmodule Lily.Operator do
         quote do
           import Kernel, except: unquote(kernel_excludes)
           import unquote(module)
-
-          IO.inspect(module: unquote(module), excludes: unquote(kernel_excludes))
         end
       end
     end

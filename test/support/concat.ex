@@ -3,12 +3,12 @@ defmodule Concat do
   import Lily.Operator
   import Kernel, except: [+: 2, ++: 2]
 
-  # Standard Elixir operator
+  # standard operator
   def a + b do
     "#{a}#{b}"
   end
 
-  # Using defoperators
+  # lily operator
   defoperators(
     ++: fn a, b ->
       "#{a}#{b}"
