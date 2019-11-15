@@ -33,8 +33,8 @@ defmodule Lily.Operator do
   except operators, and then imports itself.
   ## Examples
   """
-  @spec operators(keyword(f :: Macro.t())) :: Macro.t()
-  defmacro operators(list) do
+  @spec defoperators(keyword(f :: Macro.t())) :: Macro.t()
+  defmacro defoperators(list) do
     create(list, :def)
   end
 

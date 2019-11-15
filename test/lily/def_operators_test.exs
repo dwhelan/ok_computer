@@ -2,7 +2,7 @@ defmodule Lily.DefOperatorsTest do
   use ExUnit.Case
   import Lily.Operator
 
-  operators(
+  defoperators(
     # unary
     @: fn a -> "#{a}" end,
     +: fn a -> "#{a}" end,
