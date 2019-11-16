@@ -8,7 +8,7 @@ defmodule Lily.Operator do
   using standard operators and lily operators:
 
   ```
-  #{File.read!("test/support/concat.ex")}
+  #{File.read!("test/lily/support/concat.ex")}
   ```
         iex> use Concat
         iex> import Kernel, except: [+: 2, ++: 2]
@@ -44,7 +44,7 @@ defmodule Lily.Operator do
   Math operators that work with numbers or complex numbers expressed as `{real, imaginary}`:
 
   ```
-  #{File.read!("test/support/math.ex")}
+  #{File.read!("test/lily/support/math.ex")}
   ```
   Regular math:
 
@@ -79,7 +79,7 @@ defmodule Lily.Operator do
   This could be useful for inspecting intermediate values in a pipeline.
 
   ```
-  #{File.read!("test/support/inspect_pipe.ex")}
+  #{File.read!("test/lily/support/inspect_pipe.ex")}
   ```
 
         iex> use InspectPipe
