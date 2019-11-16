@@ -23,12 +23,13 @@ defmodule OkComputer.Pipe do
   end
 
   defp operator_function(pipe_function) do
+    IO.inspect pipe_function: pipe_function
     quote do
       fn a, f ->
         pipe_function = unquote(pipe_function)
 
         quote do
-          apply(unquote(pipe_function), [unquote(a), fn a -> a |> unquote(f) end])
+          unquote(pipe_function).(unquote(a), fn a -> a |> unquote(f) end)
         end
       end
     end

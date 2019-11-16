@@ -130,7 +130,9 @@ defmodule Lily.Operator do
 
       arity not in operator_arities ->
         raise Error,
-              "expected a function with arity in #{operator_arities}, but got arity #{arity}."
+              "expected a function with arity in 'x#{operator_arities}x', but got operator #{
+                operator
+              } with arity #{arity}."
 
       true ->
         operator(type, operator, f, arity)
@@ -170,6 +172,7 @@ defmodule Lily.Operator do
   defp operator(:defmacro, operator, f, 2) do
     quote do
       import Kernel, except: [{unquote(operator), 2}]
+      import Lily.Operator
 
       defmacro unquote(operator)(a, b) do
         unquote(f).(a, b)
@@ -193,12 +196,12 @@ defmodule Lily.Operator do
     end
   end
 
-  def tee(tee) do
-    fn a, f ->
+  def tee(f) do
+    fn left, right ->
       quote do
-        a = unquote(a)
-        unquote(tee).(a)
-        a |> unquote(f)
+        left = unquote(left)
+        unquote(f).(left)
+        left |> unquote(right)
       end
     end
   end
@@ -210,6 +213,6 @@ defmodule Lily.Operator do
   end
 
   defp arities(operator) do
-     Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
+    Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
   end
 end

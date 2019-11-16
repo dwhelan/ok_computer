@@ -4,13 +4,13 @@ defmodule Lily.OperatorTest do
   import Operator
 
   describe "type" do
-    test "raise if type is not :def or :defmacro" do
-      assert_raise(
-        Error,
-        ~r/expected type to be :def or :defmacro/,
-        fn -> create(:foo, +: quote(do: &to_string/1)) end
-      )
-    end
+    #    test "raise if type is not :def or :defmacro" do
+    #      assert_raise(
+    #        Error,
+    #        ~r/expected type to be :def or :defmacro/,
+    #        fn -> create(:foo, +: quote(do: &to_string/1)) end
+    #      )
+    #    end
   end
 
   describe "operator" do
@@ -42,7 +42,6 @@ defmodule Lily.OperatorTest do
     +: &"#{&1}",
     @: &to_string/1,
     !: &Kernel.to_string/1,
-
     ~>: fn a, b -> "#{a}#{b}" end,
     ~>>: &"#{&1}#{&2}",
     <~: &__MODULE__.to_string/2
@@ -59,5 +58,13 @@ defmodule Lily.OperatorTest do
     test "anonymous", do: assert(:a ~> :b == "ab")
     test "capture operator", do: assert(:a ~>> :b == "ab")
     test "remote capture", do: assert(:a <~ :b == "ab")
+  end
+
+  defoperator_macros(
+    >>>: Lily.Operator.tee(&IO.inspect/1)
+  )
+
+  test "tee" do
+    assert :a >>> to_string() == "a"
   end
 end
