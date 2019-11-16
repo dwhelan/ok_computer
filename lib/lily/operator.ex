@@ -177,16 +177,6 @@ defmodule Lily.Operator do
     end
   end
 
-  defp arity(f) do
-    {f, _} = Code.eval_quoted(f)
-    {:arity, arity} = Function.info(f, :arity)
-    arity
-  end
-
-  defp arities(operator) do
-    [1, 2] |> Enum.filter(fn arity -> Macro.operator?(operator, arity) end)
-  end
-
   defp create__using_macro__macro(operators) do
     quote do
       defmacro __using__(_) do
@@ -201,5 +191,25 @@ defmodule Lily.Operator do
         end
       end
     end
+  end
+
+  def tee(tee) do
+    fn a, f ->
+      quote do
+        a = unquote(a)
+        unquote(tee).(a)
+        a |> unquote(f)
+      end
+    end
+  end
+
+  defp arity(f) do
+    {f, _} = Code.eval_quoted(f)
+    {:arity, arity} = Function.info(f, :arity)
+    arity
+  end
+
+  defp arities(operator) do
+     Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
   end
 end

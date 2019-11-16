@@ -33,17 +33,31 @@ defmodule Lily.OperatorTest do
     end
   end
 
+  def to_string(a, b) do
+    "#{a}#{b}"
+  end
+
   defoperators(
     -: fn a -> "#{a}" end,
     +: &"#{&1}",
     @: &to_string/1,
-    !: &Kernel.to_string/1
+    !: &Kernel.to_string/1,
+
+    ~>: fn a, b -> "#{a}#{b}" end,
+    ~>>: &"#{&1}#{&2}",
+    <~: &__MODULE__.to_string/2
   )
 
-  describe "operator function: " do
+  describe "operator function/1: " do
     test "anonymous", do: assert(-:a == "a")
     test "capture operator", do: assert(+:a == "a")
     test "local capture", do: assert(@:a == "a")
     test "remote capture", do: assert(!:a == "a")
+  end
+
+  describe "operator function/2: " do
+    test "anonymous", do: assert(:a ~> :b == "ab")
+    test "capture operator", do: assert(:a ~>> :b == "ab")
+    test "remote capture", do: assert(:a <~ :b == "ab")
   end
 end
