@@ -1,4 +1,4 @@
-defmodule Complex do
+defmodule Math do
   @moduledoc false
   import Lily.Operator
 

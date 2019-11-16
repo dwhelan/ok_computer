@@ -2,29 +2,33 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates operators using anonymous functions.
 
-  Operators can be more dynamic, by building them with anonymous functions.
+  Lily operators are more flexible than standard Elixir operators because you build them with anonymous functions.
 
-  The `Concat` module below shows two ways you could create a concat operator:
+  The `Concat` module below shows how you could create concat operators
+  using standard operators and lily operators:
+
   ```
   #{File.read!("test/support/concat.ex")}
   ```
         iex> use Concat
         iex> import Kernel, except: [+: 2, ++: 2]
-        iex> :a + :b # <- standard operator
+        iex> "a" + "b" # <- standard operator
         "ab"
-        iex> :a ++ :b # <- lily operator
+        iex> "a" ++ "b" # <- lily operator
         "ab"
 
-  Instead of declaring an operator using `def`, you provide an equivalent anonymous function to `defoperators/1`.
-
-  You can also create operator macros using `defoperator_macros/1`:
-  ```
-  #{File.read!("test/support/ok_pipe.ex")}
-  ```
+  With lily operators, instead of declaring an operator using `def` or `defmacro`,
+  you provide an equivalent anonymous function to `defoperators/1` or `defoperator_macros/1`.
+  Use a function of arity one for unary operators and a function of arity two for binary operators.
 
   By default, a `__using__` macro will be inserted that imports `Kernel`,
   (except the operators you created) and then imports itself.
-  If you don't want this behaviour include `{:__using__, false}` in `operators`.
+  This allows a module with operators to be easily used.
+  If you don't want this behaviour, include `{:__using__, false}` in `operators`.
+
+  ## Unsupported Operators
+  Lily supports all the Elixir operators except:
+  `.`, `=>`, `^`, `not in`, `when` as these are interpreted by the Elixir parser.
   """
 
   alias Lily.Error
@@ -40,15 +44,21 @@ defmodule Lily.Operator do
   Math operators that work with numbers or complex numbers expressed as `{real, imaginary}`:
 
   ```
-  #{File.read!("test/support/complex.ex")}
+  #{File.read!("test/support/math.ex")}
   ```
-        iex> use Complex
+  Regular math:
+
+        iex> use Math
         iex> +1
         1
-        iex> +{1, 2}
-        {1, 2}
         iex> 1 + 2
         3
+
+  Complex math:
+
+        iex> use Math
+        iex> +{1, 2}
+        {1, 2}
         iex> {1, 2} + {3, 4}
         {4, 6}
   """
@@ -60,9 +70,12 @@ defmodule Lily.Operator do
   @doc """
   Creates operator macros.
 
-  Insert operator macros for each operator in `operators`.
+  Insert operator macros for each operator in the `operators` keyword list.
   The key is the operator name and the value is the function that the operator should call.
   The function should return a quoted expression.
+  ```
+  #{File.read!("test/support/ok_pipe.ex")}
+  ```
   """
   @spec defoperator_macros(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperator_macros(operators) do
