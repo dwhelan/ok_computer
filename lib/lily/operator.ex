@@ -73,9 +73,18 @@ defmodule Lily.Operator do
   Insert operator macros for each operator in the `operators` keyword list.
   The key is the operator name and the value is the function that the operator should call.
   The function should return a quoted expression.
+
+  ## Examples
+  A tee `a ~> function_call` operator that calls `IO.inspect(a)` and then ``.
+  This could be useful for inspecting intermediate values in a pipeline.
+
   ```
-  #{File.read!("test/support/ok_pipe.ex")}
+  #{File.read!("test/support/inspect_pipe.ex")}
   ```
+
+        iex> use InspectPipe
+        iex> :a ~> to_string() # => :a
+        "a"
   """
   @spec defoperator_macros(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperator_macros(operators) do
