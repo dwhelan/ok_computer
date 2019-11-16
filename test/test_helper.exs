@@ -1,12 +1,16 @@
 ExUnit.start()
 
 defmodule Lily.Test do
-  def to_string_quoted(a) do
-    quote(do: to_string(unquote(input)))
-  end
-
   def to_string(a, b) do
     "#{a}#{b}"
+  end
+
+  def quoted_to_string(a) do
+    quote(do: "#{unquote(a)}")
+  end
+
+  def quoted_to_string(a, b) do
+    quote(do: "#{unquote(a)}#{unquote(b)}")
   end
 end
 
