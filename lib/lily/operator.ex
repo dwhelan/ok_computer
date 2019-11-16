@@ -208,9 +208,14 @@ defmodule Lily.Operator do
   end
 
   defp arity(f, env) do
-    {f, _} = Code.eval_quoted(f, [], env)
-    {:arity, arity} = Function.info(f, :arity)
-    arity
+    try do
+      {f, _} = Code.eval_quoted(f, [], env)
+      {:arity, arity} = Function.info(f, :arity)
+      arity
+    rescue
+      CompileError -> IO.inspect f: f, env: env
+      raise "doh!"
+    end
   end
 
   defp arities(operator) do

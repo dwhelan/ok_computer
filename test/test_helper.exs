@@ -1,5 +1,15 @@
 ExUnit.start()
 
+defmodule Lily.Test do
+  def to_string_quoted(a) do
+    quote(do: to_string(unquote(input)))
+  end
+
+  def to_string(a, b) do
+    "#{a}#{b}"
+  end
+end
+
 defmodule Monad.Laws do
   defmacro test_monad(monad, a) do
     quote do
