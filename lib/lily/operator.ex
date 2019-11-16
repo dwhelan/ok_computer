@@ -37,16 +37,20 @@ defmodule Lily.Operator do
   The function should return an expression which results from the operator inputs.
 
   ## Examples
-  A complex math module:
+  Math operators that work with numbers or complex numbers expressed as `{real, imaginary}`:
 
   ```
   #{File.read!("test/support/complex.ex")}
   ```
         iex> use Complex
+        iex> +1
+        1
+        iex> +{1, 2}
+        {1, 2}
+        iex> 1 + 2
+        3
         iex> {1, 2} + {3, 4}
         {4, 6}
-        iex> {1, 2} - {3, 4}
-        {-2, -2}
   """
   @spec defoperators(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperators(operators) do
