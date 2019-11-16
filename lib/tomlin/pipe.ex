@@ -9,11 +9,11 @@ defmodule OkComputer.Pipe do
   that will pipe the input
   """
   defmacro defpipes(pipes) do
-    create(pipes)
+    create(pipes, __CALLER__)
   end
 
-  def create(pipes) do
-    Lily.Operator.create(:defmacro, operator_functions(pipes))
+  def create(pipes, env) do
+    Lily.Operator.create(:defmacro, operator_functions(pipes), env)
   end
 
   defp operator_functions(pipes) do

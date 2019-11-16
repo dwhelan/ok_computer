@@ -64,7 +64,7 @@ defmodule Lily.Operator do
   """
   @spec defoperators(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperators(operators) do
-    create(:def, operators)
+    create(:def, operators, __CALLER__)
   end
 
   @doc """
@@ -88,7 +88,7 @@ defmodule Lily.Operator do
   """
   @spec defoperator_macros(keyword(f :: Macro.t())) :: Macro.t()
   defmacro defoperator_macros(operators) do
-    create(:defmacro, operators)
+    create(:defmacro, operators, __CALLER__)
   end
 
   @doc """
@@ -99,28 +99,28 @@ defmodule Lily.Operator do
   If you want to create an operator function provide `:def` as the first argument.
   If you want to create an operator macro provide `:defmacro` instead.
   """
-  @spec create(:def | :defmacro, keyword(f :: Macro.t())) :: Macro.t()
-  def create(type, operators) do
+  @spec create(:def | :defmacro, keyword(f :: Macro.t()), Macro.Env.t) :: Macro.t()
+  def create(type, operators, env) do
     {using, operators} = Keyword.get_and_update(operators, :__using__, fn _ -> :pop end)
 
     [
-      Enum.map(operators, fn {operator, f} -> create(type, operator, f) end),
+      Enum.map(operators, fn {operator, f} -> create(type, operator, f, env) end),
       if using != false do
-        create__using_macro__macro(operators)
+        create__using_macro__macro(operators, env)
       end
     ]
   end
 
-  defp create(type, _, _) when type not in [:def, :defmacro] do
+  defp create(type, _, _, _) when type not in [:def, :defmacro] do
     raise Error, "expected type to be :def or :defmacro but got #{type}."
   end
 
-  defp create(_, operator, _) when operator in [:., :"=>", :^, :"not in", :when] do
+  defp create(_, operator, _, _) when operator in [:., :"=>", :^, :"not in", :when] do
     raise Error, "can't use #{operator}, because it is used by the Elixir parser."
   end
 
-  defp create(type, operator, f) do
-    arity = arity(f)
+  defp create(type, operator, f, env) do
+    arity = arity(f, env)
     operator_arities = arities(operator)
 
     cond do
@@ -180,13 +180,14 @@ defmodule Lily.Operator do
     end
   end
 
-  defp create__using_macro__macro(operators) do
+  defp create__using_macro__macro(operators, env) do
     quote do
       defmacro __using__(_) do
         module = __MODULE__
+        caller = __CALLER__
 
         kernel_excludes =
-          unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f)} end))
+          unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f, env)} end))
 
         quote do
           import Kernel, except: unquote(kernel_excludes)
@@ -206,8 +207,8 @@ defmodule Lily.Operator do
     end
   end
 
-  defp arity(f) do
-    {f, _} = Code.eval_quoted(f)
+  defp arity(f, env) do
+    {f, _} = Code.eval_quoted(f, [], env)
     {:arity, arity} = Function.info(f, :arity)
     arity
   end

@@ -19,7 +19,7 @@ defmodule Lily.OperatorTest do
         assert_raise(
           Error,
           ~r/used by the Elixir parser/,
-          fn -> create(:def, [{operator, quote(do: &to_string/1)}]) end
+          fn -> create(:def, [{operator, quote(do: &to_string/1)}], __ENV__) end
         )
       end)
     end
@@ -28,7 +28,7 @@ defmodule Lily.OperatorTest do
       assert_raise(
         Error,
         ~r/expected an operator/,
-        fn -> create(:def, [{:foo, quote(do: &to_string/1)}]) end
+        fn -> create(:def, [{:foo, quote(do: &to_string/1)}], __ENV__) end
       )
     end
   end
@@ -61,7 +61,7 @@ defmodule Lily.OperatorTest do
   end
 
   defoperator_macros(
-    >>>: Lily.Operator.tee(&IO.inspect/1)
+    >>>: tee(&IO.inspect/1)
   )
 
   test "tee" do
