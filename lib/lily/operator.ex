@@ -33,6 +33,8 @@ defmodule Lily.Operator do
 
   alias Lily.Error
 
+  Module.register_attribute(__MODULE__, :operators, accumulate: true)
+
   @doc """
   Creates operators.
 
@@ -79,10 +81,10 @@ defmodule Lily.Operator do
   This could be useful for inspecting intermediate values in a pipeline.
 
   ```
-  #{File.read!("test/lily/support/inspect_pipe.ex")}
+  #{File.read!("test/lily/support/inspect_tap.ex")}
   ```
 
-        iex> use InspectPipe
+        iex> use InspectTap
         iex> :a ~> to_string() # => :a
         "a"
   """
@@ -101,12 +103,23 @@ defmodule Lily.Operator do
   """
   @spec create(:def | :defmacro, keyword(f :: Macro.t()), Macro.Env.t()) :: Macro.t()
   def create(type, operators, env) do
-    {using, operators} = Keyword.get_and_update(operators, :__using__, fn _ -> :pop end)
+    {using, operators} =
+      Keyword.get_and_update(
+        operators,
+        :__using__,
+        fn _ -> :pop end
+      )
 
     [
-      Enum.map(operators, fn {operator, f} -> create(type, operator, f, env) end),
+      quote do
+        Module.register_attribute(unquote(Macro.escape(env)).module, :operators, accumulate: true)
+      end,
+      Enum.map(
+        operators,
+        fn {operator, f} -> create(type, operator, f, env) end
+      ),
       if using != false do
-        create__using_macro__macro(operators, env)
+        create__using__(operators, env)
       end
     ]
   end
@@ -135,6 +148,7 @@ defmodule Lily.Operator do
               } with arity #{arity}."
 
       true ->
+        Module.put_attribute(env.module, :operators, operator)
         operator(type, operator, f, arity)
     end
   end
@@ -180,7 +194,7 @@ defmodule Lily.Operator do
     end
   end
 
-  defp create__using_macro__macro(operators, env) do
+  defp create__using__(operators, env) do
     quote do
       defmacro __using__(_) do
         module = __MODULE__
@@ -197,12 +211,51 @@ defmodule Lily.Operator do
     end
   end
 
+  defmacro create__using__(operators) do
+    quote do
+      IO.inspect(operators: @operators)
+
+      defmacro __using__(_) do
+        module = __MODULE__
+        caller = __CALLER__
+
+        kernel_excludes = []
+
+        quote do
+          import Kernel, except: unquote(kernel_excludes)
+          import unquote(module)
+        end
+      end
+    end
+  end
+
   @doc """
-  A tap operator function.
+  Returns an operator macro function that calls a tap function before piping.
 
-  Returns an operator function that calls `tap` with the input
-  and then pipes the input to
+  ## Examples
+  A tap operator that calls `IO.inspect/1`.
 
+  ```
+  #{File.read!("test/lily/support/inspect_tap.ex")}
+  ```
+        iex> use InspectTap
+        iex> :a ~> to_string() # > :a
+        "a"
+
+  This could be useful for inspecting intermediate values in a pipeline.
+
+        iex> "a b"
+        ...>   |> String.upcase()
+        ...>   |> String.split()
+        ["A", "B"]
+
+        iex> use InspectTap
+        iex> "a b"
+        ...>   ~> String.upcase() # > "a b"
+        ...>   ~> String.split()  # > "A B"
+        ["A", "B"]
+
+  Using `~>` results in the input being inspected but is otherwise identical to `|>`.
   """
   def tap(tap) do
     fn a, f ->

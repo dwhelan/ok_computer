@@ -59,10 +59,4 @@ defmodule Lily.OperatorTest do
     test "capture operator", do: assert(:a ~>> :b == "ab")
     test "remote capture", do: assert(:a <~ :b == "ab")
   end
-
-  defoperator_macros(>>>: tap(&IO.inspect/1))
-
-  test "tap" do
-    assert :a >>> to_string() == "a"
-  end
 end
