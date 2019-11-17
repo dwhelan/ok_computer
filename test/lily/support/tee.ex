@@ -2,11 +2,11 @@ defmodule Lily.Tee do
   @moduledoc false
   import Lily.Operator
 
-  def tee(tee) do
+  def tap(tap) do
     fn a, f ->
       quote do
         a = unquote(a)
-        unquote(tee).(a)
+        unquote(tap).(a)
         a |> unquote(f)
       end
     end

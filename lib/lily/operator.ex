@@ -99,7 +99,7 @@ defmodule Lily.Operator do
   If you want to create an operator function provide `:def` as the first argument.
   If you want to create an operator macro provide `:defmacro` instead.
   """
-  @spec create(:def | :defmacro, keyword(f :: Macro.t()), Macro.Env.t) :: Macro.t()
+  @spec create(:def | :defmacro, keyword(f :: Macro.t()), Macro.Env.t()) :: Macro.t()
   def create(type, operators, env) do
     {using, operators} = Keyword.get_and_update(operators, :__using__, fn _ -> :pop end)
 
@@ -198,27 +198,26 @@ defmodule Lily.Operator do
   end
 
   @doc """
-  A tap operator function that 
-  
-  ## Examples
-  
-      iex> 
-      
+  A tap operator function.
+
+  Returns an operator function that calls `tap` with the input
+  and then pipes the input to
+
   """
-  def tee(f) do
-    fn left, right ->
+  def tap(tap) do
+    fn a, f ->
       quote do
-        left = unquote(left)
-        unquote(f).(left)
-        left |> unquote(right)
+        a = unquote(a)
+        unquote(tap).(a)
+        a |> unquote(f)
       end
     end
   end
 
   defp arity(f, env) do
-      {f, _} = Code.eval_quoted(f, [], env)
-      {:arity, arity} = Function.info(f, :arity)
-      arity
+    {f, _} = Code.eval_quoted(f, [], env)
+    {:arity, arity} = Function.info(f, :arity)
+    arity
   end
 
   defp arities(operator) do

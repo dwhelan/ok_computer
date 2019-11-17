@@ -17,9 +17,12 @@ defmodule OkComputer.Pipe do
   end
 
   defp operator_functions(pipes) do
-    Enum.map(pipes, fn {operator, pipe_function} ->
-      {operator, operator_function(pipe_function)}
-    end)
+    Enum.map(
+      pipes,
+      fn {operator, pipe_function} ->
+        {operator, operator_function(pipe_function)}
+      end
+    )
   end
 
   defp operator_function(pipe_function) do
