@@ -28,7 +28,7 @@ defmodule Lily.Operator do
 
   ## Unsupported Operators
   Lily supports all the Elixir operators except:
-  `.`, `=>`, `^`, `not in`, `when` as these are interpreted by the Elixir parser.
+  `.`, `=>`, `^`, `not in`, `when` as these are used by the Elixir parser.
   """
 
   alias Lily.Error
@@ -257,7 +257,8 @@ defmodule Lily.Operator do
 
   Using `~>` results in the input being inspected but is otherwise identical to `|>`.
   """
-  def tap(tap) do
+  @spec tap((any -> any)) :: (any, function -> Macro.t())
+  def tap(tap) when is_function(tap, 1) do
     fn a, f ->
       quote do
         a = unquote(a)

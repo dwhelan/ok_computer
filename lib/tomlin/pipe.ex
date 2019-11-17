@@ -1,6 +1,6 @@
 defmodule OkComputer.Pipe do
   @moduledoc """
-  Support for creating pipe operators.
+  Support for creating pipes.
 
   A pipe consists of an operator and a pipe function.
 
