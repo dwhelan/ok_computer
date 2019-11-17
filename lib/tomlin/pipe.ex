@@ -8,19 +8,23 @@ defmodule OkComputer.Pipe do
   The function will be given the input and a function
   that will pipe the input
   """
+  import Lily.Operator
+
   defmacro defpipes(pipes) do
     create(pipes, __CALLER__)
   end
 
   def create(pipes, env) do
-    Lily.Operator.create(:defmacro, operator_functions(pipes), env)
+    create(:defmacro, operator_functions(pipes, env), env)
   end
 
-  defp operator_functions(pipes) do
+  defp operator_functions(pipes, env) do
     Enum.map(
       pipes,
       fn {operator, pipe_function} ->
-        {operator, operator_function(pipe_function)}
+        case arity(pipe_function, env) do
+          2 -> {operator, operator_function(pipe_function)}
+        end
       end
     )
   end

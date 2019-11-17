@@ -1,6 +1,6 @@
 defmodule Math do
   @moduledoc false
-  import Lily.Operator
+  use Lily.Operator
 
   defoperators(
     +: fn

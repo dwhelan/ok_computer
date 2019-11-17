@@ -33,7 +33,7 @@ defmodule Lily.Operator do
 
   alias Lily.Error
 
-  Module.register_attribute(__MODULE__, :operators, accumulate: true)
+#  Module.register_attribute(__MODULE__, :operators, accumulate: true)
 
   @doc """
   Creates operators.
@@ -111,9 +111,6 @@ defmodule Lily.Operator do
       )
 
     [
-      quote do
-        Module.register_attribute(unquote(Macro.escape(env)).module, :operators, accumulate: true)
-      end,
       Enum.map(
         operators,
         fn {operator, f} -> create(type, operator, f, env) end
@@ -148,7 +145,13 @@ defmodule Lily.Operator do
               } with arity #{arity}."
 
       true ->
-        Module.put_attribute(env.module, :operators, operator)
+        if env.module == Math do
+        IO.inspect putting_into: env.module, operator: {operator, arity}
+        Module.put_attribute(env.module, :operators, {operator, arity})
+        IO.inspect operators: Module.get_attribute(env.module, :operators)
+        else
+        Module.put_attribute(env.module, :operators, {operator, arity})
+        end
         operator(type, operator, f, arity)
     end
   end
@@ -213,8 +216,6 @@ defmodule Lily.Operator do
 
   defmacro create__using__(operators) do
     quote do
-      IO.inspect(operators: @operators)
-
       defmacro __using__(_) do
         module = __MODULE__
         caller = __CALLER__
@@ -268,7 +269,7 @@ defmodule Lily.Operator do
     end
   end
 
-  defp arity(f, env) do
+  def arity(f, env) do
     {f, _} = Code.eval_quoted(f, [], env)
     {:arity, arity} = Function.info(f, :arity)
     arity
@@ -276,5 +277,20 @@ defmodule Lily.Operator do
 
   defp arities(operator) do
     Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
+  end
+
+  defmacro __using__(_) do
+    quote do
+      alias Lily.Operator
+      Module.register_attribute __MODULE__, :operators, accumulate: true
+      IO.inspect registering: __MODULE__
+      @before_compile Operator
+      import Operator
+    end
+  end
+
+  defmacro __before_compile__(env) do
+    operators = Module.get_attribute(env.module, :operators)
+    IO.inspect module: env.module, operators: operators
   end
 end
