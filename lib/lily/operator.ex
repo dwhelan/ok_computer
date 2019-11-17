@@ -197,6 +197,14 @@ defmodule Lily.Operator do
     end
   end
 
+  @doc """
+  A tap operator function that 
+  
+  ## Examples
+  
+      iex> 
+      
+  """
   def tee(f) do
     fn left, right ->
       quote do
@@ -208,14 +216,9 @@ defmodule Lily.Operator do
   end
 
   defp arity(f, env) do
-    try do
       {f, _} = Code.eval_quoted(f, [], env)
       {:arity, arity} = Function.info(f, :arity)
       arity
-    rescue
-      CompileError -> IO.inspect f: f, env: env
-      raise "doh!"
-    end
   end
 
   defp arities(operator) do
