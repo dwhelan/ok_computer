@@ -9,6 +9,7 @@ defmodule OkComputer.Pipe do
   that will pipe the input
   """
   import Lily.Operator
+  alias Lily.Error
 
   defmacro defpipes(pipes) do
     create(pipes, __CALLER__)
@@ -22,8 +23,16 @@ defmodule OkComputer.Pipe do
     Enum.map(
       pipes,
       fn {operator, pipe_function} ->
-        case arity(pipe_function, env) do
-          2 -> {operator, operator_function(pipe_function)}
+        cond do
+          Macro.operator?(operator, 2) != true ->
+              raise Error,
+              "expected an operator with arity 2 but got #{operator} with arities #{inspect arities(operator)}."
+
+          arity(pipe_function, env) != 2 ->
+              raise Error,
+              "expected an operator with arity 2 but got #{operator}."
+
+          true -> {operator, operator_function(pipe_function)}
         end
       end
     )

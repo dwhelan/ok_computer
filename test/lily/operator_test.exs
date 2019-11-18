@@ -59,4 +59,8 @@ defmodule Lily.OperatorTest do
     test "capture operator", do: assert(:a ~>> :b == "ab")
     test "remote capture", do: assert(:a <~ :b == "ab")
   end
+
+  test "arities(operator)" do
+    assert arities(:!) == [1]
+  end
 end

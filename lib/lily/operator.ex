@@ -33,7 +33,7 @@ defmodule Lily.Operator do
 
   alias Lily.Error
 
-#  Module.register_attribute(__MODULE__, :operators, accumulate: true)
+  #  Module.register_attribute(__MODULE__, :operators, accumulate: true)
 
   @doc """
   Creates operators.
@@ -133,6 +133,8 @@ defmodule Lily.Operator do
     arity = arity(f, env)
     operator_arities = arities(operator)
 
+    IO.inspect operator: operator, arities: arities(operator)
+
     cond do
       operator_arities == [] ->
         raise Error,
@@ -140,18 +142,17 @@ defmodule Lily.Operator do
 
       arity not in operator_arities ->
         raise Error,
-              "expected a function with arity in 'x#{operator_arities}x', but got operator #{
-                operator
-              } with arity #{arity}."
+              "expected an operator function for #{operator} with arity in #{inspect operator_arities}, but got an operator function with arity #{arity}."
 
       true ->
         if env.module == Math do
-        IO.inspect putting_into: env.module, operator: {operator, arity}
-        Module.put_attribute(env.module, :operators, {operator, arity})
-        IO.inspect operators: Module.get_attribute(env.module, :operators)
+          IO.inspect(putting_into: env.module, operator: {operator, arity})
+          Module.put_attribute(env.module, :operators, {operator, arity})
+          IO.inspect(operators: Module.get_attribute(env.module, :operators))
         else
-        Module.put_attribute(env.module, :operators, {operator, arity})
+          Module.put_attribute(env.module, :operators, {operator, arity})
         end
+
         operator(type, operator, f, arity)
     end
   end
@@ -275,15 +276,15 @@ defmodule Lily.Operator do
     arity
   end
 
-  defp arities(operator) do
+  def arities(operator) do
     Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
   end
 
   defmacro __using__(_) do
     quote do
       alias Lily.Operator
-      Module.register_attribute __MODULE__, :operators, accumulate: true
-      IO.inspect registering: __MODULE__
+      Module.register_attribute(__MODULE__, :operators, accumulate: true)
+      IO.inspect(registering: __MODULE__)
       @before_compile Operator
       import Operator
     end
@@ -291,6 +292,6 @@ defmodule Lily.Operator do
 
   defmacro __before_compile__(env) do
     operators = Module.get_attribute(env.module, :operators)
-    IO.inspect module: env.module, operators: operators
+    IO.inspect(module: env.module, operators: operators)
   end
 end
