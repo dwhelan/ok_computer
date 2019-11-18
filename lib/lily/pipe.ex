@@ -8,7 +8,7 @@ defmodule OkComputer.Pipe do
   The function will be given the input and a function
   that will pipe the input
   """
-  import Lily.Operator
+  import Lily.{Operator, Function}
   alias Lily.Error
 
   defmacro defpipes(pipes) do
