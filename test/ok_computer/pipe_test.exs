@@ -4,11 +4,19 @@ defmodule Operator.PipeTest do
   alias OkComputer.Pipe
   import Pipe
 
-  test "operator arity should be two" do
+  test "operator should have arity 2" do
     assert_raise(
       Error,
       ~r/operator with arity 2/,
       fn -> create([!: quote(do: fn a -> nil end)], __ENV__) end
+    )
+  end
+
+  test "pipe function should have arity 2" do
+    assert_raise(
+      Error,
+      ~r/pipe function with arity 2/,
+      fn -> create([~>: quote(do: fn a -> nil end)], __ENV__) end
     )
   end
 end

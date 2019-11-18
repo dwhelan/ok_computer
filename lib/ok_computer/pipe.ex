@@ -26,11 +26,11 @@ defmodule OkComputer.Pipe do
         cond do
           Macro.operator?(operator, 2) != true ->
               raise Error,
-              "expected an operator with arity 2 but got #{operator} with arities #{inspect arities(operator)}."
+              "expected an operator with arity 2 but got #{operator}."
 
           arity(pipe_function, env) != 2 ->
               raise Error,
-              "expected an operator with arity 2 but got #{operator}."
+              "expected a pipe function with arity 2 but it has arity #{arity(pipe_function, env)}."
 
           true -> {operator, operator_function(pipe_function)}
         end
