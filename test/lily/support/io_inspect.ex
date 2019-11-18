@@ -1,4 +1,4 @@
-defmodule InspectTap do
+defmodule IOInspect do
   @moduledoc false
   import Lily.Operator
 

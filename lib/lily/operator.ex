@@ -5,28 +5,21 @@ defmodule Lily.Operator do
   Lily operators are more flexible than standard Elixir operators because you build them with anonymous functions.
 
   The `Concat` module below shows how you could create concat operators
-  using standard operators and lily operators:
+  using Elixir operators and Lily operators:
 
   ```
   #{File.read!("test/lily/support/concat.ex")}
   ```
-        iex> use Concat
-        iex> import Kernel, except: [+: 2, ++: 2]
-        iex> "a" + "b" # <- standard operator
+        iex> import Concat
+        iex> "a" >>> "b" # <- Elixir operator
         "ab"
-        iex> "a" ++ "b" # <- lily operator
+        iex> "a" <<< "b" # <- Lily operator
         "ab"
-
-  With lily operators, instead of declaring an operator using `def` or `defmacro`,
+  ```
+  With Lily operators, instead of defining an operator using `def` or `defmacro`,
   you provide an equivalent anonymous function to `defoperators/1` or `defoperator_macros/1`.
   Use a function of arity one for unary operators and a function of arity two for binary operators.
 
-  By default, a `__using__` macro will be inserted that imports `Kernel`,
-  (except the operators you created) and then imports itself.
-  This allows a module with operators to be easily used.
-  If you don't want this behaviour, include `{:__using__, false}` in `operators`.
-
-  ## Unsupported Operators
   Lily supports all the Elixir operators except:
   `.`, `=>`, `^`, `not in`, `when` as these are used by the Elixir parser.
   """
@@ -34,7 +27,6 @@ defmodule Lily.Operator do
   alias Lily.Error
 
   import Lily.Function
-  #  Module.register_attribute(__MODULE__, :operators, accumulate: true)
 
   @doc """
   Creates operators.
@@ -82,10 +74,9 @@ defmodule Lily.Operator do
   This could be useful for inspecting intermediate values in a pipeline.
 
   ```
-  #{File.read!("test/lily/support/inspect_tap.ex")}
+  #{File.read!("test/lily/support/io_inspect.ex")}
   ```
-
-        iex> use InspectTap
+        iex> import IOInspect
         iex> :a ~> to_string() # => :a
         "a"
   """
@@ -99,26 +90,16 @@ defmodule Lily.Operator do
 
   This is useful for programmatically creating operators.
 
-  If you want to create an operator function provide `:def` as the first argument.
-  If you want to create an operator macro provide `:defmacro` instead.
+  Provide `:def` as the first argument if you want to create an operator function
+  or `:defmacro` to create an operator macro.
   """
   @spec create(:def | :defmacro, keyword(f :: Macro.t()), Macro.Env.t()) :: Macro.t()
   def create(type, operators, env) do
-    {using, operators} =
-      Keyword.get_and_update(
-        operators,
-        :__using__,
-        fn _ -> :pop end
-      )
-
     [
       Enum.map(
         operators,
         fn {operator, f} -> create(type, operator, f, env) end
-      ),
-      if using != false do
-        create__using__(operators, env)
-      end
+      )
     ]
   end
 
@@ -134,8 +115,6 @@ defmodule Lily.Operator do
     arity = arity(f, env)
     operator_arities = arities(operator)
 
-    IO.inspect(operator: operator, arities: arities(operator))
-
     cond do
       operator_arities == [] ->
         raise Error,
@@ -148,14 +127,6 @@ defmodule Lily.Operator do
               }, but got an operator function with arity #{arity}."
 
       true ->
-        if env.module == Math do
-          IO.inspect(putting_into: env.module, operator: {operator, arity})
-          Module.put_attribute(env.module, :operators, {operator, arity})
-          IO.inspect(operators: Module.get_attribute(env.module, :operators))
-        else
-          Module.put_attribute(env.module, :operators, {operator, arity})
-        end
-
         operator(type, operator, f, arity)
     end
   end
@@ -201,39 +172,6 @@ defmodule Lily.Operator do
     end
   end
 
-  defp create__using__(operators, env) do
-    quote do
-      defmacro __using__(_) do
-        module = __MODULE__
-        caller = __CALLER__
-
-        kernel_excludes =
-          unquote(Enum.map(operators, fn {operator, f} -> {operator, arity(f, env)} end))
-
-        quote do
-          import Kernel, except: unquote(kernel_excludes)
-          import unquote(module)
-        end
-      end
-    end
-  end
-
-  defmacro create__using__(operators) do
-    quote do
-      defmacro __using__(_) do
-        module = __MODULE__
-        caller = __CALLER__
-
-        kernel_excludes = []
-
-        quote do
-          import Kernel, except: unquote(kernel_excludes)
-          import unquote(module)
-        end
-      end
-    end
-  end
-
   @doc """
   Returns an operator macro function that calls a tap function before piping.
 
@@ -241,10 +179,10 @@ defmodule Lily.Operator do
   A tap operator that calls `IO.inspect/1`.
 
   ```
-  #{File.read!("test/lily/support/inspect_tap.ex")}
+  #{File.read!("test/lily/support/io_inspect.ex")}
   ```
-        iex> use InspectTap
-        iex> :a ~> to_string() # > :a
+        iex> import IOInspect
+        iex> :a ~> to_string() # IO.inspect(:a) is called, :a is piped through
         "a"
 
   This could be useful for inspecting intermediate values in a pipeline.
@@ -254,13 +192,13 @@ defmodule Lily.Operator do
         ...>   |> String.split()
         ["A", "B"]
 
-        iex> use InspectTap
+        iex> import IOInspect
         iex> "a b"
         ...>   ~> String.upcase() # > "a b"
         ...>   ~> String.split()  # > "A B"
         ["A", "B"]
 
-  Using `~>` results in the input being inspected but is otherwise identical to `|>`.
+  Using `~>` results in the `IO.inspect/1` being called but is otherwise identical to `|>`.
   """
   @spec tap((any -> any)) :: (any, function -> Macro.t())
   def tap(tap) when is_function(tap, 1) do
@@ -275,20 +213,5 @@ defmodule Lily.Operator do
 
   defp arities(operator) do
     Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
-  end
-
-  defmacro __using__(_) do
-    quote do
-      alias Lily.Operator
-      Module.register_attribute(__MODULE__, :operators, accumulate: true)
-      IO.inspect(registering: __MODULE__)
-      @before_compile Operator
-      import Operator
-    end
-  end
-
-  defmacro __before_compile__(env) do
-    operators = Module.get_attribute(env.module, :operators)
-    IO.inspect(module: env.module, operators: operators)
   end
 end

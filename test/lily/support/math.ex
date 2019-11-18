@@ -1,6 +1,6 @@
 defmodule Math do
   @moduledoc false
-  use Lily.Operator
+  import Lily.Operator
 
   defoperators(
     +: fn
@@ -14,4 +14,11 @@ defmodule Math do
 
     # ...
   )
+
+  defmacro __using__(_) do
+    quote do
+      import Math
+      import Kernel, except: [+: 1, +: 2]
+    end
+  end
 end
