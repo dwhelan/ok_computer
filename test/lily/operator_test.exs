@@ -3,18 +3,16 @@ defmodule Lily.OperatorTest do
   alias Lily.{Operator, Error}
   import Operator
 
-  describe "type" do
-    #    test "raise if type is not :def or :defmacro" do
-    #      assert_raise(
-    #        Error,
-    #        ~r/expected type to be :def or :defmacro/,
-    #        fn -> create(:foo, +: quote(do: &to_string/1)) end
-    #      )
-    #    end
-  end
+  describe "create/3" do
+    test "raise if type is not :def or :defmacro" do
+      assert_raise(
+        Error,
+        ~r/expected type to be :def or :defmacro/,
+        fn -> create(:foo, [+: quote(do: &to_string/1)], __ENV__) end
+      )
+    end
 
-  describe "operator" do
-    test ~S/raise if in [:., :"=>", :^, :"not in", :when]/ do
+    test ~S/raise if operator in [:., :"=>", :^, :"not in", :when]/ do
       Enum.each([:., :"=>", :^, :"not in", :when], fn operator ->
         assert_raise(
           Error,
@@ -24,7 +22,7 @@ defmodule Lily.OperatorTest do
       end)
     end
 
-    test "raise if atom is not an operator" do
+    test "raise if operator is not an Elixir operator" do
       assert_raise(
         Error,
         ~r/expected an operator/,
@@ -47,20 +45,16 @@ defmodule Lily.OperatorTest do
     <~: &__MODULE__.to_string/2
   )
 
-  describe "operator function/1: " do
-    test "anonymous", do: assert(-:a == "a")
+  describe "defoperators: unary operator with" do
+    test "anonymous function", do: assert(-:a == "a")
     test "capture operator", do: assert(+:a == "a")
     test "local capture", do: assert(@:a == "a")
     test "remote capture", do: assert(!:a == "a")
   end
 
-  describe "operator function/2: " do
-    test "anonymous", do: assert(:a ~> :b == "ab")
+  describe "defoperators binary operator with" do
+    test "anonymous function", do: assert(:a ~> :b == "ab")
     test "capture operator", do: assert(:a ~>> :b == "ab")
     test "remote capture", do: assert(:a <~ :b == "ab")
-  end
-
-  test "arities(operator)" do
-    assert arities(:!) == [1]
   end
 end

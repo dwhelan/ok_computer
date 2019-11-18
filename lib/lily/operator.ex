@@ -133,7 +133,7 @@ defmodule Lily.Operator do
     arity = arity(f, env)
     operator_arities = arities(operator)
 
-    IO.inspect operator: operator, arities: arities(operator)
+    IO.inspect(operator: operator, arities: arities(operator))
 
     cond do
       operator_arities == [] ->
@@ -142,7 +142,9 @@ defmodule Lily.Operator do
 
       arity not in operator_arities ->
         raise Error,
-              "expected an operator function for #{operator} with arity in #{inspect operator_arities}, but got an operator function with arity #{arity}."
+              "expected an operator function for #{operator} with arity in #{
+                inspect(operator_arities)
+              }, but got an operator function with arity #{arity}."
 
       true ->
         if env.module == Math do
@@ -270,13 +272,14 @@ defmodule Lily.Operator do
     end
   end
 
+  @spec arity(Macro.t(), Macro.Env.t()) :: integer
   def arity(f, env) do
     {f, _} = Code.eval_quoted(f, [], env)
     {:arity, arity} = Function.info(f, :arity)
     arity
   end
 
-  def arities(operator) do
+  defp arities(operator) do
     Enum.filter([1, 2], fn arity -> Macro.operator?(operator, arity) end)
   end
 
