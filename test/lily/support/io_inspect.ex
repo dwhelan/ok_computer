@@ -1,4 +1,4 @@
-defmodule IOInspect do
+defmodule IO.Inspect do
   @moduledoc false
   import Lily.Operator
 

@@ -15,6 +15,10 @@ defmodule Math do
     # ...
   )
 
+  @doc """
+  It can be useful to provide a `__using__` macro that excludes Kernel
+  operators when it is safe to do so, as it is here.
+  """
   defmacro __using__(_) do
     quote do
       import Math

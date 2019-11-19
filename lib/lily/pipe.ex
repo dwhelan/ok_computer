@@ -2,15 +2,27 @@ defmodule OkComputer.Pipe do
   @moduledoc """
   Support for creating pipes.
 
-  A pipe consists of an operator and a pipe function.
+  A pipe consists of an operator and a pipe function of arity 2.
 
-  A pipe function has an arity of two.
-  The function will be given the input and a function
-  that will pipe the input
+  The pipe function will be given an input and a function that pipes its input
+  to the .
   """
   import Lily.{Operator, Function}
   alias Lily.Error
 
+  @doc """
+  Creates pipes.
+
+  Creates pipes for pipe in `pipes`.
+
+  The key is the operator name and the value is the function that the pipe operator should call.
+  The function should return an expression which results from the pipe.
+
+  ## Examples
+
+      iex>
+
+  """
   defmacro defpipes(pipes) do
     create(pipes, __CALLER__)
   end

@@ -2,13 +2,19 @@ defmodule Lily.Operator do
   @moduledoc """
   Creates operators using anonymous functions.
 
-  Lily operators are more flexible than standard Elixir operators because you build them with anonymous functions.
+  Lily operators extends Elixir operators with anonymous functions.
 
-  The `Concat` module below shows how you could create concat operators
-  using Elixir operators and Lily operators:
+  Instead of defining an operator using `def` or `defmacro`,
+  you provide an equivalent anonymous function to `defoperators/1` or `defoperator_macros/1`.
+
+  Use a function of arity one for unary operators and a function of arity two for binary operators.
+
+  The `Concat` module below creates concat operators
+  with Elixir operators and Lily operators:
 
   ```
   #{File.read!("test/lily/support/concat.ex")}
+  ```
   ```
         iex> import Concat
         iex> "a" >>> "b" # <- Elixir operator
@@ -16,9 +22,6 @@ defmodule Lily.Operator do
         iex> "a" <<< "b" # <- Lily operator
         "ab"
   ```
-  With Lily operators, instead of defining an operator using `def` or `defmacro`,
-  you provide an equivalent anonymous function to `defoperators/1` or `defoperator_macros/1`.
-  Use a function of arity one for unary operators and a function of arity two for binary operators.
 
   Lily supports all the Elixir operators except:
   `.`, `=>`, `^`, `not in`, `when` as these are used by the Elixir parser.
@@ -31,7 +34,7 @@ defmodule Lily.Operator do
   @doc """
   Creates operators.
 
-  Insert operator functions for each operator in `operators`.
+  Inserts operator functions for each operator in `operators`.
   The key is the operator name and the value is the function that the operator should call.
   The function should return an expression which results from the operator inputs.
 
@@ -41,6 +44,7 @@ defmodule Lily.Operator do
   ```
   #{File.read!("test/lily/support/math.ex")}
   ```
+
   Regular math:
 
         iex> use Math
@@ -76,7 +80,7 @@ defmodule Lily.Operator do
   ```
   #{File.read!("test/lily/support/io_inspect.ex")}
   ```
-        iex> import IOInspect
+        iex> import IO.Inspect
         iex> :a ~> to_string() # => :a
         "a"
   """
@@ -175,24 +179,25 @@ defmodule Lily.Operator do
   @doc """
   Returns an operator macro function that calls a tap function before piping.
 
+  You provide a function of arity 1 that will be called with the input.
+
+  The operator macro function will call your function and
+  then pipe the left input to the function call on the right.
+
+  This can be useful for inserting effects.
+
   ## Examples
   A tap operator that calls `IO.inspect/1`.
-
   ```
   #{File.read!("test/lily/support/io_inspect.ex")}
   ```
-        iex> import IOInspect
+        iex> import IO.Inspect
         iex> :a ~> to_string() # IO.inspect(:a) is called, :a is piped through
         "a"
 
   This could be useful for inspecting intermediate values in a pipeline.
 
-        iex> "a b"
-        ...>   |> String.upcase()
-        ...>   |> String.split()
-        ["A", "B"]
-
-        iex> import IOInspect
+        iex> import IO.Inspect
         iex> "a b"
         ...>   ~> String.upcase() # > "a b"
         ...>   ~> String.split()  # > "A B"
