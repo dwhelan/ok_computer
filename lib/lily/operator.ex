@@ -23,6 +23,7 @@ defmodule Lily.Operator do
         "ab"
   ```
 
+  ## Supported Operators
   Lily supports all the Elixir operators except:
   `.`, `=>`, `^`, `not in`, `when` as these are used by the Elixir parser.
 
@@ -30,7 +31,6 @@ defmodule Lily.Operator do
   |:-----------:|:-----:|:----------------------:|:-----------------------:|
   | `!`         | ✓     |                        |                         |
   | `@`         | ✓     |                        |                         |
-  | `.`         |       | ✓                      |                         |
   | `..`        |       |                        | ✓                       |
   | `+`         | ✓     | ✓                      |                         |
   | `++`        |       |                        | ✓                       |
@@ -38,7 +38,6 @@ defmodule Lily.Operator do
   | `--`        |       |                        | ✓                       |
   | `*`         |       | ✓                      |                         |
   | `/`         |       | ✓                      |                         |
-  | `^`         | ✓     |                        |                         |
   | `^^^`       |       | ✓                      |                         |
   | `~~~`       | ✓     |                        |                         |
   | `&`         | ✓     |                        |                         |
@@ -69,7 +68,6 @@ defmodule Lily.Operator do
   | `<~`        |       | ✓                      |                         |
   | `<<~`       |       | ✓                      |                         |
   | `<<<`       |       | ✓                      |                         |
-  | `when`      |       |                        | ✓                       |
   | `in`        |       | ✓                      |                         |
   | `and`       |       | ✓                      |                         |
   | `or`        |       | ✓                      |                         |

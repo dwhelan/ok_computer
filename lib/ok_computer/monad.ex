@@ -20,10 +20,10 @@ defmodule OkComputer.Monad do
       @behaviour Applicative
 
       @impl Functor
-      def map(a, f), do: bind(a, &(f.(&1) |> return()))
+      def fmap(a, f), do: bind(a, &(f.(&1) |> return()))
 
       @impl Applicative
-      def apply(a, f), do: bind(f, &map(a, &1))
+      def apply(a, f), do: bind(f, &fmap(a, &1))
 
       unquote(block)
     end

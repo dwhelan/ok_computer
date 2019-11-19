@@ -7,7 +7,7 @@ defmodule OkComputer.Monad.ErrorTest do
 
   defpipes(
     ~>: &Error.bind/2,
-    ~>>: &Error.map/2
+    ~>>: &Error.fmap/2
   )
 
   def stringify(a), do: {:error, to_string(a)}
@@ -21,9 +21,9 @@ defmodule OkComputer.Monad.ErrorTest do
     assert bind({:error, :a}, f) == {:error, "a"}
   end
 
-  test "map" do
+  test "fmap" do
     f = fn :a -> "a" end
-    assert map({:error, :a}, f) == {:error, "a"}
+    assert fmap({:error, :a}, f) == {:error, "a"}
   end
 
   test "pipe bind" do
@@ -31,7 +31,7 @@ defmodule OkComputer.Monad.ErrorTest do
     assert :a ~> stringify() == :a
   end
 
-  test "pipe map" do
+  test "pipe fmap" do
     assert {:error, :a} ~>> to_string() == {:error, "a"}
     assert :a ~>> to_string() == :a
   end
