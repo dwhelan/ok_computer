@@ -1,16 +1,8 @@
 defmodule OkComputer.Monad.ErrorTest do
   use ExUnit.Case
   alias OkComputer.Monad.Error
-  import OkComputer.Pipe
-  import Monad.Laws
   import Error
-
-  defpipes(
-    ~>: &Error.bind/2,
-    ~>>: &Error.fmap/2
-  )
-
-  def stringify(a), do: {:error, to_string(a)}
+  import Monad.Laws
 
   test "return" do
     assert return(:a) == {:error, :a}
@@ -19,21 +11,13 @@ defmodule OkComputer.Monad.ErrorTest do
   test "bind" do
     f = fn :a -> {:error, "a"} end
     assert bind({:error, :a}, f) == {:error, "a"}
+    assert bind(:a, f) == :a
   end
 
   test "fmap" do
     f = fn :a -> "a" end
     assert fmap({:error, :a}, f) == {:error, "a"}
-  end
-
-  test "pipe bind" do
-    assert {:error, :a} ~> stringify() == {:error, "a"}
-    assert :a ~> stringify() == :a
-  end
-
-  test "pipe fmap" do
-    assert {:error, :a} ~>> to_string() == {:error, "a"}
-    assert :a ~>> to_string() == :a
+    assert fmap(:a, f) == :a
   end
 
   test_monad(Error, {:error, :a})

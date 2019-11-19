@@ -13,7 +13,7 @@ defmodule OkComputer.Pipe do
   @doc """
   Creates pipes.
 
-  Creates pipes for pipe in `pipes`.
+  Creates pipes for each pipe in `pipes`.
 
   The key is the operator name and the value is the function that the pipe operator should call.
   The function should return an expression which results from the pipe.
