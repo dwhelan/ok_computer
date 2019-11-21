@@ -11,13 +11,13 @@ defmodule OkComputer.Monad.ErrorTest do
   test "bind" do
     f = fn :a -> {:error, "a"} end
     assert bind({:error, :a}, f) == {:error, "a"}
-    assert bind(:a, f) == :a
+    assert bind({:ok, :a}, f) == {:ok, :a}
   end
 
   test "fmap" do
     f = fn :a -> "a" end
     assert fmap({:error, :a}, f) == {:error, "a"}
-    assert fmap(:a, f) == :a
+    assert fmap({:ok, :a}, f) == {:ok, :a}
   end
 
   test_monad(Error, {:error, :a})
