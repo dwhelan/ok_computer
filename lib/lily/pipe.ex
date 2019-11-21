@@ -18,10 +18,6 @@ defmodule OkComputer.Pipe do
   The key is the operator name and the value is the function that the pipe operator should call.
   The function should return an expression which results from the pipe.
 
-  ## Examples
-
-      iex>
-
   """
   defmacro defpipes(pipes) do
     create(pipes, __CALLER__)
