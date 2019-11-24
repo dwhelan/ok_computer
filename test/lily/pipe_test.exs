@@ -1,7 +1,7 @@
-defmodule Operator.PipeTest do
+defmodule Lily.PipeTest do
   use ExUnit.Case
   alias Lily.Error
-  alias OkComputer.Pipe
+  alias Lily.Pipe
   import Pipe
 
   describe "create/1" do

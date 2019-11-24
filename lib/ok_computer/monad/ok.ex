@@ -10,21 +10,7 @@ defmodule OkComputer.Monad.Ok do
     def bind({:ok, a}, f), do: f.(a)
     def bind({:error, a}, _f), do: {:error, a}
 
-    def pipe({{:ok, a}, f}, g), do: g.({:ok, a}, f)
-    def pipe({a, f}, f), do: a
-  end
-
-  defmacro pipe_function(match) do
-    quote do
-      def pipe({a, f}, g) do
-        case a do
-          unquote(match) -> g.(a, f)
-          a -> a
-        end
-      end
-
-      def pipe({{:ok, a}, f}, g), do: g.({:ok, a}, f)
-      def pipe({a, f}, f), do: a
-    end
+    def pipe({:ok, a}, f, pipe_fun), do: pipe_fun.({:ok, a}, f)
+    def pipe(a, _f, _pipe_fun), do: a
   end
 end
