@@ -8,9 +8,9 @@ defmodule OkComputer.Monad.Error do
 
     @impl Monad
     def bind({:error, a}, f), do: f.(a)
-    def bind({:ok, a}, f), do: {:ok, a}
+    def bind({:ok, a}, _f), do: {:ok, a}
 
-    def pipe({{:error, a}, f}, g), do: g.({:error, a}, f)
-    def pipe({a, f}, g), do: a
+    def pipe({:error, a}, f, pipe_fun), do: pipe_fun.({:error, a}, f)
+    def pipe(a, _f, _g), do: a
   end
 end
