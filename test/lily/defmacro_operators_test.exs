@@ -3,7 +3,7 @@ defmodule Lily.DefMacroOperatorsTest do
   import Lily.Test
   import Lily.Operator
 
-  defoperator_macros(
+  operator_macro(
     # unary
     @: &quoted_to_string/1,
     +: &quoted_to_string/1,

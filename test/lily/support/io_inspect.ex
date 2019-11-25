@@ -2,5 +2,5 @@ defmodule IO.Inspect do
   @moduledoc false
   import Lily.Operator
 
-  defoperator_macros(~>: tap(&IO.inspect/1))
+  operator_macro(~>: tap(&IO.inspect/1))
 end

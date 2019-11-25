@@ -5,7 +5,7 @@
   ],
   locals_without_parens: [
     operators: :*,
-    defoperator_macros: :*,
+    operator_macro: :*,
     pipe: :*,
     pipes: :*
   ]
