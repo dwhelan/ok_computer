@@ -4,8 +4,7 @@ defmodule Lily.Pipe do
 
   A pipe consists of an operator and a pipe function of arity 2.
 
-  The pipe function will be given an input and a function that pipes its input
-  to the .
+  The pipe function will be given an input and a function to call.
   """
   import Lily.{Operator, Function}
   alias Lily.Error
@@ -24,7 +23,7 @@ defmodule Lily.Pipe do
   end
 
   def pipe(pipes, env) do
-    create(:defmacro, operator_functions(pipes, env), env)
+    operator_macro(operator_functions(pipes, env), env)
   end
 
   defp operator_functions(pipes, env) do

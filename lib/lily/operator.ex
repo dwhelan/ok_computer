@@ -27,51 +27,51 @@ defmodule Lily.Operator do
   Lily supports all the Elixir operators except:
   `.`, `=>`, `^`, `not in`, `when` as these are used by the Elixir parser.
 
-  | Operator    | Unary | Left-associated Binary | Right-associated Binary |
-  |:-----------:|:-----:|:----------------------:|:-----------------------:|
-  | `!`         | ✓     |                        |                         |
-  | `@`         | ✓     |                        |                         |
-  | `..`        |       |                        | ✓                       |
-  | `+`         | ✓     | ✓                      |                         |
-  | `++`        |       |                        | ✓                       |
-  | `-`         | ✓     | ✓                      |                         |
-  | `--`        |       |                        | ✓                       |
-  | `*`         |       | ✓                      |                         |
-  | `/`         |       | ✓                      |                         |
-  | `^^^`       |       | ✓                      |                         |
-  | `~~~`       | ✓     |                        |                         |
-  | `&`         | ✓     |                        |                         |
-  | `&&`        |       | ✓                      |                         |
-  | `&&&`       |       | ✓                      |                         |
-  | `<-`        |       | ✓                      |                         |
-  | `\\\\`      |       | ✓                      |                         |
-  | `\\|`       |       |                        | ✓                       |
-  | `\\|\\|`    |       | ✓                      |                         |
-  | `\\|\\|\\|` |       | ✓                      |                         |
-  | `=`         |       |                        | ✓                       |
-  | `=~`        |       | ✓                      |                         |
-  | `==`        |       | ✓                      |                         |
-  | `===`       |       | ✓                      |                         |
-  | `!=`        |       | ✓                      |                         |
-  | `!==`       |       | ✓                      |                         |
-  | `<`         |       | ✓                      |                         |
-  | `>`         |       | ✓                      |                         |
-  | `<>`        |       |                        | ✓                       |
-  | `<=`        |       | ✓                      |                         |
-  | `\\|>`      |       | ✓                      |                         |
-  | `>=`        |       | ✓                      |                         |
-  | `<\\|>`     |       | ✓                      |                         |
-  | `<~>`       |       | ✓                      |                         |
-  | `~>`        |       | ✓                      |                         |
-  | `~>>`       |       | ✓                      |                         |
-  | `>>>`       |       | ✓                      |                         |
-  | `<~`        |       | ✓                      |                         |
-  | `<<~`       |       | ✓                      |                         |
-  | `<<<`       |       | ✓                      |                         |
-  | `in`        |       | ✓                      |                         |
-  | `and`       |       | ✓                      |                         |
-  | `or`        |       | ✓                      |                         |
-  | `not`       |       | ✓                      |                         |
+  | Operator    | Associativity        |
+  |:-----------:|:---------------------|
+  | `!`         | Unary                |
+  | `@`         | Unary                |
+  | `~~~`       | Unary                |
+  | `&`         | Unary                |
+  | `+`         | Unary, Left to Right |
+  | `-`         | Unary, Left to Right |
+  | `*`         | Left to Right        |
+  | `/`         | Left to Right        |
+  | `^^^`       | Left to Right        |
+  | `&&`        | Left to Right        |
+  | `&&&`       | Left to Right        |
+  | `<-`        | Left to Right        |
+  | `\\\\`      | Left to Right        |
+  | `\\|\\|`    | Left to Right        |
+  | `\\|\\|\\|` | Left to Right        |
+  | `=~`        | Left to Right        |
+  | `==`        | Left to Right        |
+  | `===`       | Left to Right        |
+  | `!=`        | Left to Right        |
+  | `!==`       | Left to Right        |
+  | `<`         | Left to Right        |
+  | `>`         | Left to Right        |
+  | `<=`        | Left to Right        |
+  | `\\|>`      | Left to Right        |
+  | `>=`        | Left to Right        |
+  | `<\\|>`     | Left to Right        |
+  | `<~>`       | Left to Right        |
+  | `~>`        | Left to Right        |
+  | `~>>`       | Left to Right        |
+  | `>>>`       | Left to Right        |
+  | `<~`        | Left to Right        |
+  | `<<~`       | Left to Right        |
+  | `<<<`       | Left to Right        |
+  | `in`        | Left to Right        |
+  | `and`       | Left to Right        |
+  | `or`        | Left to Right        |
+  | `not`       | Left to Right        |
+  | `..`        | Right to Left        |
+  | `=`         | Right to Left        |
+  | `++`        | Right to Left        |
+  | `--`        | Right to Left        |
+  | `\\|`       | Right to Left        |
+  | `<>`        | Right to Left        |
   """
 
   alias Lily.Error
@@ -110,7 +110,7 @@ defmodule Lily.Operator do
   """
   @spec operator(keyword(f :: Macro.t())) :: Macro.t()
   defmacro operator(operators) do
-    create(:def, operators, __CALLER__)
+    operator(operators, __CALLER__)
   end
 
   @doc """
@@ -133,29 +133,36 @@ defmodule Lily.Operator do
   """
   @spec operator_macro(keyword(f :: Macro.t())) :: Macro.t()
   defmacro operator_macro(operators) do
-    create(:defmacro, operators, __CALLER__)
+    operator_macro(operators, __CALLER__)
   end
 
   @doc """
-  Returns the AST to create an operator or an operator macro.
+  Returns the AST to create an operator.
 
   This is useful for programmatically creating operators.
-
-  Provide `:def` as the first argument if you want to create an operator function
-  or `:defmacro` to create an operator macro.
   """
-  @spec create(:def | :defmacro, keyword(f :: Macro.t()), Macro.Env.t()) :: Macro.t()
-  def create(type, operators, env) do
+  @spec operator(keyword(f :: Macro.t()), Macro.Env.t()) :: Macro.t()
+  def operator(operators, env) do
+    create(:def, operators, env)
+  end
+
+  @doc """
+  Returns the AST to create an operator macro.
+
+  This is useful for programmatically creating operator macros.
+  """
+  @spec operator_macro(keyword(f :: Macro.t()), Macro.Env.t()) :: Macro.t()
+  def operator_macro(operators, env) do
+    create(:defmacro, operators, env)
+  end
+
+  defp create(type, operators, env) do
     [
       Enum.map(
         operators,
         fn {operator, f} -> create(type, operator, f, env) end
       )
     ]
-  end
-
-  defp create(type, _, _, _) when type not in [:def, :defmacro] do
-    raise Error, "expected type to be :def or :defmacro but got #{type}."
   end
 
   defp create(_, operator, _, _) when operator in [:., :"=>", :^, :"not in", :when] do

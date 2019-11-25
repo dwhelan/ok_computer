@@ -26,21 +26,13 @@ defmodule Lily.OperatorTest do
     test "remote capture", do: assert(:a <~ :b == "ab")
   end
 
-  describe "create/3" do
-    test "raise if type is not :def or :defmacro" do
-      assert_raise(
-        Error,
-        ~r/expected type to be :def or :defmacro/,
-        fn -> create(:foo, [+: quote(do: &to_string/1)], __ENV__) end
-      )
-    end
-
+  describe "operator/2" do
     test ~S/raise if operator in [:., :"=>", :^, :"not in", :when]/ do
       Enum.each([:., :"=>", :^, :"not in", :when], fn operator ->
         assert_raise(
           Error,
           ~r/used by the Elixir parser/,
-          fn -> create(:def, [{operator, quote(do: &to_string/1)}], __ENV__) end
+          fn -> operator([{operator, quote(do: &to_string/1)}], __ENV__) end
         )
       end)
     end
@@ -49,7 +41,27 @@ defmodule Lily.OperatorTest do
       assert_raise(
         Error,
         ~r/expected an operator/,
-        fn -> create(:def, [{:foo, quote(do: &to_string/1)}], __ENV__) end
+        fn -> operator([{:foo, quote(do: &to_string/1)}], __ENV__) end
+      )
+    end
+  end
+
+  describe "operator_macro/2" do
+    test ~S/raise if operator in [:., :"=>", :^, :"not in", :when]/ do
+      Enum.each([:., :"=>", :^, :"not in", :when], fn operator ->
+        assert_raise(
+          Error,
+          ~r/used by the Elixir parser/,
+          fn -> operator_macro([{operator, quote(do: &to_string/1)}], __ENV__) end
+        )
+      end)
+    end
+
+    test "raise if operator is not an Elixir operator" do
+      assert_raise(
+        Error,
+        ~r/expected an operator/,
+        fn -> operator_macro([{:foo, quote(do: &to_string/1)}], __ENV__) end
       )
     end
   end
