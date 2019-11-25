@@ -12,14 +12,12 @@ defmodule OkComputer.Monad.OkTest do
   test "bind/2" do
     f = fn :a -> {:ok, "a"} end
     assert bind({:ok, :a}, f) == {:ok, "a"}
-    assert bind({:error, :a}, f) == {:error, :a}
     assert bind(:a, f) == :a
   end
 
   test "fmap/2" do
     f = fn :a -> "a" end
     assert fmap({:ok, :a}, f) == {:ok, "a"}
-    assert fmap({:error, :a}, f) == {:error, :a}
     assert fmap(:a, f) == :a
   end
 
@@ -30,7 +28,6 @@ defmodule OkComputer.Monad.OkTest do
 
     test "bind/2" do
       assert {:ok, :a} ~> to_ok_string() == {:ok, "a"}
-      assert {:error, :a} ~> to_ok_string() == {:error, :a}
       assert :a ~> to_ok_string() == :a
     end
 
@@ -38,7 +35,6 @@ defmodule OkComputer.Monad.OkTest do
 
     test "fmap/2" do
       assert {:ok, :a} ~>> to_string() == {:ok, "a"}
-      assert {:error, :a} ~>> to_string() == {:error, :a}
       assert :a ~>> to_string() == :a
     end
   end

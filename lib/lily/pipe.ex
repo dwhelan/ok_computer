@@ -14,8 +14,7 @@ defmodule Lily.Pipe do
 
   Creates pipes for each pipe in `pipes`.
 
-  The key is the operator name and the value is the function that the pipe operator should call.
-  The function should return an expression which results from the pipe.
+  The key is the operator and the value is the function that should be called.
 
   """
   defmacro pipe(pipes) do
@@ -30,11 +29,16 @@ defmodule Lily.Pipe do
     Enum.map(
       pipes,
       fn {operator, pipe_function} ->
-        cond do
-          Macro.operator?(operator, 2) != true ->
-            raise Error,
-                  "expected an operator with arity 2 but got #{operator}."
+        case Code.Identifier.binary_op(operator) do
+          {:left, _} ->
+            :ok
 
+          _ ->
+            raise Error,
+                  "expected a binary operator with left to right associativity but got #{operator}."
+        end
+
+        cond do
           arity(pipe_function, env) != 2 ->
             raise Error,
                   "expected a pipe function with arity 2 but it has arity #{
