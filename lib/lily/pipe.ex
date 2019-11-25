@@ -27,17 +27,6 @@ defmodule Lily.Pipe do
     create(:defmacro, operator_functions(pipes, env), env)
   end
 
-  defmacro pipe_function(match) do
-    quote do
-      def pipe({a, f}, g) do
-        case a do
-          unquote(match) -> g.(a, f)
-          a -> a
-        end
-      end
-    end
-  end
-
   defp operator_functions(pipes, env) do
     Enum.map(
       pipes,
