@@ -20,10 +20,10 @@ defmodule Lily.Pipe do
 
   """
   defmacro pipe(pipes) do
-    create(pipes, __CALLER__)
+    pipe(pipes, __CALLER__)
   end
 
-  def create(pipes, env) do
+  def pipe(pipes, env) do
     create(:defmacro, operator_functions(pipes, env), env)
   end
 

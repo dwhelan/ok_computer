@@ -4,12 +4,12 @@ defmodule Lily.PipeTest do
   alias Lily.Pipe
   import Pipe
 
-  describe "create/1" do
+  describe "pipe/1" do
     test "operator should have arity 2" do
       assert_raise(
         Error,
         ~r/operator with arity 2/,
-        fn -> create([!: quote(do: fn a -> nil end)], __ENV__) end
+        fn -> pipe([!: quote(do: fn a -> nil end)], __ENV__) end
       )
     end
 
@@ -17,7 +17,7 @@ defmodule Lily.PipeTest do
       assert_raise(
         Error,
         ~r/pipe function with arity 2/,
-        fn -> create([~>: quote(do: fn a -> nil end)], __ENV__) end
+        fn -> pipe([~>: quote(do: fn a -> nil end)], __ENV__) end
       )
     end
   end
