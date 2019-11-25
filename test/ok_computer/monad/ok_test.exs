@@ -1,6 +1,7 @@
 defmodule OkComputer.Monad.OkTest do
   use ExUnit.Case
   alias OkComputer.Monad.Ok
+  import Lily.Pipe
   import Monad.Laws
   import Ok
 
@@ -23,13 +24,24 @@ defmodule OkComputer.Monad.OkTest do
   end
 
   describe "pipe" do
-  test "bind/2" do
-    f = fn :a -> {:ok, "a"} end
-    assert bind({:ok, :a}, f) == {:ok, "a"}
-    assert bind({:error, :a}, f) == {:error, :a}
-    assert bind(:a, f) == :a
+    defpipes ~>: &Ok.bind/2
+
+    def to_ok_string(:a), do: {:ok, "a"}
+
+    test "bind/2" do
+      assert {:ok, :a} ~> to_ok_string() == {:ok, "a"}
+      assert {:error, :a} ~> to_ok_string() == {:error, :a}
+      assert :a ~> to_ok_string() == :a
+    end
+
+    defpipes ~>>: &Ok.fmap/2
+
+    test "fmap/2" do
+      assert {:ok, :a} ~>> to_string() == {:ok, "a"}
+      assert {:error, :a} ~>> to_string() == {:error, :a}
+      assert :a ~>> to_string() == :a
+    end
   end
 
-  end
   test_monad(Ok, {:ok, :a})
 end
