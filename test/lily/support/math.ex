@@ -2,7 +2,7 @@ defmodule Math do
   @moduledoc false
   import Lily.Operator
 
-  defoperators(
+  operator(
     +: fn
       {a, a_i} -> {+a, +a_i}
       a -> Kernel.+(a)

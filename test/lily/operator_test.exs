@@ -3,7 +3,7 @@ defmodule Lily.OperatorTest do
   alias Lily.{Operator, Error}
   import Operator
 
-  defoperators(
+  operator(
     -: fn a -> "#{a}" end,
     +: &"#{&1}",
     @: &to_string/1,
@@ -13,14 +13,14 @@ defmodule Lily.OperatorTest do
     <~: &__MODULE__.to_string/2
   )
 
-  describe "defoperators: unary operator with" do
+  describe "operator: unary operator with" do
     test "anonymous function", do: assert(-:a == "a")
     test "capture operator", do: assert(+:a == "a")
     test "local capture", do: assert(@:a == "a")
     test "remote capture", do: assert(!:a == "a")
   end
 
-  describe "defoperators binary operator with" do
+  describe "operator binary operator with" do
     test "anonymous function", do: assert(:a ~> :b == "ab")
     test "capture operator", do: assert(:a ~>> :b == "ab")
     test "remote capture", do: assert(:a <~ :b == "ab")

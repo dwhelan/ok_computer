@@ -5,7 +5,7 @@ defmodule Lily.Operator do
   Lily operators extends Elixir operators with anonymous functions.
 
   Instead of defining an operator using `def` or `defmacro`,
-  you provide an equivalent anonymous function to `defoperators/1` or `defoperator_macros/1`.
+  you provide an equivalent anonymous function to `operator/1` or `defoperator_macros/1`.
 
   Use a function of arity one for unary operators and a function of arity two for binary operators.
 
@@ -108,8 +108,8 @@ defmodule Lily.Operator do
         iex> {1, 2} + {3, 4}
         {4, 6}
   """
-  @spec defoperators(keyword(f :: Macro.t())) :: Macro.t()
-  defmacro defoperators(operators) do
+  @spec operator(keyword(f :: Macro.t())) :: Macro.t()
+  defmacro operator(operators) do
     create(:def, operators, __CALLER__)
   end
 

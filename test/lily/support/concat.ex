@@ -8,7 +8,7 @@ defmodule Concat do
   end
 
   # lily operator
-  defoperators(
+  operator(
     <<<: fn a, b ->
       "#{a}#{b}"
     end

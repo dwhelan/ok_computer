@@ -4,7 +4,7 @@ defmodule Lily.DefOperatorsTest do
   import Lily.Operator
   import Lily.Test
 
-  defoperators(
+  operator(
     # unary
     @: &to_string/1,
     +: &to_string/1,
