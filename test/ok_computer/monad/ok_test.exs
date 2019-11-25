@@ -2,8 +2,8 @@ defmodule OkComputer.Monad.OkTest do
   use ExUnit.Case
   alias OkComputer.Monad.Ok
   import Lily.Pipe
-  import Monad.Laws
   import Ok
+  import Monad.Laws
 
   test "return/1" do
     assert return(:a) == {:ok, :a}
