@@ -24,7 +24,7 @@ defmodule OkComputer.Monad.OkTest do
   end
 
   describe "pipe" do
-    defpipes ~>: &Ok.bind/2
+    pipe ~>: &Ok.bind/2
 
     def to_ok_string(:a), do: {:ok, "a"}
 
@@ -34,7 +34,7 @@ defmodule OkComputer.Monad.OkTest do
       assert :a ~> to_ok_string() == :a
     end
 
-    defpipes ~>>: &Ok.fmap/2
+    pipe ~>>: &Ok.fmap/2
 
     test "fmap/2" do
       assert {:ok, :a} ~>> to_string() == {:ok, "a"}

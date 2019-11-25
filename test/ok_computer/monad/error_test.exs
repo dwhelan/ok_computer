@@ -24,7 +24,7 @@ defmodule OkComputer.Monad.ErrorTest do
   end
 
   describe "pipe" do
-    defpipes ~>: &Error.bind/2
+    pipe ~>: &Error.bind/2
 
     def to_ok_string(:a), do: {:error, "a"}
 
@@ -34,7 +34,7 @@ defmodule OkComputer.Monad.ErrorTest do
       assert :a ~> to_ok_string() == :a
     end
 
-    defpipes ~>>: &Error.fmap/2
+    pipe ~>>: &Error.fmap/2
 
     test "fmap/2" do
       assert {:error, :a} ~>> to_string() == {:error, "a"}

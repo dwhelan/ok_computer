@@ -19,7 +19,7 @@ defmodule Lily.Pipe do
   The function should return an expression which results from the pipe.
 
   """
-  defmacro defpipes(pipes) do
+  defmacro pipe(pipes) do
     create(pipes, __CALLER__)
   end
 
