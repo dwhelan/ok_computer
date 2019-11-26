@@ -1,4 +1,4 @@
-defmodule OkComputer.Monad do
+defmodule Lily.Monad do
   @moduledoc """
   Monadic pipes.
   """
@@ -12,7 +12,8 @@ defmodule OkComputer.Monad do
 
   defmacro monad(do: block) do
     quote do
-      alias OkComputer.{Monad, Functor, Applicative}
+      alias OkComputer.{Functor, Applicative}
+      alias Lily.{Monad}
       import Monad
 
       @behaviour Monad

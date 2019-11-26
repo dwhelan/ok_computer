@@ -1,5 +1,5 @@
-defmodule OkComputer.Monad.Ok do
-  alias OkComputer.Monad
+defmodule Lily.Monad.Ok do
+  alias Lily.Monad
   import Monad
 
   monad do

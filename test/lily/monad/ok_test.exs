@@ -1,6 +1,6 @@
-defmodule OkComputer.Monad.OkTest do
+defmodule Lily.Monad.OkTest do
   use ExUnit.Case
-  alias OkComputer.Monad.Ok
+  alias Lily.Monad.Ok
   import Lily.Pipe
   import Ok
   import Monad.Laws

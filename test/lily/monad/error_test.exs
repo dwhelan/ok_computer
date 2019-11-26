@@ -1,6 +1,6 @@
-defmodule OkComputer.Monad.ErrorTest do
+defmodule Lily.Monad.ErrorTest do
   use ExUnit.Case
-  alias OkComputer.Monad.Error
+  alias Lily.Monad.Error
   import Lily.Pipe
   import Error
   import Monad.Laws
