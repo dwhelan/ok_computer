@@ -8,15 +8,15 @@ defmodule Lily.PipeTest do
     test "unary operator" do
       assert_raise(
         Error,
-        ~r/binary operator with left to right associativity/,
+        ~r/expected a binary operator with left to right associativity/,
         fn -> pipe([!: quote(do: fn _a, _f -> nil end)], __ENV__) end
       )
     end
 
-    test "binary operator with right to left associativity" do
+    test "binary operator with incorrect associativity" do
       assert_raise(
         Error,
-        ~r/binary operator with left to right associativity/,
+        ~r/expected a binary operator with left to right associativity/,
         fn -> pipe([<>: quote(do: fn _a, _f -> nil end)], __ENV__) end
       )
     end
@@ -24,7 +24,7 @@ defmodule Lily.PipeTest do
     test "pipe function that does not have arity 2" do
       assert_raise(
         Error,
-        ~r/pipe function with arity 2/,
+        ~r/expected a pipe function with arity 2/,
         fn -> pipe([~>: quote(do: fn a -> nil end)], __ENV__) end
       )
     end

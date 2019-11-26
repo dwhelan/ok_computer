@@ -13,6 +13,10 @@ defmodule Lily.OperatorTest do
     <~: &__MODULE__.to_string/2
   )
 
+  def to_string(a, b) do
+    "#{a}#{b}"
+  end
+
   describe "operator: unary operator with" do
     test "anonymous function", do: assert(-:a == "a")
     test "capture operator", do: assert(+:a == "a")
@@ -64,9 +68,5 @@ defmodule Lily.OperatorTest do
         fn -> operator_macro([{:foo, quote(do: &to_string/1)}], __ENV__) end
       )
     end
-  end
-
-  def to_string(a, b) do
-    "#{a}#{b}"
   end
 end
